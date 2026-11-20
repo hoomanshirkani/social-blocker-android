@@ -51,6 +51,8 @@ public class BlockerService extends AccessibilityService {
 
     private final Handler handler = new Handler(Looper.getMainLooper());
     private long lastGuardCheck = 0;
+    /** آخرین صفحه‌ی نصب‌کننده (Install… یا Uninstall…) برای تشخیص آپدیت از حذف */
+    private String installerScreen = null;
     private long lastBlock = 0;
 
     // جلسه استفاده فعلی از یک اپ مسدود (در حالت سهمیه)
@@ -90,8 +92,17 @@ public class BlockerService extends AccessibilityService {
     @Override
     public void onAccessibilityEvent(AccessibilityEvent event) {
         if (event == null || event.getPackageName() == null) return;
-        handle(event.getPackageName().toString(),
-                event.getEventType() == AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED);
+        boolean windowChanged = event.getEventType() == AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED;
+        String pkg = event.getPackageName().toString();
+        if (windowChanged && !ignored.contains(pkg)) {
+            CharSequence cls = event.getClassName();
+            if (!isInstaller(pkg)) {
+                installerScreen = null; // از نصب‌کننده خارج شدیم
+            } else if (cls != null && cls.toString().contains("Install")) {
+                installerScreen = cls.toString(); // دیالوگ‌های عمومی (AlertDialog) مقدار قبلی را نگه می‌دارند
+            }
+        }
+        handle(pkg, windowChanged);
     }
 
     private void handle(String pkg, boolean windowChanged) {
@@ -135,6 +146,8 @@ public class BlockerService extends AccessibilityService {
 
         // ۳) محافظت از تنظیمات
         if (Prefs.isProtect(this) && isGuarded(pkg)) {
+            // نصب/آپدیت آزاد است؛ فقط صفحه‌ی حذف (Uninstall…) بسته می‌شود
+            if (isInstaller(pkg) && isInstallNotUninstall(installerScreen)) return;
             long now = SystemClock.uptimeMillis();
             if (!windowChanged && now - lastGuardCheck < 400) return; // throttle
             lastGuardCheck = now;
@@ -175,6 +188,14 @@ public class BlockerService extends AccessibilityService {
     }
 
     // ------------------------------------------------------------------ helpers
+
+    private static boolean isInstaller(String pkg) {
+        return pkg.contains("packageinstaller");
+    }
+
+    private static boolean isInstallNotUninstall(String cls) {
+        return cls != null && !cls.contains("Uninstall") && cls.contains("Install");
+    }
 
     private static boolean isGuarded(String pkg) {
         return GUARDED.contains(pkg) || pkg.contains("settings") || pkg.contains("packageinstaller");
