@@ -1,18 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <!-- اندروید ۱۵+: حالت edge-to-edge اجباری را خاموش می‌کنیم تا نوار وضعیت
-         (ساعت/باتری) با رنگ تیره و آیکون‌های سفید دیده شود و محتوا زیرش نرود -->
+    <!-- اندروید ۱۵+: edge-to-edge اجباری خاموش، تا محتوا زیر نوار وضعیت نرود.
+         (استایل‌های مشترک مثل SectionTitle در values/themes.xml هستند و اینجا هم در دسترس‌اند) -->
     <style name="AppTheme" parent="android:Theme.Material.Light.DarkActionBar">
-        <item name="android:colorPrimary">#C62828</item>
-        <item name="android:colorPrimaryDark">#8E0000</item>
-        <item name="android:colorAccent">#C62828</item>
-        <item name="android:statusBarColor">#8E0000</item>
+        <item name="android:colorPrimary">@color/primary</item>
+        <item name="android:colorPrimaryDark">@color/primary_dark</item>
+        <item name="android:colorAccent">@color/primary</item>
+        <item name="android:statusBarColor">@color/primary_dark</item>
+        <item name="android:windowBackground">@color/bg</item>
         <item name="android:windowOptOutEdgeToEdgeEnforcement">true</item>
     </style>
 
     <style name="BlockedTheme" parent="android:Theme.Material.NoActionBar">
-        <item name="android:statusBarColor">#212121</item>
-        <item name="android:navigationBarColor">#212121</item>
+        <item name="android:statusBarColor">#1E1B4B</item>
+        <item name="android:navigationBarColor">#312E81</item>
+        <item name="android:colorAccent">@color/primary</item>
         <item name="android:windowOptOutEdgeToEdgeEnforcement">true</item>
     </style>
 </resources>

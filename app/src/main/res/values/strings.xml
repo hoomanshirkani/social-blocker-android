@@ -18,10 +18,10 @@
     <string name="status_paused">⏸ Paused — %1$d:%2$02d left</string>
     <string name="status_on">🔒 Blocking is ON</string>
     <string name="status_acc_warning">\n⚠️ Accessibility service is off — nothing will be blocked!</string>
-    <string name="btn_turn_off">Turn off blocking (password)</string>
+    <string name="btn_turn_off">Turn off (password)</string>
     <string name="btn_turn_on">Turn on blocking</string>
-    <string name="btn_resume">Resume blocking</string>
-    <string name="btn_pause">Pause 15 min (password)</string>
+    <string name="btn_resume">Resume now</string>
+    <string name="btn_pause">Pause 15 minutes (password)</string>
     <string name="btn_acc_on">✓ Accessibility service is on</string>
     <string name="btn_acc_off">1) Enable accessibility service</string>
     <string name="btn_admin_on">✓ Uninstall protection (Device Admin) is on</string>
@@ -77,4 +77,45 @@
         <item>hours</item>
         <item>days</item>
     </string-array>
+
+    <!-- طراحی جدید -->
+    <string name="acc_warning">⚠️ The accessibility service is off, so nothing is being blocked. Turn it on under Setup.</string>
+    <string name="section_setup">SETUP</string>
+    <string name="section_protection">PROTECTION</string>
+    <string name="row_acc_title">Accessibility service</string>
+    <string name="row_acc_todo">Required — tap to turn on</string>
+    <string name="row_admin_title">Uninstall protection</string>
+    <string name="row_admin_todo">Recommended — tap to turn on</string>
+    <string name="row_done">Active ✓</string>
+    <string name="row_fw_title">Firewall &amp; internet schedule</string>
+    <string name="row_fw_off">Off — tap to set up</string>
+    <string name="row_fw_on">On</string>
+    <string name="row_fw_sched">On · internet schedule active</string>
+    <string name="protect_title">Lock settings</string>
+    <string name="protect_sub">Stops this app from being turned off or uninstalled while blocking is on</string>
+    <string name="apps_header">APPS TO BLOCK · %1$d SELECTED</string>
+    <string name="menu_password">Change password</string>
+    <string name="menu_language">Language / زبان</string>
+    <string name="status_off_title">Blocking is off</string>
+    <string name="status_off_sub">Your apps are not being blocked</string>
+    <string name="status_on_title">Blocking is on</string>
+    <string name="status_on_sub">%1$d apps blocked</string>
+    <string name="status_paused_title">Paused</string>
+    <string name="status_paused_sub">Resumes in %1$s</string>
+    <string name="fw_sched_sub">Internet is open only during the window below, for all apps</string>
+    <string name="fw_presets">Quick presets</string>
+    <string name="preset_1">10 s / 1 min</string>
+    <string name="preset_2">5 min / 1 h</string>
+    <string name="preset_3">30 min / 1 day</string>
+    <string name="fw_off_title">Firewall is off</string>
+    <string name="fw_off_sub">Turn on to control internet access</string>
+    <string name="fw_on_title">Firewall is on</string>
+    <string name="fw_on_sub">%1$d apps have no internet</string>
+    <string name="fw_open_title">Internet open</string>
+    <string name="fw_open_sub">Closes in %1$s</string>
+    <string name="fw_closed_title">Internet blocked</string>
+    <string name="fw_closed_sub">Opens in %1$s</string>
+    <string name="fw_nr_title">VPN not running</string>
+    <string name="fw_nr_sub">Turn the firewall off and on again</string>
+    <string name="fw_apps_header2">ALWAYS BLOCK INTERNET · %1$d APPS</string>
 </resources>

@@ -1,112 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ListView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/fwList"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/bg"
+    android:clipToPadding="false"
+    android:divider="@color/divider"
+    android:dividerHeight="1dp"
     android:fitsSystemWindows="true"
-    android:orientation="vertical"
-    android:padding="12dp">
-
-    <TextView
-        android:id="@+id/fwStatus"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:padding="8dp"
-        android:textSize="16sp"
-        android:textStyle="bold" />
-
-    <CheckBox
-        android:id="@+id/fwEnabled"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/fw_enable" />
-
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:text="@string/fw_sched_header"
-        android:textStyle="bold" />
-
-    <CheckBox
-        android:id="@+id/schedEnabled"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/fw_sched_enable" />
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:gravity="center_vertical"
-        android:orientation="horizontal">
-
-        <TextView
-            android:layout_width="90dp"
-            android:layout_height="wrap_content"
-            android:text="@string/fw_allow_for" />
-
-        <EditText
-            android:id="@+id/onVal"
-            android:layout_width="80dp"
-            android:layout_height="wrap_content"
-            android:inputType="number"
-            android:maxLength="4" />
-
-        <Spinner
-            android:id="@+id/onUnit"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1" />
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:gravity="center_vertical"
-        android:orientation="horizontal">
-
-        <TextView
-            android:layout_width="90dp"
-            android:layout_height="wrap_content"
-            android:text="@string/fw_every" />
-
-        <EditText
-            android:id="@+id/everyVal"
-            android:layout_width="80dp"
-            android:layout_height="wrap_content"
-            android:inputType="number"
-            android:maxLength="4" />
-
-        <Spinner
-            android:id="@+id/everyUnit"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1" />
-    </LinearLayout>
-
-    <Button
-        android:id="@+id/saveSched"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/fw_save_sched" />
-
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:text="@string/fw_apps_header"
-        android:textStyle="bold" />
-
-    <EditText
-        android:id="@+id/fwSearch"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="@string/search_hint"
-        android:inputType="text"
-        android:singleLine="true" />
-
-    <ListView
-        android:id="@+id/fwList"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1" />
-</LinearLayout>
+    android:paddingBottom="24dp" />

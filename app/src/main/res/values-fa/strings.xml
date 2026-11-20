@@ -15,10 +15,10 @@
     <string name="status_paused">⏸ متوقف موقت — %1$d:%2$02d مانده</string>
     <string name="status_on">🔒 مسدودسازی فعال است</string>
     <string name="status_acc_warning">\n⚠️ سرویس دسترسی‌پذیری خاموش است؛ بدون آن چیزی بلاک نمی‌شود!</string>
-    <string name="btn_turn_off">خاموش کردن مسدودسازی (رمز لازم است)</string>
+    <string name="btn_turn_off">خاموش کردن (با رمز)</string>
     <string name="btn_turn_on">روشن کردن مسدودسازی</string>
-    <string name="btn_resume">ادامه مسدودسازی</string>
-    <string name="btn_pause">۱۵ دقیقه توقف (رمز)</string>
+    <string name="btn_resume">ادامه از همین حالا</string>
+    <string name="btn_pause">۱۵ دقیقه توقف (با رمز)</string>
     <string name="btn_acc_on">✓ سرویس دسترسی‌پذیری فعال است</string>
     <string name="btn_acc_off">۱) فعال کردن سرویس دسترسی‌پذیری</string>
     <string name="btn_admin_on">✓ ضد حذف (Device Admin) فعال است</string>
@@ -74,4 +74,45 @@
         <item>ساعت</item>
         <item>روز</item>
     </string-array>
+
+    <!-- طراحی جدید -->
+    <string name="acc_warning">⚠️ سرویس دسترسی‌پذیری خاموش است، پس چیزی مسدود نمی‌شود. از بخش راه‌اندازی روشنش کنید.</string>
+    <string name="section_setup">راه‌اندازی</string>
+    <string name="section_protection">محافظت</string>
+    <string name="row_acc_title">سرویس دسترسی‌پذیری</string>
+    <string name="row_acc_todo">لازم — برای روشن کردن بزنید</string>
+    <string name="row_admin_title">ضد حذف</string>
+    <string name="row_admin_todo">پیشنهادی — برای روشن کردن بزنید</string>
+    <string name="row_done">فعال ✓</string>
+    <string name="row_fw_title">فایروال و زمان‌بندی اینترنت</string>
+    <string name="row_fw_off">خاموش — برای تنظیم بزنید</string>
+    <string name="row_fw_on">روشن</string>
+    <string name="row_fw_sched">روشن · زمان‌بندی اینترنت فعال</string>
+    <string name="protect_title">قفل تنظیمات</string>
+    <string name="protect_sub">وقتی مسدودسازی روشن است، نمی‌شود این برنامه را خاموش یا حذف کرد</string>
+    <string name="apps_header">اپ‌های مسدود · %1$d انتخاب‌شده</string>
+    <string name="menu_password">تغییر رمز</string>
+    <string name="menu_language">زبان / Language</string>
+    <string name="status_off_title">مسدودسازی خاموش است</string>
+    <string name="status_off_sub">اپ‌ها مسدود نمی‌شوند</string>
+    <string name="status_on_title">مسدودسازی روشن است</string>
+    <string name="status_on_sub">%1$d اپ مسدود است</string>
+    <string name="status_paused_title">متوقف موقت</string>
+    <string name="status_paused_sub">%1$s تا ادامه</string>
+    <string name="fw_sched_sub">اینترنت همه‌ی اپ‌ها فقط در بازه‌ی زیر باز است</string>
+    <string name="fw_presets">انتخاب سریع</string>
+    <string name="preset_1">۱۰ ثانیه / ۱ دقیقه</string>
+    <string name="preset_2">۵ دقیقه / ۱ ساعت</string>
+    <string name="preset_3">۳۰ دقیقه / ۱ روز</string>
+    <string name="fw_off_title">فایروال خاموش است</string>
+    <string name="fw_off_sub">برای کنترل اینترنت روشنش کنید</string>
+    <string name="fw_on_title">فایروال روشن است</string>
+    <string name="fw_on_sub">اینترنت %1$d اپ قطع است</string>
+    <string name="fw_open_title">اینترنت باز است</string>
+    <string name="fw_open_sub">%1$s تا بسته شدن</string>
+    <string name="fw_closed_title">اینترنت قطع است</string>
+    <string name="fw_closed_sub">%1$s تا باز شدن</string>
+    <string name="fw_nr_title">VPN اجرا نمی‌شود</string>
+    <string name="fw_nr_sub">فایروال را یک بار خاموش و روشن کنید</string>
+    <string name="fw_apps_header2">قطع همیشگی اینترنت · %1$d اپ</string>
 </resources>

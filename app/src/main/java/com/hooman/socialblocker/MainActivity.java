@@ -6,31 +6,22 @@ import android.app.admin.DevicePolicyManager;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
-import android.content.pm.PackageManager;
-import android.content.pm.ResolveInfo;
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.provider.Settings;
 import android.text.Editable;
-import android.text.InputType;
 import android.text.TextWatcher;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
-import android.widget.BaseAdapter;
 import android.widget.Button;
-import android.widget.CheckBox;
 import android.widget.EditText;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
 import java.util.Locale;
 import java.util.Set;
 
@@ -38,23 +29,17 @@ public class MainActivity extends Activity {
 
     private static final long PAUSE_MS = 15 * 60 * 1000L;
 
-    private TextView statusText;
-    private Button toggleBtn, pauseBtn, pwBtn, langBtn, accBtn, adminBtn;
-    private CheckBox protectBox;
-
-    private final List<AppItem> allApps = new ArrayList<>();
-    private final List<AppItem> shown = new ArrayList<>();
-    private AppAdapter adapter;
-    private String filter = "";
+    private View statusCard, rowAcc, rowAdmin, rowFw;
+    private TextView statusIcon, statusTitle, statusSub, accWarning, appsHeader;
+    private Button toggleBtn, pauseBtn;
+    private Switch protectSwitch;
+    private ListView list;
+    private AppLoader.Adapter adapter;
 
     private final Handler handler = new Handler(Looper.getMainLooper());
     private final Runnable ticker = new Runnable() {
         @Override public void run() { refresh(); handler.postDelayed(this, 1000); }
     };
-
-    static final class AppItem {
-        String pkg, label; Drawable icon;
-    }
 
     @Override
     protected void attachBaseContext(Context base) {
@@ -67,47 +52,71 @@ public class MainActivity extends Activity {
         setContentView(R.layout.activity_main);
         Prefs.initDefaults(this);
 
-        statusText = findViewById(R.id.statusText);
-        toggleBtn = findViewById(R.id.toggleBtn);
-        pauseBtn = findViewById(R.id.pauseBtn);
-        pwBtn = findViewById(R.id.pwBtn);
-        langBtn = findViewById(R.id.langBtn);
-        accBtn = findViewById(R.id.accBtn);
-        adminBtn = findViewById(R.id.adminBtn);
-        protectBox = findViewById(R.id.protectBox);
-        ListView list = findViewById(R.id.appList);
-        EditText search = findViewById(R.id.search);
+        list = findViewById(R.id.appList);
+        View h = getLayoutInflater().inflate(R.layout.main_header, list, false);
+        list.addHeaderView(h, null, false);
 
-        adapter = new AppAdapter();
+        statusCard = h.findViewById(R.id.statusCard);
+        statusIcon = h.findViewById(R.id.statusIcon);
+        statusTitle = h.findViewById(R.id.statusTitle);
+        statusSub = h.findViewById(R.id.statusSub);
+        toggleBtn = h.findViewById(R.id.toggleBtn);
+        pauseBtn = h.findViewById(R.id.pauseBtn);
+        accWarning = h.findViewById(R.id.accWarning);
+        rowAcc = h.findViewById(R.id.rowAcc);
+        rowAdmin = h.findViewById(R.id.rowAdmin);
+        rowFw = h.findViewById(R.id.rowFw);
+        protectSwitch = h.findViewById(R.id.protectSwitch);
+        appsHeader = h.findViewById(R.id.appsHeader);
+        EditText search = h.findViewById(R.id.search);
+
+        adapter = new AppLoader.Adapter(this, pkg -> Prefs.getBlocked(this).contains(pkg));
         list.setAdapter(adapter);
-        list.setOnItemClickListener((p, v, pos, id) -> onAppClicked(shown.get(pos)));
+        list.setOnItemClickListener((p, v, pos, id) -> {
+            int i = pos - list.getHeaderViewsCount();
+            if (i >= 0 && i < adapter.getCount()) onAppClicked(adapter.at(i).pkg);
+        });
 
         toggleBtn.setOnClickListener(v -> onToggle());
         pauseBtn.setOnClickListener(v -> onPauseClicked());
-        pwBtn.setOnClickListener(v -> askPassword(() -> showSetPasswordDialog(false)));
-        accBtn.setOnClickListener(v -> startActivity(new Intent(Settings.ACTION_ACCESSIBILITY_SETTINGS)));
-        adminBtn.setOnClickListener(v -> onAdmin());
-        langBtn.setOnClickListener(v -> showLanguageDialog());
-        findViewById(R.id.firewallBtn).setOnClickListener(v ->
-                startActivity(new Intent(this, FirewallActivity.class)));
-        protectBox.setOnClickListener(v -> onProtectClicked());
-
+        rowAcc.setOnClickListener(v -> startActivity(new Intent(Settings.ACTION_ACCESSIBILITY_SETTINGS)));
+        rowAdmin.setOnClickListener(v -> onAdmin());
+        rowFw.setOnClickListener(v -> startActivity(new Intent(this, FirewallActivity.class)));
+        protectSwitch.setOnClickListener(v -> onProtectClicked());
         search.addTextChangedListener(new TextWatcher() {
             public void beforeTextChanged(CharSequence s, int a, int b, int c) {}
             public void onTextChanged(CharSequence s, int a, int b, int c) {}
-            public void afterTextChanged(Editable s) {
-                filter = s.toString().trim().toLowerCase(Locale.ROOT);
-                applyFilter();
-            }
+            public void afterTextChanged(Editable s) { adapter.setFilter(s.toString()); }
         });
 
         if (!Prefs.hasPassword(this)) showSetPasswordDialog(true);
-        loadApps();
+        AppLoader.load(this, Prefs.getBlocked(this), adapter::setItems);
     }
 
     @Override protected void onResume() { super.onResume(); handler.post(ticker); }
 
     @Override protected void onPause() { super.onPause(); handler.removeCallbacks(ticker); }
+
+    // ------------------------------------------------------------------ menu
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.main_menu, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+        if (id == R.id.action_password) {
+            PasswordDialog.ask(this, () -> showSetPasswordDialog(false));
+            return true;
+        } else if (id == R.id.action_language) {
+            showLanguageDialog();
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
 
     // ------------------------------------------------------------------ UI state
 
@@ -116,41 +125,72 @@ public class MainActivity extends Activity {
         boolean paused = Prefs.isPaused(this);
         boolean acc = isAccessibilityEnabled();
         boolean admin = isAdminActive();
+        int count = Prefs.getBlocked(this).size();
 
-        StringBuilder sb = new StringBuilder();
         if (!blocking) {
-            sb.append(getString(R.string.status_off));
-            statusText.setTextColor(getColor(R.color.off_red));
+            statusCard.setBackgroundResource(R.drawable.bg_status_off);
+            statusIcon.setText("🔓");
+            statusTitle.setText(R.string.status_off_title);
+            statusSub.setText(R.string.status_off_sub);
+            toggleBtn.setText(R.string.btn_turn_on);
+            pauseBtn.setVisibility(View.GONE);
         } else if (paused) {
-            long left = (Prefs.getPauseUntil(this) - System.currentTimeMillis()) / 1000;
-            sb.append(getString(R.string.status_paused, left / 60, left % 60));
-            statusText.setTextColor(getColor(R.color.off_red));
+            long left = Prefs.getPauseUntil(this) - System.currentTimeMillis();
+            statusCard.setBackgroundResource(R.drawable.bg_status_paused);
+            statusIcon.setText("⏸");
+            statusTitle.setText(R.string.status_paused_title);
+            statusSub.setText(getString(R.string.status_paused_sub, fmt(left)));
+            toggleBtn.setText(R.string.btn_turn_off);
+            pauseBtn.setText(R.string.btn_resume);
+            pauseBtn.setVisibility(View.VISIBLE);
         } else {
-            sb.append(getString(R.string.status_on));
-            statusText.setTextColor(getColor(R.color.on_green));
+            statusCard.setBackgroundResource(R.drawable.bg_status_on);
+            statusIcon.setText("🔒");
+            statusTitle.setText(R.string.status_on_title);
+            statusSub.setText(getString(R.string.status_on_sub, count));
+            toggleBtn.setText(R.string.btn_turn_off);
+            pauseBtn.setText(R.string.btn_pause);
+            pauseBtn.setVisibility(View.VISIBLE);
         }
-        if (blocking && !acc) sb.append(getString(R.string.status_acc_warning));
-        statusText.setText(sb);
+        accWarning.setVisibility(blocking && !acc ? View.VISIBLE : View.GONE);
 
-        toggleBtn.setText(blocking ? R.string.btn_turn_off : R.string.btn_turn_on);
+        setRow(rowAcc, "1", R.string.row_acc_title,
+                getString(acc ? R.string.row_done : R.string.row_acc_todo), acc);
+        setRow(rowAdmin, "2", R.string.row_admin_title,
+                getString(admin ? R.string.row_done : R.string.row_admin_todo), admin);
+        boolean fw = Prefs.isFwEnabled(this);
+        int fwSub = !fw ? R.string.row_fw_off
+                : Prefs.isSchedEnabled(this) ? R.string.row_fw_sched : R.string.row_fw_on;
+        setRow(rowFw, "🌐", R.string.row_fw_title, getString(fwSub), fw);
 
-        pauseBtn.setEnabled(blocking);
-        pauseBtn.setText(paused ? R.string.btn_resume : R.string.btn_pause);
+        protectSwitch.setChecked(Prefs.isProtect(this));
+        appsHeader.setText(getString(R.string.apps_header, count));
+    }
 
-        accBtn.setText(acc ? R.string.btn_acc_on : R.string.btn_acc_off);
-        accBtn.setEnabled(!acc);
+    private void setRow(View row, String icon, int title, String sub, boolean done) {
+        TextView i = row.findViewById(R.id.rowIcon);
+        i.setText(done ? "✓" : icon);
+        i.setBackgroundResource(done ? R.drawable.bg_icon_done : R.drawable.bg_icon_todo);
+        i.setTextColor(getColor(done ? R.color.success : R.color.primary));
+        ((TextView) row.findViewById(R.id.rowTitle)).setText(title);
+        TextView s = row.findViewById(R.id.rowSub);
+        s.setText(sub);
+        s.setTextColor(getColor(done ? R.color.success : R.color.text_muted));
+    }
 
-        adminBtn.setText(admin ? R.string.btn_admin_on : R.string.btn_admin_off);
-        adminBtn.setEnabled(!admin);
-
-        protectBox.setChecked(Prefs.isProtect(this));
+    static String fmt(long ms) {
+        long s = Math.max(0, ms / 1000);
+        long h = s / 3600, m = (s % 3600) / 60, sec = s % 60;
+        return h > 0
+                ? String.format(Locale.ROOT, "%d:%02d:%02d", h, m, sec)
+                : String.format(Locale.ROOT, "%d:%02d", m, sec);
     }
 
     // ------------------------------------------------------------------ actions
 
     private void onToggle() {
         if (Prefs.isBlocking(this)) {
-            askPassword(() -> {
+            PasswordDialog.ask(this, () -> {
                 Prefs.setBlocking(this, false);
                 toast(R.string.toast_blocking_off);
                 refresh();
@@ -173,13 +213,14 @@ public class MainActivity extends Activity {
             refresh();
             return;
         }
-        askPassword(() -> {
+        PasswordDialog.ask(this, () -> {
             Prefs.setPauseUntil(this, System.currentTimeMillis() + PAUSE_MS);
             refresh();
         });
     }
 
     private void onAdmin() {
+        if (isAdminActive()) return;
         if (Prefs.isActive(this) && Prefs.isProtect(this)) {
             toast(R.string.toast_admin_while_on);
             return;
@@ -191,64 +232,44 @@ public class MainActivity extends Activity {
     }
 
     private void onProtectClicked() {
-        boolean wanted = protectBox.isChecked();
+        boolean wanted = protectSwitch.isChecked();
         if (!wanted && Prefs.isBlocking(this)) {
-            protectBox.setChecked(true);
-            askPassword(() -> { Prefs.setProtect(this, false); refresh(); });
+            protectSwitch.setChecked(true);
+            PasswordDialog.ask(this, () -> { Prefs.setProtect(this, false); refresh(); });
         } else {
             Prefs.setProtect(this, wanted);
         }
     }
 
-    private void onAppClicked(AppItem item) {
+    private void onAppClicked(String pkg) {
         Set<String> blocked = Prefs.getBlocked(this);
-        if (blocked.contains(item.pkg)) {
+        if (blocked.contains(pkg)) {
             Runnable remove = () -> {
                 Set<String> b = Prefs.getBlocked(this);
-                b.remove(item.pkg);
+                b.remove(pkg);
                 Prefs.setBlocked(this, b);
                 adapter.notifyDataSetChanged();
+                refresh();
             };
             // برداشتن از لیست وقتی مسدودسازی روشن است رمز می‌خواهد
-            if (Prefs.isBlocking(this)) askPassword(remove); else remove.run();
+            if (Prefs.isBlocking(this)) PasswordDialog.ask(this, remove); else remove.run();
         } else {
-            blocked.add(item.pkg); // اضافه کردن همیشه آزاد است
+            blocked.add(pkg); // اضافه کردن همیشه آزاد است
             Prefs.setBlocked(this, blocked);
             adapter.notifyDataSetChanged();
+            refresh();
         }
     }
 
-    // ------------------------------------------------------------------ password dialogs
-
-    private EditText pwField(int hint) {
-        EditText e = new EditText(this);
-        e.setHint(hint);
-        e.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
-        return e;
-    }
-
-    private void askPassword(Runnable onOk) {
-        EditText input = pwField(R.string.pw_hint);
-        LinearLayout box = padded(input);
-        new AlertDialog.Builder(this)
-                .setTitle(R.string.pw_enter_title)
-                .setView(box)
-                .setPositiveButton(R.string.ok, (d, w) -> {
-                    if (Prefs.checkPassword(this, input.getText().toString())) onOk.run();
-                    else toast(R.string.toast_wrong_password);
-                })
-                .setNegativeButton(R.string.cancel, null)
-                .show();
-    }
+    // ------------------------------------------------------------------ dialogs
 
     private void showSetPasswordDialog(boolean firstTime) {
-        EditText p1 = pwField(R.string.pw_new_hint);
-        EditText p2 = pwField(R.string.pw_repeat_hint);
-        LinearLayout box = padded(p1, p2);
+        EditText p1 = PasswordDialog.field(this, R.string.pw_new_hint);
+        EditText p2 = PasswordDialog.field(this, R.string.pw_repeat_hint);
         AlertDialog.Builder b = new AlertDialog.Builder(this)
                 .setTitle(firstTime ? R.string.pw_create_title : R.string.pw_change_title)
                 .setMessage(firstTime ? getString(R.string.pw_create_msg) : null)
-                .setView(box)
+                .setView(PasswordDialog.box(this, p1, p2))
                 .setCancelable(!firstTime)
                 .setPositiveButton(R.string.save, (d, w) -> {
                     String a = p1.getText().toString();
@@ -267,38 +288,6 @@ public class MainActivity extends Activity {
         if (!firstTime) b.setNegativeButton(R.string.cancel, null);
         b.show();
     }
-
-    private LinearLayout padded(View... views) {
-        LinearLayout l = new LinearLayout(this);
-        l.setOrientation(LinearLayout.VERTICAL);
-        int p = (int) (20 * getResources().getDisplayMetrics().density);
-        l.setPadding(p, p / 2, p, 0);
-        for (View v : views) l.addView(v);
-        return l;
-    }
-
-    // ------------------------------------------------------------------ helpers
-
-    private ComponentName adminComponent() { return new ComponentName(this, AdminReceiver.class); }
-
-    private boolean isAdminActive() {
-        DevicePolicyManager dpm = (DevicePolicyManager) getSystemService(Context.DEVICE_POLICY_SERVICE);
-        return dpm != null && dpm.isAdminActive(adminComponent());
-    }
-
-    private boolean isAccessibilityEnabled() {
-        String enabled = Settings.Secure.getString(getContentResolver(),
-                Settings.Secure.ENABLED_ACCESSIBILITY_SERVICES);
-        if (enabled == null) return false;
-        ComponentName me = new ComponentName(this, BlockerService.class);
-        for (String s : enabled.split(":")) {
-            ComponentName cn = ComponentName.unflattenFromString(s);
-            if (me.equals(cn)) return true;
-        }
-        return false;
-    }
-
-    private void toast(int res) { Toast.makeText(this, res, Toast.LENGTH_SHORT).show(); }
 
     private void showLanguageDialog() {
         final String[] codes = {"", "en", "fa"};
@@ -319,64 +308,25 @@ public class MainActivity extends Activity {
                 .show();
     }
 
-    // ------------------------------------------------------------------ app list
+    // ------------------------------------------------------------------ helpers
 
-    private void loadApps() {
-        PackageManager pm = getPackageManager();
-        new Thread(() -> {
-            Intent main = new Intent(Intent.ACTION_MAIN).addCategory(Intent.CATEGORY_LAUNCHER);
-            List<ResolveInfo> infos = pm.queryIntentActivities(main, 0);
-            Set<String> seen = new HashSet<>();
-            List<AppItem> result = new ArrayList<>();
-            for (ResolveInfo ri : infos) {
-                String pkg = ri.activityInfo.packageName;
-                if (pkg.equals(getPackageName()) || !seen.add(pkg)) continue;
-                AppItem it = new AppItem();
-                it.pkg = pkg;
-                it.label = ri.loadLabel(pm).toString();
-                it.icon = ri.loadIcon(pm);
-                result.add(it);
-            }
-            Set<String> blocked = Prefs.getBlocked(this);
-            result.sort((a, b) -> {
-                boolean ba = blocked.contains(a.pkg), bb = blocked.contains(b.pkg);
-                if (ba != bb) return ba ? -1 : 1;
-                return a.label.compareToIgnoreCase(b.label);
-            });
-            runOnUiThread(() -> {
-                allApps.clear();
-                allApps.addAll(result);
-                applyFilter();
-            });
-        }).start();
+    private ComponentName adminComponent() { return new ComponentName(this, AdminReceiver.class); }
+
+    private boolean isAdminActive() {
+        DevicePolicyManager dpm = (DevicePolicyManager) getSystemService(Context.DEVICE_POLICY_SERVICE);
+        return dpm != null && dpm.isAdminActive(adminComponent());
     }
 
-    private void applyFilter() {
-        shown.clear();
-        for (AppItem it : allApps) {
-            if (filter.isEmpty()
-                    || it.label.toLowerCase(Locale.ROOT).contains(filter)
-                    || it.pkg.toLowerCase(Locale.ROOT).contains(filter)) {
-                shown.add(it);
-            }
+    private boolean isAccessibilityEnabled() {
+        String enabled = Settings.Secure.getString(getContentResolver(),
+                Settings.Secure.ENABLED_ACCESSIBILITY_SERVICES);
+        if (enabled == null) return false;
+        ComponentName me = new ComponentName(this, BlockerService.class);
+        for (String s : enabled.split(":")) {
+            if (me.equals(ComponentName.unflattenFromString(s))) return true;
         }
-        adapter.notifyDataSetChanged();
+        return false;
     }
 
-    private class AppAdapter extends BaseAdapter {
-        @Override public int getCount() { return shown.size(); }
-        @Override public Object getItem(int i) { return shown.get(i); }
-        @Override public long getItemId(int i) { return i; }
-
-        @Override
-        public View getView(int pos, View v, ViewGroup parent) {
-            if (v == null) v = getLayoutInflater().inflate(R.layout.item_app, parent, false);
-            AppItem it = shown.get(pos);
-            ((ImageView) v.findViewById(R.id.icon)).setImageDrawable(it.icon);
-            ((TextView) v.findViewById(R.id.label)).setText(it.label);
-            ((TextView) v.findViewById(R.id.pkg)).setText(it.pkg);
-            ((CheckBox) v.findViewById(R.id.check)).setChecked(Prefs.getBlocked(MainActivity.this).contains(it.pkg));
-            return v;
-        }
-    }
+    private void toast(int res) { Toast.makeText(this, res, Toast.LENGTH_SHORT).show(); }
 }

@@ -1,82 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<!-- کل صفحه یک ListView است و بخش بالایی (main_header) به‌عنوان header اضافه می‌شود،
+     تا همه‌چیز با هم اسکرول شود -->
+<ListView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/appList"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/bg"
+    android:clipToPadding="false"
+    android:divider="@color/divider"
+    android:dividerHeight="1dp"
     android:fitsSystemWindows="true"
-    android:orientation="vertical"
-    android:padding="12dp">
-
-    <TextView
-        android:id="@+id/statusText"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:padding="8dp"
-        android:textSize="16sp"
-        android:textStyle="bold" />
-
-    <Button
-        android:id="@+id/toggleBtn"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal">
-
-        <Button
-            android:id="@+id/pwBtn"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="@string/btn_change_password" />
-
-        <Button
-            android:id="@+id/langBtn"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="@string/btn_language" />
-    </LinearLayout>
-
-    <Button
-        android:id="@+id/pauseBtn"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
-
-    <Button
-        android:id="@+id/accBtn"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
-
-    <Button
-        android:id="@+id/adminBtn"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
-
-    <Button
-        android:id="@+id/firewallBtn"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/btn_firewall" />
-
-    <CheckBox
-        android:id="@+id/protectBox"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/protect_label" />
-
-    <EditText
-        android:id="@+id/search"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="@string/search_hint"
-        android:inputType="text"
-        android:singleLine="true" />
-
-    <ListView
-        android:id="@+id/appList"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1" />
-</LinearLayout>
+    android:paddingBottom="24dp" />
