@@ -117,7 +117,7 @@ public final class Prefs {
 
     // ---------- قانون فایروال برای هر اپ ----------
     // ترتیب از آزاد به سخت‌گیرانه (برای تشخیص «شل کردن» که رمز می‌خواهد)
-    static final int FW_FREE = 0, FW_PERIODIC = 1, FW_BURST = 2, FW_ALWAYS = 3;
+    static final int FW_FREE = 0, FW_PERIODIC = 1, FW_IN_USE = 2, FW_BURST = 3, FW_ALWAYS = 4;
 
     static Set<String> getFwBurst(Context c) {
         return new HashSet<>(sp(c).getStringSet("fw_burst", new HashSet<>()));
@@ -127,27 +127,52 @@ public final class Prefs {
         return new HashSet<>(sp(c).getStringSet("fw_periodic", new HashSet<>()));
     }
 
+    static Set<String> getFwInUse(Context c) {
+        return new HashSet<>(sp(c).getStringSet("fw_inuse", new HashSet<>()));
+    }
+
+    // ---------- قانون 📱 فقط هنگام استفاده ----------
+    /** چند ثانیه بعد از بیرون آمدن از اپ هنوز اینترنت داشته باشد */
+    static int getInUseGraceSec(Context c) { return sp(c).getInt("inuse_grace_sec", 20); }
+
+    /** قانون 📱 برای همه اپ‌های بدون قانون هم اعمال شود */
+    static boolean isInUseAll(Context c) { return sp(c).getBoolean("inuse_all", false); }
+
+    static void setInUse(Context c, int graceSec, boolean all) {
+        SharedPreferences.Editor e = sp(c).edit()
+                .putInt("inuse_grace_sec", graceSec)
+                .putBoolean("inuse_all", all);
+        if (all) e.putBoolean("sched_enabled", false); // فقط یکی از «همه اپ‌ها» می‌تواند روشن باشد
+        e.commit();
+    }
+
     static int getFwRule(Context c, String pkg) {
         if (isFwBlocked(c, pkg)) return FW_ALWAYS;
         Set<String> b = sp(c).getStringSet("fw_burst", null);
         if (b != null && b.contains(pkg)) return FW_BURST;
+        Set<String> u = sp(c).getStringSet("fw_inuse", null);
+        if (u != null && u.contains(pkg)) return FW_IN_USE;
         Set<String> p = sp(c).getStringSet("fw_periodic", null);
         if (p != null && p.contains(pkg)) return FW_PERIODIC;
         return FW_FREE;
     }
 
     static void setFwRule(Context c, java.util.Collection<String> pkgs, int rule) {
-        Set<String> always = getFwBlocked(c), burst = getFwBurst(c), periodic = getFwPeriodic(c);
+        Set<String> always = getFwBlocked(c), burst = getFwBurst(c), periodic = getFwPeriodic(c),
+                inUse = getFwInUse(c);
         always.removeAll(pkgs);
         burst.removeAll(pkgs);
         periodic.removeAll(pkgs);
+        inUse.removeAll(pkgs);
         if (rule == FW_ALWAYS) always.addAll(pkgs);
         else if (rule == FW_BURST) burst.addAll(pkgs);
+        else if (rule == FW_IN_USE) inUse.addAll(pkgs);
         else if (rule == FW_PERIODIC) periodic.addAll(pkgs);
         sp(c).edit()
                 .putStringSet("fw_blocked", always)
                 .putStringSet("fw_burst", burst)
                 .putStringSet("fw_periodic", periodic)
+                .putStringSet("fw_inuse", inUse)
                 .commit();
     }
 
@@ -181,6 +206,7 @@ public final class Prefs {
         Set<String> s = getFwBlocked(c);
         s.addAll(getFwBurst(c));
         s.addAll(getFwPeriodic(c));
+        s.addAll(getFwInUse(c));
         return s;
     }
 
@@ -210,7 +236,7 @@ public final class Prefs {
     /** رفتار قانون ⏱ وقتی صفحه روشن است */
     static final int SCREEN_ON_PERIODIC = 0, SCREEN_ON_FULL = 1, SCREEN_ON_IN_USE = 2;
     /** گزینه‌های «بعد از بیرون آمدن از اپ، تا چند ثانیه هنوز اینترنت داشته باشد» */
-    static final int[] GRACE_OPTIONS = {0, 10, 30, 60, 120, 300, 600};
+    static final int[] GRACE_OPTIONS = {0, 10, 20, 30, 60, 120, 300, 600};
 
     static int getScreenOnMode(Context c) {
         if (sp(c).contains("sched_screen_on_mode")) return sp(c).getInt("sched_screen_on_mode", SCREEN_ON_FULL);
@@ -224,6 +250,7 @@ public final class Prefs {
                             int screenOnMode, int graceSec) {
         sp(c).edit()
                 .putBoolean("sched_enabled", enabled)
+                .putBoolean("inuse_all", enabled ? false : isInUseAll(c))
                 .putBoolean("sched_screen_off_only", screenOnMode != SCREEN_ON_PERIODIC)
                 .putInt("sched_screen_on_mode", screenOnMode)
                 .putInt("fw_grace_sec", graceSec)

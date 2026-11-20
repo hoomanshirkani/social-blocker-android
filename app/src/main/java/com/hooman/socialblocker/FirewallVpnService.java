@@ -75,9 +75,11 @@ public class FirewallVpnService extends VpnService {
 
     /** قانون ⏱ در حالت «فقط وقتی اپ باز است» */
     static volatile boolean periodicInUse = false;
+    /** قانون 📱 برای همه اپ‌ها فعال است (یعنی allBlocked حالت عادی است، نه «قطع کامل») */
+    static volatile boolean inUseAllActive = false;
     private static volatile FirewallVpnService instance = null;
     private String fgPkg = null;                            // اپ جلوی صفحه
-    private final Map<String, Long> grace = new HashMap<>(); // اپ → تا کی هنوز اینترنت دارد
+    private final Map<String, Long> leftAt = new HashMap<>(); // اپ → زمان بیرون آمدن از آن
 
     /** BlockerService هر بار که اپ جلوی صفحه عوض شود صدا می‌زند. */
     static void foregroundChanged(String pkg) {
@@ -88,10 +90,10 @@ public class FirewallVpnService extends VpnService {
     private void onForeground(String pkg) {
         if (pkg.equals(fgPkg)) return;
         long now = System.currentTimeMillis();
-        if (fgPkg != null) grace.put(fgPkg, now + Prefs.getGraceSec(this) * 1000L);
-        grace.remove(pkg);
+        if (fgPkg != null) leftAt.put(fgPkg, now);
+        leftAt.remove(pkg);
         fgPkg = pkg;
-        if (running && Prefs.getScreenOnMode(this) == Prefs.SCREEN_ON_IN_USE) apply();
+        if (running) apply(); // اگر چیزی عوض نشده باشد تونل دوباره ساخته نمی‌شود
     }
 
     private final Handler handler = new Handler(Looper.getMainLooper());
@@ -108,8 +110,9 @@ public class FirewallVpnService extends VpnService {
             // هر روشن یا خاموش شدن صفحه → پنجره کوتاه اینترنت برای گروه ⚡
             burstUntil = System.currentTimeMillis() + Prefs.getBurstSec(FirewallVpnService.this) * 1000L;
             if (Intent.ACTION_SCREEN_OFF.equals(i.getAction())) {
+                // اپی که با آن کار می‌کردی هم مهلت پس‌زمینه را می‌گیرد
+                if (fgPkg != null) leftAt.put(fgPkg, System.currentTimeMillis());
                 fgPkg = null;
-                grace.clear();
             }
             if (running) apply();
         }
@@ -159,32 +162,32 @@ public class FirewallVpnService extends VpnService {
 
         Prefs.pruneFwRules(this); // اپ‌های پاک‌شده از قانون‌ها حذف می‌شوند
         long now = System.currentTimeMillis();
+        nextCandidate = 0;
         Set<String> always = Prefs.getFwBlocked(this);
         Set<String> burst = Prefs.getFwBurst(this);
         Set<String> periodic = Prefs.getFwPeriodic(this);
-        boolean periodicAll = Prefs.isSchedEnabled(this);
-        boolean periodicUsed = periodicAll || !periodic.isEmpty();
+        Set<String> inUseSet = Prefs.getFwInUse(this);
+        boolean inUseAll = Prefs.isInUseAll(this);
+        boolean periodicAll = !inUseAll && Prefs.isSchedEnabled(this);
+        Set<String> ruled = new TreeSet<>(always);
+        ruled.addAll(burst);
+        ruled.addAll(periodic);
+        ruled.addAll(inUseSet);
+        boolean screenOn = isScreenOn();
+
+        // ⚡ روشن/خاموش شدن صفحه
+        boolean bOpen = now < burstUntil;
+        if (bOpen) candidate(burstUntil);
 
         // ⏱ دوره‌ای
+        boolean periodicUsed = periodicAll || !periodic.isEmpty();
         int mode = Prefs.getScreenOnMode(this);
-        boolean screenOn = isScreenOn();
         boolean waiting = periodicUsed && screenOn && mode == Prefs.SCREEN_ON_FULL;
-        boolean inUse = periodicUsed && screenOn && mode == Prefs.SCREEN_ON_IN_USE;
+        boolean pInUse = periodicUsed && screenOn && mode == Prefs.SCREEN_ON_IN_USE;
         boolean pOpen = true;
         long pNext = 0;
-        // در حالت «فقط وقتی اپ باز است»: اپ جلوی صفحه + اپ‌هایی که هنوز در مهلت هستند
-        Set<String> inUseAllowed = new TreeSet<>();
-        long graceNext = 0;
-        if (inUse) {
+        if (pInUse) {
             pOpen = false;
-            if (fgPkg != null) inUseAllowed.add(fgPkg);
-            Iterator<Map.Entry<String, Long>> it = grace.entrySet().iterator();
-            while (it.hasNext()) {
-                Map.Entry<String, Long> e = it.next();
-                if (e.getValue() <= now) { it.remove(); continue; }
-                inUseAllowed.add(e.getKey());
-                graceNext = graceNext == 0 ? e.getValue() : Math.min(graceNext, e.getValue());
-            }
         } else if (periodicUsed && !waiting) {
             long on = Prefs.getSchedOnMs(this);
             long period = Prefs.getSchedPeriodMs(this);
@@ -192,30 +195,37 @@ public class FirewallVpnService extends VpnService {
             long elapsed = Math.floorMod(now - anchor, period);
             pOpen = elapsed < on;
             pNext = now + (pOpen ? on - elapsed : period - elapsed);
+            candidate(pNext);
         }
+        Set<String> pFg = pInUse ? foregroundAllowed(now, Prefs.getGraceSec(this)) : new TreeSet<>();
 
-        // ⚡ روشن/خاموش شدن صفحه
-        boolean bOpen = now < burstUntil;
+        // 📱 فقط هنگام استفاده: اپ جلوی صفحه + اپ‌هایی که هنوز در مهلت پس‌زمینه هستند
+        boolean inUseUsed = inUseAll || !inUseSet.isEmpty();
+        Set<String> uFg = inUseUsed ? foregroundAllowed(now, Prefs.getInUseGraceSec(this)) : new TreeSet<>();
+        pruneLeftAt(now);
 
-        long next = pNext;
-        if (bOpen) next = next == 0 ? burstUntil : Math.min(next, burstUntil);
-        if (graceNext > 0) next = next == 0 ? graceNext : Math.min(next, graceNext);
+        // اپ‌های دارای قانون که همین الان اجازه دارند
+        Set<String> allowedRuled = new TreeSet<>();
+        if (bOpen) allowedRuled.addAll(burst);
+        for (String p : periodic) if (pOpen || pFg.contains(p)) allowedRuled.add(p);
+        for (String p : inUseSet) if (uFg.contains(p)) allowedRuled.add(p);
 
-        boolean blockAll = periodicAll && !pOpen;
-        Set<String> blocked = new TreeSet<>(always);
-        if (!bOpen) blocked.addAll(burst);
-        if (!pOpen) {
-            Set<String> p = new TreeSet<>(periodic);
-            p.removeAll(inUseAllowed);
-            blocked.addAll(p);
-        }
+        boolean blockAll = inUseAll || (periodicAll && !pOpen);
+        Set<String> blocked = new TreeSet<>();
         Set<String> exempt = new TreeSet<>();
         if (blockAll) {
-            if (bOpen) exempt.addAll(burst);
-            exempt.addAll(inUseAllowed);
+            // همه قطع، به‌جز این‌ها
+            exempt.addAll(allowedRuled);
+            Set<String> unruled = new TreeSet<>(inUseAll ? uFg : pFg);
+            unruled.removeAll(ruled);
+            exempt.addAll(unruled);
             exempt.removeAll(always);
-            if (!bOpen) exempt.removeAll(burst);
+        } else {
+            blocked.addAll(ruled);
+            blocked.removeAll(allowedRuled);
         }
+        long next = nextCandidate;
+        boolean inUse = pInUse;
 
         // کلید پیکربندی: اگر همان قبلی است، تونل را دست نزن (جلوگیری از قطع و وصل بی‌دلیل)
         String key = blockAll ? "ALL-" + exempt : "LIST:" + blocked;
@@ -244,11 +254,40 @@ public class FirewallVpnService extends VpnService {
         periodicOpen = pOpen;
         periodicNextChange = pNext;
         periodicInUse = inUse;
+        inUseAllActive = inUseAll;
         running = true;
         allBlocked = blockAll;
-        nextChangeAt = blockAll ? pNext : next;
+        nextChangeAt = blockAll && !inUseAll ? pNext : next;
         scheduleWaiting = waiting;
         if (next > 0) handler.postDelayed(tick, Math.max(500, next - now));
+    }
+
+    /** نزدیک‌ترین زمانی که وضعیت باید دوباره محاسبه شود */
+    private long nextCandidate = 0;
+
+    private void candidate(long t) {
+        if (t > 0) nextCandidate = nextCandidate == 0 ? t : Math.min(nextCandidate, t);
+    }
+
+    /** اپ جلوی صفحه + اپ‌هایی که کمتر از graceSec پیش از آن‌ها بیرون آمده‌ای */
+    private Set<String> foregroundAllowed(long now, int graceSec) {
+        Set<String> out = new TreeSet<>();
+        if (fgPkg != null) out.add(fgPkg);
+        long g = graceSec * 1000L;
+        for (Map.Entry<String, Long> e : leftAt.entrySet()) {
+            long until = e.getValue() + g;
+            if (until > now) {
+                out.add(e.getKey());
+                candidate(until);
+            }
+        }
+        return out;
+    }
+
+    /** ورودی‌های خیلی قدیمی را دور بریز */
+    private void pruneLeftAt(long now) {
+        Iterator<Map.Entry<String, Long>> it = leftAt.entrySet().iterator();
+        while (it.hasNext()) if (now - it.next().getValue() > 15 * 60_000L) it.remove();
     }
 
     /** blockAll: همه به‌جز خود ما و pkgs؛ در غیر این صورت فقط pkgs داخل تونل (= قطع). */
@@ -307,6 +346,7 @@ public class FirewallVpnService extends VpnService {
         periodicOpen = true;
         periodicNextChange = 0;
         periodicInUse = false;
+        inUseAllActive = false;
         blockedNow = java.util.Collections.emptySet();
         exemptNow = java.util.Collections.emptySet();
     }

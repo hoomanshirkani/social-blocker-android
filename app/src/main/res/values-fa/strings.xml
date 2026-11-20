@@ -247,6 +247,7 @@
     <string-array name="grace_options">
         <item>بدون زمان اضافه</item>
         <item>۱۰ ثانیه</item>
+        <item>۲۰ ثانیه</item>
         <item>۳۰ ثانیه</item>
         <item>۱ دقیقه</item>
         <item>۲ دقیقه</item>
@@ -259,4 +260,13 @@
     <string name="fw_select_first">اول اپ‌ها را انتخاب کن: روی یک اپ انگشت را نگه دار، یا «انتخاب همه» را بزن</string>
     <string name="fw_bulk_title">قانون برای %1$d اپ</string>
     <string name="fw_select_hint">ضربه روی اپ: انتخاب قانون همان اپ · نگه داشتن: انتخاب چندتایی · «انتخاب همه» روی نتیجه جستجوی فعلی کار می‌کند</string>
+    <string name="rule_inuse">📱 فقط هنگام استفاده</string>
+    <string name="rule_inuse_desc">فقط وقتی از اپ استفاده می‌کنی اینترنت کامل دارد؛ در پس‌زمینه فقط به مدت کوتاهی که خودت تعیین می‌کنی</string>
+    <string name="fw_inuse_header">📱 قانون: فقط هنگام استفاده</string>
+    <string name="fw_inuse_desc">اپ‌های این قانون فقط وقتی روی صفحه باز هستند اینترنت کامل دارند. در پس‌زمینه (وقتی به اپ دیگری می‌روی یا صفحه را خاموش می‌کنی) فقط به مدت زیر اینترنت دارند و بعد قطع می‌شوند تا دوباره بازشان کنی.</string>
+    <string name="fw_inuse_grace_label">اینترنت در پس‌زمینه بعد از بیرون آمدن از اپ</string>
+    <string name="fw_inuse_all_title">برای همه اپ‌های بدون قانون</string>
+    <string name="fw_inuse_all_sub">فقط اپی که با آن کار می‌کنی اینترنت دارد؛ بقیه فقط همان زمان پس‌زمینه را می‌گیرند</string>
+    <string name="fw_inuse_all_replaced">ذخیره شد. «برای همه» در قانون دوره‌ای خاموش شد (فقط یکی می‌تواند روشن باشد).</string>
+    <string name="fw_st_inuse">📱 %1$s فقط هنگام استفاده (+%2$s در پس‌زمینه)</string>
 </resources>

@@ -34,15 +34,18 @@ import java.util.List;
 public class FirewallActivity extends Activity {
 
     private static final int REQ_VPN = 42;
+    // ایندکس = مقدار Prefs.FW_* (از آزاد به سخت‌گیرانه)
     private static final int[] RULE_LABELS = {
-            R.string.rule_free, R.string.rule_periodic, R.string.rule_burst, R.string.rule_always};
+            R.string.rule_free, R.string.rule_periodic, R.string.rule_inuse, R.string.rule_burst, R.string.rule_always};
     private static final int[] RULE_DESCS = {
-            R.string.rule_free_desc, R.string.rule_periodic_desc, R.string.rule_burst_desc, R.string.rule_always_desc};
+            R.string.rule_free_desc, R.string.rule_periodic_desc, R.string.rule_inuse_desc,
+            R.string.rule_burst_desc, R.string.rule_always_desc};
 
     private View card;
     private TextView icon, title, sub, appsHeader;
     private Switch fwSwitch, schedSwitch;
-    private Spinner screenOnMode, graceSpin;
+    private Spinner screenOnMode, graceSpin, inUseGrace;
+    private Switch inUseAllSwitch;
     private View graceRow;
     private EditText onVal, everyVal, burstSec;
     private Spinner onUnit, everyUnit;
@@ -82,6 +85,8 @@ public class FirewallActivity extends Activity {
         screenOnMode = h.findViewById(R.id.screenOnMode);
         graceSpin = h.findViewById(R.id.graceSpin);
         graceRow = h.findViewById(R.id.graceRow);
+        inUseGrace = h.findViewById(R.id.inUseGrace);
+        inUseAllSwitch = h.findViewById(R.id.inUseAllSwitch);
         onVal = h.findViewById(R.id.onVal);
         everyVal = h.findViewById(R.id.everyVal);
         onUnit = h.findViewById(R.id.onUnit);
@@ -107,6 +112,10 @@ public class FirewallActivity extends Activity {
                 this, R.array.grace_options, android.R.layout.simple_spinner_item);
         graces.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         graceSpin.setAdapter(graces);
+        inUseGrace.setAdapter(graces);
+        inUseGrace.setSelection(graceIndex(Prefs.getInUseGraceSec(this)));
+        inUseAllSwitch.setChecked(Prefs.isInUseAll(this));
+        h.findViewById(R.id.inUseSave).setOnClickListener(v -> onSaveInUse());
         screenOnMode.setSelection(Prefs.getScreenOnMode(this));
         graceSpin.setSelection(graceIndex(Prefs.getGraceSec(this)));
         graceRow.setVisibility(Prefs.getScreenOnMode(this) == Prefs.SCREEN_ON_IN_USE ? View.VISIBLE : View.GONE);
@@ -234,6 +243,29 @@ public class FirewallActivity extends Activity {
         else save.run();
     }
 
+    // ------------------------------------------------------------------ rule 📱
+
+    private void onSaveInUse() {
+        int sec = Prefs.GRACE_OPTIONS[Math.max(0, inUseGrace.getSelectedItemPosition())];
+        boolean all = inUseAllSwitch.isChecked();
+        Runnable save = () -> {
+            boolean hadPeriodicAll = Prefs.isSchedEnabled(this);
+            Prefs.setInUse(this, sec, all);
+            if (all && hadPeriodicAll) {
+                schedSwitch.setChecked(false);
+                toast(R.string.fw_inuse_all_replaced);
+            } else {
+                toast(Prefs.isFwEnabled(this) ? R.string.fw_sched_saved : R.string.fw_need_fw);
+            }
+            FirewallVpnService.refresh(this);
+            refreshStatus();
+        };
+        // مهلت بیشتر یا خاموش کردن «همه اپ‌ها» = شل‌تر → رمز
+        boolean loosens = sec > Prefs.getInUseGraceSec(this) || (Prefs.isInUseAll(this) && !all);
+        if (Prefs.isFwEnabled(this) && loosens) PasswordDialog.ask(this, save);
+        else save.run();
+    }
+
     // ------------------------------------------------------------------ rule ⏱
 
     private void setScheduleFields(int on, int onU, int every, int evU) {
@@ -258,6 +290,7 @@ public class FirewallActivity extends Activity {
         }
         Runnable save = () -> {
             Prefs.setSchedule(this, all, on, onU, every, evU, mode, graceSec);
+            if (all) inUseAllSwitch.setChecked(false); // فقط یکی از «همه اپ‌ها»
             FirewallVpnService.refresh(this);
             toast(Prefs.isFwEnabled(this) ? R.string.fw_sched_saved : R.string.fw_need_fw);
             refreshStatus();
@@ -340,9 +373,11 @@ public class FirewallActivity extends Activity {
         int nAlways = Prefs.getFwBlocked(this).size();
         int nBurst = Prefs.getFwBurst(this).size();
         int nPeriodic = Prefs.getFwPeriodic(this).size();
+        int nInUse = Prefs.getFwInUse(this).size();
+        boolean inUseAll = Prefs.isInUseAll(this);
         boolean periodicAll = Prefs.isSchedEnabled(this);
         fwSwitch.setChecked(enabled);
-        appsHeader.setText(getString(R.string.fw_apps_header3, nAlways + nBurst + nPeriodic));
+        appsHeader.setText(getString(R.string.fw_apps_header3, nAlways + nBurst + nPeriodic + nInUse));
 
         if (!enabled) {
             show(R.drawable.bg_status_off, "🌐", R.string.fw_off_title, getString(R.string.fw_off_sub));
@@ -353,13 +388,19 @@ public class FirewallActivity extends Activity {
             return;
         }
         long now = System.currentTimeMillis();
-        if (FirewallVpnService.allBlocked && !FirewallVpnService.periodicInUse) {
+        if (FirewallVpnService.allBlocked && !FirewallVpnService.periodicInUse
+                && !FirewallVpnService.inUseAllActive) {
             show(R.drawable.bg_status_danger, "🚫", R.string.fw_closed_title,
                     getString(R.string.fw_closed_sub, MainActivity.fmt(FirewallVpnService.nextChangeAt - now)));
             return;
         }
         StringBuilder sb = new StringBuilder();
         if (nAlways > 0) line(sb, getString(R.string.fw_st_always, nAlways));
+        if (nInUse > 0 || inUseAll) {
+            String who = inUseAll ? getString(R.string.fw_st_all) : String.valueOf(nInUse);
+            line(sb, getString(R.string.fw_st_inuse, who,
+                    getResources().getStringArray(R.array.grace_options)[graceIndex(Prefs.getInUseGraceSec(this))]));
+        }
         if (nBurst > 0) {
             line(sb, FirewallVpnService.burstOpen
                     ? getString(R.string.fw_st_burst_open, nBurst,

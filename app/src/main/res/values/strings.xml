@@ -251,6 +251,7 @@
     <string-array name="grace_options">
         <item>No extra time</item>
         <item>10 seconds</item>
+        <item>20 seconds</item>
         <item>30 seconds</item>
         <item>1 minute</item>
         <item>2 minutes</item>
@@ -263,4 +264,13 @@
     <string name="fw_select_first">Select apps first: long-press an app, or use \"Select all\"</string>
     <string name="fw_bulk_title">Rule for %1$d apps</string>
     <string name="fw_select_hint">Tap an app to choose its rule · Long-press to select several · \"Select all\" uses the current search</string>
+    <string name="rule_inuse">📱 Only while in use</string>
+    <string name="rule_inuse_desc">Full internet only while you are using the app; in the background only for a short time you choose</string>
+    <string name="fw_inuse_header">📱 RULE: ONLY WHILE IN USE</string>
+    <string name="fw_inuse_desc">Apps with this rule have full internet only while they are on screen. In the background (after you switch away or turn the screen off) they keep internet only for the time below, then it is cut until you open them again.</string>
+    <string name="fw_inuse_grace_label">Background internet after leaving the app</string>
+    <string name="fw_inuse_all_title">Apply to all apps without a rule</string>
+    <string name="fw_inuse_all_sub">Only the app you are using has internet; every other app gets just the background time</string>
+    <string name="fw_inuse_all_replaced">Saved. \"Apply to all\" of the periodic rule was turned off (only one can be on).</string>
+    <string name="fw_st_inuse">📱 %1$s only while in use (+%2$s in background)</string>
 </resources>

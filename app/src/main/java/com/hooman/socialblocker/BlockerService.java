@@ -262,10 +262,15 @@ public class BlockerService extends AccessibilityService {
     /** وقتی اینترنت یک اپ با فایروال قطع است، یک پیام کوتاه نشان بده (حداکثر هر ۱۵ ثانیه). */
     private void maybeFirewallNotice(String pkg) {
         if (!Prefs.isFwEnabled(this) || !FirewallVpnService.running) return;
+        // این اپ‌ها با باز شدن اینترنت می‌گیرند؛ پیام «قطع است» گمراه‌کننده است
+        int rule = Prefs.getFwRule(this, pkg);
+        if (rule == Prefs.FW_IN_USE || (rule == Prefs.FW_FREE && FirewallVpnService.inUseAllActive)) return;
+        if (rule == Prefs.FW_PERIODIC && FirewallVpnService.periodicInUse) return;
         if (pkg.equals(lastFwToastPkg) && SystemClock.uptimeMillis() - lastFwToast < 15_000) return;
         Context lc = LocaleHelper.wrap(this);
         String msg = null;
-        if (FirewallVpnService.allBlocked && FirewallVpnService.isAppBlockedNow(pkg)) {
+        if (FirewallVpnService.allBlocked && !FirewallVpnService.inUseAllActive
+                && FirewallVpnService.isAppBlockedNow(pkg)) {
             msg = lc.getString(R.string.fw_toast_sched,
                     MainActivity.fmt(FirewallVpnService.nextChangeAt - System.currentTimeMillis()));
         } else if (FirewallVpnService.isAppBlockedNow(pkg)) {
