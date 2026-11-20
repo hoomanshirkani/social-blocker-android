@@ -39,7 +39,9 @@ public class FirewallActivity extends Activity {
 
     private View card;
     private TextView icon, title, sub, appsHeader;
-    private Switch fwSwitch, schedSwitch, screenOffSwitch;
+    private Switch fwSwitch, schedSwitch;
+    private Spinner screenOnMode, graceSpin;
+    private View graceRow;
     private EditText onVal, everyVal, burstSec;
     private Spinner onUnit, everyUnit;
     private ListView list;
@@ -72,7 +74,9 @@ public class FirewallActivity extends Activity {
         sub = h.findViewById(R.id.fwSub);
         fwSwitch = h.findViewById(R.id.fwSwitch);
         schedSwitch = h.findViewById(R.id.schedSwitch);
-        screenOffSwitch = h.findViewById(R.id.screenOffSwitch);
+        screenOnMode = h.findViewById(R.id.screenOnMode);
+        graceSpin = h.findViewById(R.id.graceSpin);
+        graceRow = h.findViewById(R.id.graceRow);
         onVal = h.findViewById(R.id.onVal);
         everyVal = h.findViewById(R.id.everyVal);
         onUnit = h.findViewById(R.id.onUnit);
@@ -90,7 +94,23 @@ public class FirewallActivity extends Activity {
         // مقادیر ذخیره‌شده
         burstSec.setText(String.valueOf(Prefs.getBurstSec(this)));
         schedSwitch.setChecked(Prefs.isSchedEnabled(this));
-        screenOffSwitch.setChecked(Prefs.isSchedScreenOffOnly(this));
+        ArrayAdapter<CharSequence> modes = ArrayAdapter.createFromResource(
+                this, R.array.screen_on_modes, android.R.layout.simple_spinner_item);
+        modes.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        screenOnMode.setAdapter(modes);
+        ArrayAdapter<CharSequence> graces = ArrayAdapter.createFromResource(
+                this, R.array.grace_options, android.R.layout.simple_spinner_item);
+        graces.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        graceSpin.setAdapter(graces);
+        screenOnMode.setSelection(Prefs.getScreenOnMode(this));
+        graceSpin.setSelection(graceIndex(Prefs.getGraceSec(this)));
+        graceRow.setVisibility(Prefs.getScreenOnMode(this) == Prefs.SCREEN_ON_IN_USE ? View.VISIBLE : View.GONE);
+        screenOnMode.setOnItemSelectedListener(new android.widget.AdapterView.OnItemSelectedListener() {
+            public void onItemSelected(android.widget.AdapterView<?> a, View v, int pos, long id) {
+                graceRow.setVisibility(pos == Prefs.SCREEN_ON_IN_USE ? View.VISIBLE : View.GONE);
+            }
+            public void onNothingSelected(android.widget.AdapterView<?> a) {}
+        });
         setScheduleFields(Prefs.getSchedOnVal(this), Prefs.getSchedOnUnit(this),
                 Prefs.getSchedEveryVal(this), Prefs.getSchedEveryUnit(this));
 
@@ -197,14 +217,15 @@ public class FirewallActivity extends Activity {
         long onMs = on * Prefs.UNIT_MS[onU];
         long periodMs = every * Prefs.UNIT_MS[evU];
         boolean all = schedSwitch.isChecked();
-        boolean screenOffOnly = screenOffSwitch.isChecked();
+        int mode = Math.max(0, screenOnMode.getSelectedItemPosition());
+        int graceSec = Prefs.GRACE_OPTIONS[Math.max(0, graceSpin.getSelectedItemPosition())];
 
         if (on <= 0 || every <= 0 || onMs < 5000 || periodMs - onMs < 5000) {
             toast(R.string.fw_invalid);
             return;
         }
         Runnable save = () -> {
-            Prefs.setSchedule(this, all, on, onU, every, evU, screenOffOnly);
+            Prefs.setSchedule(this, all, on, onU, every, evU, mode, graceSec);
             FirewallVpnService.refresh(this);
             toast(Prefs.isFwEnabled(this) ? R.string.fw_sched_saved : R.string.fw_need_fw);
             refreshStatus();
@@ -266,7 +287,7 @@ public class FirewallActivity extends Activity {
             return;
         }
         long now = System.currentTimeMillis();
-        if (FirewallVpnService.allBlocked) {
+        if (FirewallVpnService.allBlocked && !FirewallVpnService.periodicInUse) {
             show(R.drawable.bg_status_danger, "🚫", R.string.fw_closed_title,
                     getString(R.string.fw_closed_sub, MainActivity.fmt(FirewallVpnService.nextChangeAt - now)));
             return;
@@ -283,6 +304,9 @@ public class FirewallActivity extends Activity {
             String who = periodicAll ? getString(R.string.fw_st_all) : String.valueOf(nPeriodic);
             if (FirewallVpnService.scheduleWaiting) {
                 line(sb, getString(R.string.fw_st_periodic_screen, who));
+            } else if (FirewallVpnService.periodicInUse) {
+                line(sb, getString(R.string.fw_st_periodic_inuse, who,
+                        getResources().getStringArray(R.array.grace_options)[graceIndex(Prefs.getGraceSec(this))]));
             } else {
                 String left = MainActivity.fmt(FirewallVpnService.periodicNextChange - now);
                 line(sb, getString(FirewallVpnService.periodicOpen
@@ -303,6 +327,11 @@ public class FirewallActivity extends Activity {
         icon.setText(emoji);
         title.setText(t);
         sub.setText(s);
+    }
+
+    private static int graceIndex(int sec) {
+        for (int i = 0; i < Prefs.GRACE_OPTIONS.length; i++) if (Prefs.GRACE_OPTIONS[i] == sec) return i;
+        return 2;
     }
 
     private static int parse(EditText e) {

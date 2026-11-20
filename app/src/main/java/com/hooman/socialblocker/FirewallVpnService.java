@@ -19,6 +19,9 @@ import android.system.StructPollfd;
 import java.io.FileDescriptor;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
 import java.util.Collections;
 import java.util.List;
 import java.util.Set;
@@ -70,6 +73,27 @@ public class FirewallVpnService extends VpnService {
     /** پنجره گروه ⚡ تا این زمان (currentTimeMillis) باز است */
     private long burstUntil = 0;
 
+    /** قانون ⏱ در حالت «فقط وقتی اپ باز است» */
+    static volatile boolean periodicInUse = false;
+    private static volatile FirewallVpnService instance = null;
+    private String fgPkg = null;                            // اپ جلوی صفحه
+    private final Map<String, Long> grace = new HashMap<>(); // اپ → تا کی هنوز اینترنت دارد
+
+    /** BlockerService هر بار که اپ جلوی صفحه عوض شود صدا می‌زند. */
+    static void foregroundChanged(String pkg) {
+        FirewallVpnService s = instance;
+        if (s != null) s.handler.post(() -> s.onForeground(pkg));
+    }
+
+    private void onForeground(String pkg) {
+        if (pkg.equals(fgPkg)) return;
+        long now = System.currentTimeMillis();
+        if (fgPkg != null) grace.put(fgPkg, now + Prefs.getGraceSec(this) * 1000L);
+        grace.remove(pkg);
+        fgPkg = pkg;
+        if (running && Prefs.getScreenOnMode(this) == Prefs.SCREEN_ON_IN_USE) apply();
+    }
+
     private final Handler handler = new Handler(Looper.getMainLooper());
     private final Runnable tick = this::apply;
     private ParcelFileDescriptor tun;
@@ -83,6 +107,10 @@ public class FirewallVpnService extends VpnService {
         public void onReceive(Context c, Intent i) {
             // هر روشن یا خاموش شدن صفحه → پنجره کوتاه اینترنت برای گروه ⚡
             burstUntil = System.currentTimeMillis() + Prefs.getBurstSec(FirewallVpnService.this) * 1000L;
+            if (Intent.ACTION_SCREEN_OFF.equals(i.getAction())) {
+                fgPkg = null;
+                grace.clear();
+            }
             if (running) apply();
         }
     };
@@ -90,6 +118,7 @@ public class FirewallVpnService extends VpnService {
     @Override
     public void onCreate() {
         super.onCreate();
+        instance = this;
         IntentFilter f = new IntentFilter();
         f.addAction(Intent.ACTION_SCREEN_ON);
         f.addAction(Intent.ACTION_SCREEN_OFF);
@@ -136,10 +165,26 @@ public class FirewallVpnService extends VpnService {
         boolean periodicUsed = periodicAll || !periodic.isEmpty();
 
         // ⏱ دوره‌ای
-        boolean waiting = periodicUsed && Prefs.isSchedScreenOffOnly(this) && isScreenOn();
+        int mode = Prefs.getScreenOnMode(this);
+        boolean screenOn = isScreenOn();
+        boolean waiting = periodicUsed && screenOn && mode == Prefs.SCREEN_ON_FULL;
+        boolean inUse = periodicUsed && screenOn && mode == Prefs.SCREEN_ON_IN_USE;
         boolean pOpen = true;
         long pNext = 0;
-        if (periodicUsed && !waiting) {
+        // در حالت «فقط وقتی اپ باز است»: اپ جلوی صفحه + اپ‌هایی که هنوز در مهلت هستند
+        Set<String> inUseAllowed = new TreeSet<>();
+        long graceNext = 0;
+        if (inUse) {
+            pOpen = false;
+            if (fgPkg != null) inUseAllowed.add(fgPkg);
+            Iterator<Map.Entry<String, Long>> it = grace.entrySet().iterator();
+            while (it.hasNext()) {
+                Map.Entry<String, Long> e = it.next();
+                if (e.getValue() <= now) { it.remove(); continue; }
+                inUseAllowed.add(e.getKey());
+                graceNext = graceNext == 0 ? e.getValue() : Math.min(graceNext, e.getValue());
+            }
+        } else if (periodicUsed && !waiting) {
             long on = Prefs.getSchedOnMs(this);
             long period = Prefs.getSchedPeriodMs(this);
             long anchor = Prefs.getSchedAnchor(this);
@@ -153,15 +198,22 @@ public class FirewallVpnService extends VpnService {
 
         long next = pNext;
         if (bOpen) next = next == 0 ? burstUntil : Math.min(next, burstUntil);
+        if (graceNext > 0) next = next == 0 ? graceNext : Math.min(next, graceNext);
 
         boolean blockAll = periodicAll && !pOpen;
         Set<String> blocked = new TreeSet<>(always);
         if (!bOpen) blocked.addAll(burst);
-        if (!pOpen) blocked.addAll(periodic);
+        if (!pOpen) {
+            Set<String> p = new TreeSet<>(periodic);
+            p.removeAll(inUseAllowed);
+            blocked.addAll(p);
+        }
         Set<String> exempt = new TreeSet<>();
-        if (blockAll && bOpen) {
-            exempt.addAll(burst);
+        if (blockAll) {
+            if (bOpen) exempt.addAll(burst);
+            exempt.addAll(inUseAllowed);
             exempt.removeAll(always);
+            if (!bOpen) exempt.removeAll(burst);
         }
 
         // کلید پیکربندی: اگر همان قبلی است، تونل را دست نزن (جلوگیری از قطع و وصل بی‌دلیل)
@@ -190,6 +242,7 @@ public class FirewallVpnService extends VpnService {
         burstOpenUntil = bOpen ? burstUntil : 0;
         periodicOpen = pOpen;
         periodicNextChange = pNext;
+        periodicInUse = inUse;
         running = true;
         allBlocked = blockAll;
         nextChangeAt = blockAll ? pNext : next;
@@ -252,6 +305,7 @@ public class FirewallVpnService extends VpnService {
         burstOpenUntil = 0;
         periodicOpen = true;
         periodicNextChange = 0;
+        periodicInUse = false;
         blockedNow = java.util.Collections.emptySet();
         exemptNow = java.util.Collections.emptySet();
     }
@@ -270,6 +324,7 @@ public class FirewallVpnService extends VpnService {
 
     @Override
     public void onDestroy() {
+        instance = null;
         try { unregisterReceiver(screenReceiver); } catch (Exception ignored) {}
         shutdown();
         super.onDestroy();

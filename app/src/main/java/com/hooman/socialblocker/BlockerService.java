@@ -119,6 +119,7 @@ public class BlockerService extends AccessibilityService {
         if (event == null || event.getPackageName() == null) return;
         boolean windowChanged = event.getEventType() == AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED;
         String pkg = event.getPackageName().toString();
+        if (windowChanged && !ignored.contains(pkg)) FirewallVpnService.foregroundChanged(pkg);
         if (EyeCare.isBreakLocked()) {
             enforceBreak(pkg, event.getClassName(), windowChanged);
             return;

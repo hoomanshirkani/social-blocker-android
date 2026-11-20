@@ -214,7 +214,7 @@
     <string name="rule_burst">⚡ روشن/خاموش صفحه</string>
     <string name="rule_always">🚫 همیشه قطع</string>
     <string name="rule_free_desc">اینترنت عادی</string>
-    <string name="rule_periodic_desc">در هر دوره فقط یک بازه کوتاه باز است (و اگر فعال باشد، با صفحه روشن کاملاً آزاد)</string>
+    <string name="rule_periodic_desc">صفحه خاموش: بازه کوتاه در هر دوره. صفحه روشن: کامل، یا فقط وقتی از اپ استفاده می‌کنی (به انتخاب خودت)</string>
     <string name="rule_burst_desc">فقط چند ثانیه اینترنت، هر بار که صفحه روشن یا خاموش می‌شود</string>
     <string name="rule_always_desc">اصلاً اینترنت ندارد</string>
     <string name="fw_burst_header">⚡ قانون: روشن / خاموش شدن صفحه</string>
@@ -235,4 +235,22 @@
     <string name="fw_st_none">هنوز هیچ اپی قانون ندارد؛ روی یک اپ پایین بزن</string>
     <string name="chip_fw_all">🚫 همه ← همیشه قطع</string>
     <string name="chip_fw_none">✕ همه ← آزاد</string>
+    <string name="fw_screen_on_label">وقتی صفحه روشن است</string>
+    <string name="fw_grace_label">بعد از بیرون آمدن از اپ، تا این مدت هنوز اینترنت داشته باشد</string>
+    <string name="fw_grace_sub">تا بتوانی بین اپ‌ها جابه‌جا شوی یا کپی‌پیست کنی. بعد قطع می‌شود تا دوباره اپ را باز کنی.</string>
+    <string name="fw_st_periodic_inuse">⏱ %1$s فقط هنگام استفاده باز (+%2$s بعد از بیرون آمدن)</string>
+    <string-array name="screen_on_modes">
+        <item>همان بازه دوره‌ای</item>
+        <item>اینترنت کامل</item>
+        <item>فقط وقتی اپ باز است</item>
+    </string-array>
+    <string-array name="grace_options">
+        <item>بدون زمان اضافه</item>
+        <item>۱۰ ثانیه</item>
+        <item>۳۰ ثانیه</item>
+        <item>۱ دقیقه</item>
+        <item>۲ دقیقه</item>
+        <item>۵ دقیقه</item>
+        <item>۱۰ دقیقه</item>
+    </string-array>
 </resources>

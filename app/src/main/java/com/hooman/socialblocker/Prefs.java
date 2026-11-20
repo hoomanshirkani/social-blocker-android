@@ -182,12 +182,26 @@ public final class Prefs {
     /** زمان‌بندی فقط وقتی صفحه خاموش است اعمال شود (پیش‌فرض: بله) */
     static boolean isSchedScreenOffOnly(Context c) { return sp(c).getBoolean("sched_screen_off_only", true); }
 
+    /** رفتار قانون ⏱ وقتی صفحه روشن است */
+    static final int SCREEN_ON_PERIODIC = 0, SCREEN_ON_FULL = 1, SCREEN_ON_IN_USE = 2;
+    /** گزینه‌های «بعد از بیرون آمدن از اپ، تا چند ثانیه هنوز اینترنت داشته باشد» */
+    static final int[] GRACE_OPTIONS = {0, 10, 30, 60, 120, 300, 600};
+
+    static int getScreenOnMode(Context c) {
+        if (sp(c).contains("sched_screen_on_mode")) return sp(c).getInt("sched_screen_on_mode", SCREEN_ON_FULL);
+        return isSchedScreenOffOnly(c) ? SCREEN_ON_FULL : SCREEN_ON_PERIODIC; // سازگاری با نسخه قبل
+    }
+
+    static int getGraceSec(Context c) { return sp(c).getInt("fw_grace_sec", 30); }
+
     /** ذخیره برنامه؛ شروع بازه‌ها از همین لحظه حساب می‌شود. */
     static void setSchedule(Context c, boolean enabled, int onVal, int onUnit, int everyVal, int everyUnit,
-                            boolean screenOffOnly) {
+                            int screenOnMode, int graceSec) {
         sp(c).edit()
                 .putBoolean("sched_enabled", enabled)
-                .putBoolean("sched_screen_off_only", screenOffOnly)
+                .putBoolean("sched_screen_off_only", screenOnMode != SCREEN_ON_PERIODIC)
+                .putInt("sched_screen_on_mode", screenOnMode)
+                .putInt("fw_grace_sec", graceSec)
                 .putInt("sched_on_val", onVal)
                 .putInt("sched_on_unit", onUnit)
                 .putInt("sched_every_val", everyVal)

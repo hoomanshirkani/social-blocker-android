@@ -217,7 +217,7 @@
     <string name="rule_burst">⚡ Screen on/off</string>
     <string name="rule_always">🚫 Always blocked</string>
     <string name="rule_free_desc">Normal internet access</string>
-    <string name="rule_periodic_desc">Opens for a short window every period (and fully while the screen is on, if enabled)</string>
+    <string name="rule_periodic_desc">Screen off: short window every period. Screen on: full, or only while you use the app (your choice)</string>
     <string name="rule_burst_desc">Internet only for a few seconds each time the screen turns on or off</string>
     <string name="rule_always_desc">No internet at all</string>
     <string name="fw_burst_header">⚡ RULE: SCREEN ON / OFF</string>
@@ -239,4 +239,22 @@
     <string name="chip_fw_all">🚫 All → always blocked</string>
     <string name="chip_fw_none">✕ All → free</string>
     <string name="launcher_name" translatable="false">Social Blocker+</string>
+    <string name="fw_screen_on_label">While the screen is on</string>
+    <string name="fw_grace_label">After leaving the app, keep internet for</string>
+    <string name="fw_grace_sub">So you can switch between apps or copy and paste. Then it is cut until you open the app again.</string>
+    <string name="fw_st_periodic_inuse">⏱ %1$s open only while in use (+%2$s after leaving)</string>
+    <string-array name="screen_on_modes">
+        <item>Same periodic window</item>
+        <item>Full internet</item>
+        <item>Only while the app is open</item>
+    </string-array>
+    <string-array name="grace_options">
+        <item>No extra time</item>
+        <item>10 seconds</item>
+        <item>30 seconds</item>
+        <item>1 minute</item>
+        <item>2 minutes</item>
+        <item>5 minutes</item>
+        <item>10 minutes</item>
+    </string-array>
 </resources>

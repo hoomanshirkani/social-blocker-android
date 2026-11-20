@@ -232,40 +232,47 @@
             </LinearLayout>
         </HorizontalScrollView>
 
-            <LinearLayout
+            <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="12dp"
-                android:gravity="center_vertical"
-                android:orientation="horizontal">
+                android:layout_marginTop="14dp"
+                android:text="@string/fw_screen_on_label"
+                android:textColor="@color/text"
+                android:textSize="15sp" />
 
-                <LinearLayout
-                    android:layout_width="0dp"
+            <Spinner
+                android:id="@+id/screenOnMode"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp" />
+
+            <LinearLayout
+                android:id="@+id/graceRow"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:orientation="vertical">
+                    android:layout_marginTop="10dp"
+                    android:text="@string/fw_grace_label"
+                    android:textColor="@color/text"
+                    android:textSize="15sp" />
 
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:text="@string/fw_screen_off_title"
-                        android:textColor="@color/text"
-                        android:textSize="15sp" />
-
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="2dp"
-                        android:text="@string/fw_screen_off_sub"
-                        android:textColor="@color/text_muted"
-                        android:textSize="13sp" />
-                </LinearLayout>
-
-                <Switch
-                    android:id="@+id/screenOffSwitch"
-                    android:layout_width="wrap_content"
+                <Spinner
+                    android:id="@+id/graceSpin"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="12dp" />
+                    android:layout_marginTop="4dp" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="2dp"
+                    android:text="@string/fw_grace_sub"
+                    android:textColor="@color/text_muted"
+                    android:textSize="13sp" />
             </LinearLayout>
             <LinearLayout
                 android:layout_width="match_parent"
