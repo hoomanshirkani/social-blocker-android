@@ -151,8 +151,8 @@
     <string name="toast_locked">🔒 قفل شد</string>
     <string name="status_unlocked">🔓 باز · %1$s</string>
     <string name="menu_lock">🔒 همین حالا قفل کن</string>
-    <string name="fw_screen_off_title">فقط وقتی صفحه خاموش است</string>
-    <string name="fw_screen_off_sub">وقتی با گوشی کار می‌کنی اینترنت باز است؛ زمان‌بندی با خاموش شدن صفحه شروع می‌شود</string>
+    <string name="fw_screen_off_title">با صفحه روشن، اینترنت کامل</string>
+    <string name="fw_screen_off_sub">بازه‌ی دوره‌ای فقط وقتی صفحه خاموش است اعمال می‌شود</string>
     <string name="fw_waiting_title">اینترنت باز است</string>
     <string name="fw_waiting_sub">زمان‌بندی با خاموش شدن صفحه شروع می‌شود</string>
 
@@ -172,8 +172,8 @@
     <string name="eye_break_len">استراحت</string>
     <string name="unit_minutes">دقیقه</string>
     <string name="unit_seconds">ثانیه</string>
-    <string name="eye_strict">حالت سخت‌گیرانه</string>
-    <string name="eye_strict_sub">صفحه استراحت دکمه «رد کردن» ندارد</string>
+    <string name="eye_strict">حالت سخت‌گیرانه (قفل)</string>
+    <string name="eye_strict_sub">دکمه «رد کردن» ندارد و تا پایان استراحت نمی‌شود از صفحه‌اش بیرون رفت یا اپ دیگری باز کرد (تماس تلفنی آزاد است)</string>
     <string name="eye_p1">۲۰ دقیقه / ۲۰ ثانیه (۲۰-۲۰-۲۰)</string>
     <string name="eye_p2">۴۵ دقیقه / ۵ دقیقه</string>
     <string name="eye_p3">۶۰ دقیقه / ۱۰ دقیقه</string>
@@ -209,4 +209,30 @@
         <item>بلند شو، کمر و گردنت را کش بده و یک لیوان آب بخور.</item>
     </string-array>
     <string name="fw_off_lockdown_hint">فایروال خاموش شد. اگر «Block connections without VPN» در تنظیمات VPN اندروید روشن است، آن را هم خاموش کن؛ وگرنه اینترنت قطع می‌ماند.</string>
+    <string name="rule_free">آزاد</string>
+    <string name="rule_periodic">⏱ دوره‌ای</string>
+    <string name="rule_burst">⚡ روشن/خاموش صفحه</string>
+    <string name="rule_always">🚫 همیشه قطع</string>
+    <string name="rule_free_desc">اینترنت عادی</string>
+    <string name="rule_periodic_desc">در هر دوره فقط یک بازه کوتاه باز است (و اگر فعال باشد، با صفحه روشن کاملاً آزاد)</string>
+    <string name="rule_burst_desc">فقط چند ثانیه اینترنت، هر بار که صفحه روشن یا خاموش می‌شود</string>
+    <string name="rule_always_desc">اصلاً اینترنت ندارد</string>
+    <string name="fw_burst_header">⚡ قانون: روشن / خاموش شدن صفحه</string>
+    <string name="fw_burst_desc">اپ‌های این قانون فقط همین چند ثانیه اینترنت دارند: هر بار که صفحه روشن می‌شود و هر بار که خاموش می‌شود.</string>
+    <string name="fw_burst_invalid">عددی بین ۳ تا ۶۰۰ ثانیه وارد کن</string>
+    <string name="fw_periodic_header">⏱ قانون: دوره‌ای</string>
+    <string name="fw_periodic_desc">اپ‌های این قانون فقط در بازه‌ی زیر اینترنت دارند که در هر دوره تکرار می‌شود.</string>
+    <string name="fw_all_apps_title">برای بقیه اپ‌ها هم اعمال شود</string>
+    <string name="fw_all_apps_sub">اپ‌های بدون قانون (آزاد) هم از همین زمان‌بندی دوره‌ای پیروی می‌کنند</string>
+    <string name="fw_apps_header3">اپ‌ها · برای انتخاب قانون بزن · %1$d با قانون</string>
+    <string name="fw_st_always">🚫 %1$d همیشه قطع</string>
+    <string name="fw_st_burst_open">⚡ %1$d باز · %2$s تا بسته شدن</string>
+    <string name="fw_st_burst_closed">⚡ %1$d بسته تا روشن/خاموش شدن صفحه</string>
+    <string name="fw_st_all">همه</string>
+    <string name="fw_st_periodic_screen">⏱ %1$s باز (صفحه روشن است)</string>
+    <string name="fw_st_periodic_open">⏱ %1$s باز · %2$s تا بسته شدن</string>
+    <string name="fw_st_periodic_closed">⏱ %1$s بسته · %2$s تا باز شدن</string>
+    <string name="fw_st_none">هنوز هیچ اپی قانون ندارد؛ روی یک اپ پایین بزن</string>
+    <string name="chip_fw_all">🚫 همه ← همیشه قطع</string>
+    <string name="chip_fw_none">✕ همه ← آزاد</string>
 </resources>

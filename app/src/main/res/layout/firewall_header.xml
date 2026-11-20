@@ -57,10 +57,10 @@
             android:layout_marginStart="8dp" />
     </LinearLayout>
 
-    <!-- زمان‌بندی -->
+    <!-- قانون ⚡ روشن/خاموش شدن صفحه -->
     <TextView
         style="@style/SectionTitle"
-        android:text="@string/fw_sched_header" />
+        android:text="@string/fw_burst_header" />
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -69,146 +69,132 @@
         android:orientation="vertical"
         android:padding="16dp">
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:gravity="center_vertical"
-            android:orientation="horizontal">
-
-            <LinearLayout
-                android:layout_width="0dp"
+            <TextView
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:orientation="vertical">
+                android:text="@string/fw_burst_desc"
+                android:textColor="@color/text_muted"
+                android:textSize="13sp" />
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="12dp"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
 
                 <TextView
-                    android:layout_width="match_parent"
+                    android:layout_width="80dp"
                     android:layout_height="wrap_content"
-                    android:text="@string/fw_sched_enable"
+                    android:text="@string/fw_allow_for"
                     android:textColor="@color/text"
                     android:textSize="15sp" />
 
-                <TextView
-                    android:layout_width="match_parent"
+                <EditText
+                    android:id="@+id/burstSec"
+                    android:layout_width="72dp"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="2dp"
-                    android:text="@string/fw_sched_sub"
+                    android:background="@drawable/bg_input"
+                    android:gravity="center"
+                    android:inputType="number"
+                    android:maxLength="4"
+                    android:textColor="@color/text" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="10dp"
+                    android:text="@string/unit_seconds"
                     android:textColor="@color/text_muted"
-                    android:textSize="13sp" />
+                    android:textSize="15sp" />
             </LinearLayout>
 
-            <Switch
-                android:id="@+id/schedSwitch"
-                android:layout_width="wrap_content"
+        <Button
+            android:id="@+id/burstSave"
+            style="@style/PrimaryButton"
+            android:layout_marginTop="16dp"
+            android:text="@string/save" />
+    </LinearLayout>
+
+    <!-- قانون ⏱ دوره‌ای -->
+    <TextView
+        style="@style/SectionTitle"
+        android:text="@string/fw_periodic_header" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/bg_card"
+        android:orientation="vertical"
+        android:padding="16dp">
+
+            <TextView
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="12dp" />
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="12dp"
-            android:gravity="center_vertical"
-            android:orientation="horizontal">
-
+                android:text="@string/fw_periodic_desc"
+                android:textColor="@color/text_muted"
+                android:textSize="13sp" />
             <LinearLayout
-                android:layout_width="0dp"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:orientation="vertical">
+                android:layout_marginTop="12dp"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
 
                 <TextView
-                    android:layout_width="match_parent"
+                    android:layout_width="80dp"
                     android:layout_height="wrap_content"
-                    android:text="@string/fw_screen_off_title"
+                    android:text="@string/fw_allow_for"
                     android:textColor="@color/text"
                     android:textSize="15sp" />
 
-                <TextView
-                    android:layout_width="match_parent"
+                <EditText
+                    android:id="@+id/onVal"
+                    android:layout_width="72dp"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="2dp"
-                    android:text="@string/fw_screen_off_sub"
-                    android:textColor="@color/text_muted"
-                    android:textSize="13sp" />
+                    android:background="@drawable/bg_input"
+                    android:gravity="center"
+                    android:inputType="number"
+                    android:maxLength="4"
+                    android:textColor="@color/text" />
+
+                <Spinner
+                    android:id="@+id/onUnit"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="8dp"
+                    android:layout_weight="1" />
             </LinearLayout>
-
-            <Switch
-                android:id="@+id/screenOffSwitch"
-                android:layout_width="wrap_content"
+            <LinearLayout
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="12dp" />
-        </LinearLayout>
+                android:layout_marginTop="10dp"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
 
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:layout_marginTop="14dp"
-            android:layout_marginBottom="14dp"
-            android:background="@color/divider" />
+                <TextView
+                    android:layout_width="80dp"
+                    android:layout_height="wrap_content"
+                    android:text="@string/fw_every"
+                    android:textColor="@color/text"
+                    android:textSize="15sp" />
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:gravity="center_vertical"
-            android:orientation="horizontal">
+                <EditText
+                    android:id="@+id/everyVal"
+                    android:layout_width="72dp"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/bg_input"
+                    android:gravity="center"
+                    android:inputType="number"
+                    android:maxLength="4"
+                    android:textColor="@color/text" />
 
-            <TextView
-                android:layout_width="80dp"
-                android:layout_height="wrap_content"
-                android:text="@string/fw_allow_for"
-                android:textColor="@color/text"
-                android:textSize="15sp" />
-
-            <EditText
-                android:id="@+id/onVal"
-                android:layout_width="72dp"
-                android:layout_height="wrap_content"
-                android:background="@drawable/bg_input"
-                android:gravity="center"
-                android:inputType="number"
-                android:maxLength="4"
-                android:textColor="@color/text" />
-
-            <Spinner
-                android:id="@+id/onUnit"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="8dp"
-                android:layout_weight="1" />
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
-            android:gravity="center_vertical"
-            android:orientation="horizontal">
-
-            <TextView
-                android:layout_width="80dp"
-                android:layout_height="wrap_content"
-                android:text="@string/fw_every"
-                android:textColor="@color/text"
-                android:textSize="15sp" />
-
-            <EditText
-                android:id="@+id/everyVal"
-                android:layout_width="72dp"
-                android:layout_height="wrap_content"
-                android:background="@drawable/bg_input"
-                android:gravity="center"
-                android:inputType="number"
-                android:maxLength="4"
-                android:textColor="@color/text" />
-
-            <Spinner
-                android:id="@+id/everyUnit"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="8dp"
-                android:layout_weight="1" />
-        </LinearLayout>
+                <Spinner
+                    android:id="@+id/everyUnit"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="8dp"
+                    android:layout_weight="1" />
+            </LinearLayout>
 
         <TextView
             android:layout_width="match_parent"
@@ -245,6 +231,77 @@
                     android:text="@string/preset_3" />
             </LinearLayout>
         </HorizontalScrollView>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="12dp"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="@string/fw_screen_off_title"
+                        android:textColor="@color/text"
+                        android:textSize="15sp" />
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="2dp"
+                        android:text="@string/fw_screen_off_sub"
+                        android:textColor="@color/text_muted"
+                        android:textSize="13sp" />
+                </LinearLayout>
+
+                <Switch
+                    android:id="@+id/screenOffSwitch"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="12dp" />
+            </LinearLayout>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="12dp"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="@string/fw_all_apps_title"
+                        android:textColor="@color/text"
+                        android:textSize="15sp" />
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="2dp"
+                        android:text="@string/fw_all_apps_sub"
+                        android:textColor="@color/text_muted"
+                        android:textSize="13sp" />
+                </LinearLayout>
+
+                <Switch
+                    android:id="@+id/schedSwitch"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="12dp" />
+            </LinearLayout>
 
         <Button
             android:id="@+id/saveSched"
@@ -285,12 +342,12 @@
             <TextView
                 android:id="@+id/fwChipAll"
                 style="@style/Chip"
-                android:text="@string/chip_select_all" />
+                android:text="@string/chip_fw_all" />
 
             <TextView
                 android:id="@+id/fwChipNone"
                 style="@style/Chip"
-                android:text="@string/chip_clear" />
+                android:text="@string/chip_fw_none" />
         </LinearLayout>
     </HorizontalScrollView>
 

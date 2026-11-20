@@ -17,6 +17,8 @@ public class BreakActivity extends Activity {
 
     static final String EXTRA_SECONDS = "seconds";
     static final String EXTRA_STRICT = "strict";
+    /** وقتی سرویس صفحه را دوباره جلو می‌آورد؛ شمارش معکوس ادامه پیدا می‌کند */
+    static final String EXTRA_RESUME = "resume";
 
     private final Handler handler = new Handler(Looper.getMainLooper());
     private final Random random = new Random();
@@ -83,7 +85,14 @@ public class BreakActivity extends Activity {
         tip.setText(tips[i]);
     }
 
+    @Override
+    protected void onNewIntent(android.content.Intent intent) {
+        super.onNewIntent(intent);
+        // در حال اجرا هستیم؛ شمارش را از نو شروع نکن
+    }
+
     private void done() {
+        if (strict) EyeCare.unlockBreak();
         title.setText(R.string.break_done);
         count.setText("✓");
         bar.setProgress(total);

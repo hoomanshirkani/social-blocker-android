@@ -1,6 +1,7 @@
 package com.hooman.socialblocker;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.net.VpnService;
@@ -18,18 +19,28 @@ import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Set;
+import java.util.Collections;
+import java.util.List;
 
-/** صفحه فایروال: قطع اینترنت اپ‌ها + برنامه زمانی اینترنت. */
+/**
+ * صفحه فایروال: برای هر اپ یک قانون (آزاد / ⏱ دوره‌ای / ⚡ روشن‌وخاموش صفحه / 🚫 همیشه قطع)
+ * + تنظیمات قانون‌های ⚡ و ⏱.
+ * هر تغییری که اینترنت بیشتری بدهد، وقتی فایروال روشن است رمز می‌خواهد.
+ */
 public class FirewallActivity extends Activity {
 
     private static final int REQ_VPN = 42;
+    private static final int[] RULE_LABELS = {
+            R.string.rule_free, R.string.rule_periodic, R.string.rule_burst, R.string.rule_always};
+    private static final int[] RULE_DESCS = {
+            R.string.rule_free_desc, R.string.rule_periodic_desc, R.string.rule_burst_desc, R.string.rule_always_desc};
 
     private View card;
     private TextView icon, title, sub, appsHeader;
     private Switch fwSwitch, schedSwitch, screenOffSwitch;
-    private EditText onVal, everyVal;
+    private EditText onVal, everyVal, burstSec;
     private Spinner onUnit, everyUnit;
     private ListView list;
     private AppLoader.Adapter adapter;
@@ -66,6 +77,7 @@ public class FirewallActivity extends Activity {
         everyVal = h.findViewById(R.id.everyVal);
         onUnit = h.findViewById(R.id.onUnit);
         everyUnit = h.findViewById(R.id.everyUnit);
+        burstSec = h.findViewById(R.id.burstSec);
         appsHeader = h.findViewById(R.id.fwAppsHeader);
         EditText search = h.findViewById(R.id.fwSearch);
 
@@ -76,32 +88,35 @@ public class FirewallActivity extends Activity {
         everyUnit.setAdapter(units);
 
         // مقادیر ذخیره‌شده
+        burstSec.setText(String.valueOf(Prefs.getBurstSec(this)));
         schedSwitch.setChecked(Prefs.isSchedEnabled(this));
         screenOffSwitch.setChecked(Prefs.isSchedScreenOffOnly(this));
         setScheduleFields(Prefs.getSchedOnVal(this), Prefs.getSchedOnUnit(this),
                 Prefs.getSchedEveryVal(this), Prefs.getSchedEveryUnit(this));
 
         fwSwitch.setOnClickListener(v -> onFirewallClicked());
+        h.findViewById(R.id.burstSave).setOnClickListener(v -> onSaveBurst());
         h.findViewById(R.id.saveSched).setOnClickListener(v -> onSaveSchedule());
         // پیش‌تنظیم‌ها فقط فرم را پر می‌کنند؛ با «ذخیره» اعمال می‌شوند
-        h.findViewById(R.id.preset1).setOnClickListener(v -> preset(10, 0, 1, 1));
-        h.findViewById(R.id.preset2).setOnClickListener(v -> preset(5, 1, 1, 2));
-        h.findViewById(R.id.preset3).setOnClickListener(v -> preset(30, 1, 1, 3));
+        h.findViewById(R.id.preset1).setOnClickListener(v -> setScheduleFields(10, 0, 1, 1));
+        h.findViewById(R.id.preset2).setOnClickListener(v -> setScheduleFields(5, 1, 1, 2));
+        h.findViewById(R.id.preset3).setOnClickListener(v -> setScheduleFields(30, 1, 1, 3));
 
-        adapter = new AppLoader.Adapter(this, pkg -> Prefs.getFwBlocked(this).contains(pkg));
+        adapter = new AppLoader.Adapter(this, pkg -> false);
+        adapter.setBadge(pkg -> getString(RULE_LABELS[Prefs.getFwRule(this, pkg)]));
         list.setAdapter(adapter);
         list.setOnItemClickListener((p, v, pos, id) -> {
             int i = pos - list.getHeaderViewsCount();
-            if (i >= 0 && i < adapter.getCount()) onAppClicked(adapter.at(i).pkg);
+            if (i >= 0 && i < adapter.getCount()) pickRule(adapter.at(i));
         });
         search.addTextChangedListener(new TextWatcher() {
             public void beforeTextChanged(CharSequence s, int a, int b, int c) {}
             public void onTextChanged(CharSequence s, int a, int b, int c) {}
             public void afterTextChanged(Editable s) { adapter.setFilter(s.toString()); }
         });
-        h.findViewById(R.id.fwChipAll).setOnClickListener(v -> addAll(adapter.shownPkgs()));
-        h.findViewById(R.id.fwChipNone).setOnClickListener(v -> removeAll(adapter.shownPkgs()));
-        AppLoader.load(this, Prefs.getFwBlocked(this), adapter::setItems);
+        h.findViewById(R.id.fwChipAll).setOnClickListener(v -> setRule(adapter.shownPkgs(), Prefs.FW_ALWAYS));
+        h.findViewById(R.id.fwChipNone).setOnClickListener(v -> setRule(adapter.shownPkgs(), Prefs.FW_FREE));
+        AppLoader.load(this, Prefs.getFwRuled(this), adapter::setItems);
     }
 
     @Override protected void onResume() { super.onResume(); handler.post(ticker); }
@@ -149,7 +164,25 @@ public class FirewallActivity extends Activity {
         refreshStatus();
     }
 
-    // ------------------------------------------------------------------ schedule
+    // ------------------------------------------------------------------ rule ⚡
+
+    private void onSaveBurst() {
+        int sec = parse(burstSec);
+        if (sec < 3 || sec > 600) {
+            toast(R.string.fw_burst_invalid);
+            return;
+        }
+        Runnable save = () -> {
+            Prefs.setBurstSec(this, sec);
+            FirewallVpnService.refresh(this);
+            toast(R.string.fw_sched_saved);
+        };
+        // وقت بیشتر = شل‌تر → رمز
+        if (Prefs.isFwEnabled(this) && sec > Prefs.getBurstSec(this)) PasswordDialog.ask(this, save);
+        else save.run();
+    }
+
+    // ------------------------------------------------------------------ rule ⏱
 
     private void setScheduleFields(int on, int onU, int every, int evU) {
         onVal.setText(String.valueOf(on));
@@ -158,36 +191,118 @@ public class FirewallActivity extends Activity {
         everyUnit.setSelection(evU);
     }
 
-    private void preset(int on, int onU, int every, int evU) {
-        setScheduleFields(on, onU, every, evU);
-        schedSwitch.setChecked(true);
-    }
-
     private void onSaveSchedule() {
         int on = parse(onVal), every = parse(everyVal);
         int onU = onUnit.getSelectedItemPosition(), evU = everyUnit.getSelectedItemPosition();
         long onMs = on * Prefs.UNIT_MS[onU];
         long periodMs = every * Prefs.UNIT_MS[evU];
-        boolean enable = schedSwitch.isChecked();
+        boolean all = schedSwitch.isChecked();
         boolean screenOffOnly = screenOffSwitch.isChecked();
 
-        if (enable && (on <= 0 || every <= 0 || onMs < 5000 || periodMs - onMs < 5000)) {
+        if (on <= 0 || every <= 0 || onMs < 5000 || periodMs - onMs < 5000) {
             toast(R.string.fw_invalid);
             return;
         }
-
         Runnable save = () -> {
-            Prefs.setSchedule(this, enable, Math.max(on, 1), onU, Math.max(every, 1), evU, screenOffOnly);
+            Prefs.setSchedule(this, all, on, onU, every, evU, screenOffOnly);
             FirewallVpnService.refresh(this);
-            toast(Prefs.isFwEnabled(this) || !enable ? R.string.fw_sched_saved : R.string.fw_need_fw);
+            toast(Prefs.isFwEnabled(this) ? R.string.fw_sched_saved : R.string.fw_need_fw);
             refreshStatus();
         };
-        // وقتی برنامه زمانی فعال است، هر تغییری (که ممکن است آن را شل کند) رمز می‌خواهد
-        if (Prefs.isFwEnabled(this) && Prefs.isSchedEnabled(this)) {
-            PasswordDialog.ask(this, save);
-        } else {
-            save.run();
+        // هر تغییری در زمان‌بندی وقتی فایروال روشن است ممکن است آن را شل کند → رمز
+        if (Prefs.isFwEnabled(this)) PasswordDialog.ask(this, save);
+        else save.run();
+    }
+
+    // ------------------------------------------------------------------ per-app rules
+
+    private void pickRule(AppLoader.AppItem item) {
+        int current = Prefs.getFwRule(this, item.pkg);
+        CharSequence[] names = new CharSequence[RULE_LABELS.length];
+        for (int i = 0; i < names.length; i++) {
+            names[i] = getString(RULE_LABELS[i]) + "\n" + getString(RULE_DESCS[i]);
         }
+        new AlertDialog.Builder(this)
+                .setTitle(item.label)
+                .setSingleChoiceItems(names, current, (d, which) -> {
+                    d.dismiss();
+                    if (which != current) setRule(Collections.singletonList(item.pkg), which);
+                })
+                .setNegativeButton(R.string.cancel, null)
+                .show();
+    }
+
+    /** تغییر قانون؛ اگر برای هر کدام از اپ‌ها شل‌تر شود و فایروال روشن باشد، رمز می‌خواهد. */
+    private void setRule(Collection<String> pkgs, int rule) {
+        boolean loosens = false;
+        for (String p : pkgs) if (Prefs.getFwRule(this, p) > rule) { loosens = true; break; }
+        List<String> copy = new ArrayList<>(pkgs);
+        Runnable r = () -> {
+            Prefs.setFwRule(this, copy, rule);
+            FirewallVpnService.refresh(this);
+            adapter.notifyDataSetChanged();
+            refreshStatus();
+        };
+        if (loosens && Prefs.isFwEnabled(this)) PasswordDialog.ask(this, r); else r.run();
+    }
+
+    // ------------------------------------------------------------------ status
+
+    private void refreshStatus() {
+        boolean enabled = Prefs.isFwEnabled(this);
+        int nAlways = Prefs.getFwBlocked(this).size();
+        int nBurst = Prefs.getFwBurst(this).size();
+        int nPeriodic = Prefs.getFwPeriodic(this).size();
+        boolean periodicAll = Prefs.isSchedEnabled(this);
+        fwSwitch.setChecked(enabled);
+        appsHeader.setText(getString(R.string.fw_apps_header3, nAlways + nBurst + nPeriodic));
+
+        if (!enabled) {
+            show(R.drawable.bg_status_off, "🌐", R.string.fw_off_title, getString(R.string.fw_off_sub));
+            return;
+        }
+        if (!FirewallVpnService.running) {
+            show(R.drawable.bg_status_paused, "⚠️", R.string.fw_nr_title, getString(R.string.fw_nr_sub));
+            return;
+        }
+        long now = System.currentTimeMillis();
+        if (FirewallVpnService.allBlocked) {
+            show(R.drawable.bg_status_danger, "🚫", R.string.fw_closed_title,
+                    getString(R.string.fw_closed_sub, MainActivity.fmt(FirewallVpnService.nextChangeAt - now)));
+            return;
+        }
+        StringBuilder sb = new StringBuilder();
+        if (nAlways > 0) line(sb, getString(R.string.fw_st_always, nAlways));
+        if (nBurst > 0) {
+            line(sb, FirewallVpnService.burstOpen
+                    ? getString(R.string.fw_st_burst_open, nBurst,
+                            MainActivity.fmt(FirewallVpnService.burstOpenUntil - now))
+                    : getString(R.string.fw_st_burst_closed, nBurst));
+        }
+        if (nPeriodic > 0 || periodicAll) {
+            String who = periodicAll ? getString(R.string.fw_st_all) : String.valueOf(nPeriodic);
+            if (FirewallVpnService.scheduleWaiting) {
+                line(sb, getString(R.string.fw_st_periodic_screen, who));
+            } else {
+                String left = MainActivity.fmt(FirewallVpnService.periodicNextChange - now);
+                line(sb, getString(FirewallVpnService.periodicOpen
+                        ? R.string.fw_st_periodic_open : R.string.fw_st_periodic_closed, who, left));
+            }
+        }
+        if (sb.length() == 0) sb.append(getString(R.string.fw_st_none));
+        show(R.drawable.bg_status_on, "🛡", R.string.fw_on_title, sb.toString());
+    }
+
+    private static void line(StringBuilder sb, String s) {
+        if (sb.length() > 0) sb.append('\n');
+        sb.append(s);
+    }
+
+    private void show(int bg, String emoji, int t, String s) {
+        card.setBackgroundResource(bg);
+        icon.setText(emoji);
+        title.setText(t);
+        sub.setText(s);
     }
 
     private static int parse(EditText e) {
@@ -196,88 +311,6 @@ public class FirewallActivity extends Activity {
         } catch (NumberFormatException ex) {
             return 0;
         }
-    }
-
-    // ------------------------------------------------------------------ app list
-
-    private void onAppClicked(String pkg) {
-        Set<String> blocked = Prefs.getFwBlocked(this);
-        if (blocked.contains(pkg)) {
-            Runnable remove = () -> {
-                Set<String> b = Prefs.getFwBlocked(this);
-                b.remove(pkg);
-                Prefs.setFwBlocked(this, b);
-                FirewallVpnService.refresh(this);
-                adapter.notifyDataSetChanged();
-                refreshStatus();
-            };
-            if (Prefs.isFwEnabled(this)) PasswordDialog.ask(this, remove); else remove.run();
-        } else {
-            blocked.add(pkg); // قطع کردن همیشه آزاد است
-            Prefs.setFwBlocked(this, blocked);
-            FirewallVpnService.refresh(this);
-            adapter.notifyDataSetChanged();
-            refreshStatus();
-        }
-    }
-
-    /** قطع کردن اینترنت همیشه آزاد است. */
-    private void addAll(Collection<String> pkgs) {
-        Set<String> b = Prefs.getFwBlocked(this);
-        b.addAll(pkgs);
-        Prefs.setFwBlocked(this, b);
-        FirewallVpnService.refresh(this);
-        adapter.notifyDataSetChanged();
-        refreshStatus();
-        Toast.makeText(this, getString(R.string.toast_selected, b.size()), Toast.LENGTH_SHORT).show();
-    }
-
-    /** وصل کردن دوباره اینترنت وقتی فایروال روشن است رمز می‌خواهد. */
-    private void removeAll(Collection<String> pkgs) {
-        Runnable r = () -> {
-            Set<String> b = Prefs.getFwBlocked(this);
-            b.removeAll(pkgs);
-            Prefs.setFwBlocked(this, b);
-            FirewallVpnService.refresh(this);
-            adapter.notifyDataSetChanged();
-            refreshStatus();
-        };
-        if (Prefs.isFwEnabled(this)) PasswordDialog.ask(this, r); else r.run();
-    }
-
-    // ------------------------------------------------------------------ status
-
-    private void refreshStatus() {
-        boolean enabled = Prefs.isFwEnabled(this);
-        int count = Prefs.getFwBlocked(this).size();
-        fwSwitch.setChecked(enabled);
-        appsHeader.setText(getString(R.string.fw_apps_header2, count));
-
-        if (!enabled) {
-            show(R.drawable.bg_status_off, "🌐", R.string.fw_off_title, getString(R.string.fw_off_sub));
-        } else if (!FirewallVpnService.running) {
-            show(R.drawable.bg_status_paused, "⚠️", R.string.fw_nr_title, getString(R.string.fw_nr_sub));
-        } else if (FirewallVpnService.scheduleWaiting) {
-            show(R.drawable.bg_status_on, "📱", R.string.fw_waiting_title, getString(R.string.fw_waiting_sub));
-        } else if (Prefs.isSchedEnabled(this) && FirewallVpnService.nextChangeAt > 0) {
-            String left = MainActivity.fmt(FirewallVpnService.nextChangeAt - System.currentTimeMillis());
-            if (FirewallVpnService.allBlocked) {
-                show(R.drawable.bg_status_danger, "🚫", R.string.fw_closed_title,
-                        getString(R.string.fw_closed_sub, left));
-            } else {
-                show(R.drawable.bg_status_on, "✅", R.string.fw_open_title,
-                        getString(R.string.fw_open_sub, left));
-            }
-        } else {
-            show(R.drawable.bg_status_on, "🛡", R.string.fw_on_title, getString(R.string.fw_on_sub, count));
-        }
-    }
-
-    private void show(int bg, String emoji, int t, String s) {
-        card.setBackgroundResource(bg);
-        icon.setText(emoji);
-        title.setText(t);
-        sub.setText(s);
     }
 
     private void toast(int res) { Toast.makeText(this, res, Toast.LENGTH_SHORT).show(); }

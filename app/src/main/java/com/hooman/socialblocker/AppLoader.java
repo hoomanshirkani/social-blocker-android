@@ -59,6 +59,8 @@ public final class AppLoader {
     static final class Adapter extends BaseAdapter {
         private final Activity a;
         private final Predicate<String> isChecked;
+        /** اگر تنظیم شود، به‌جای چک‌باکس یک برچسب (قانون فعلی) نشان داده می‌شود */
+        private java.util.function.Function<String, CharSequence> badge;
         private final List<AppItem> all = new ArrayList<>();
         private final List<AppItem> shown = new ArrayList<>();
         private String filter = "";
@@ -67,6 +69,8 @@ public final class AppLoader {
             this.a = a;
             this.isChecked = isChecked;
         }
+
+        void setBadge(java.util.function.Function<String, CharSequence> b) { badge = b; }
 
         void setItems(List<AppItem> items) {
             all.clear();
@@ -111,7 +115,17 @@ public final class AppLoader {
             ((ImageView) v.findViewById(R.id.icon)).setImageDrawable(it.icon);
             ((TextView) v.findViewById(R.id.label)).setText(it.label);
             ((TextView) v.findViewById(R.id.pkg)).setText(it.pkg);
-            ((CheckBox) v.findViewById(R.id.check)).setChecked(isChecked.test(it.pkg));
+            CheckBox cb = v.findViewById(R.id.check);
+            TextView bd = v.findViewById(R.id.badge);
+            if (badge != null) {
+                cb.setVisibility(View.GONE);
+                bd.setVisibility(View.VISIBLE);
+                bd.setText(badge.apply(it.pkg));
+            } else {
+                bd.setVisibility(View.GONE);
+                cb.setVisibility(View.VISIBLE);
+                cb.setChecked(isChecked.test(it.pkg));
+            }
             return v;
         }
     }

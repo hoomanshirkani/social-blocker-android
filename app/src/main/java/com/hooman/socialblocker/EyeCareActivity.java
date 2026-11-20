@@ -135,10 +135,22 @@ public class EyeCareActivity extends Activity {
             Toast.makeText(this, R.string.eye_invalid, Toast.LENGTH_LONG).show();
             return;
         }
-        Prefs.setEye(this, eyeSwitch.isChecked(), min, sec, strictSwitch.isChecked());
-        BlockerService.eyeSettingsChanged();
-        Toast.makeText(this, R.string.eye_saved, Toast.LENGTH_SHORT).show();
-        refreshStatus();
+        boolean en = eyeSwitch.isChecked(), strict = strictSwitch.isChecked();
+        Runnable save = () -> {
+            Prefs.setEye(this, en, min, sec, strict);
+            BlockerService.eyeSettingsChanged();
+            Toast.makeText(this, R.string.eye_saved, Toast.LENGTH_SHORT).show();
+            refreshStatus();
+        };
+        // شل کردن (خاموش کردن، برداشتن حالت سخت‌گیرانه، فاصله بیشتر، استراحت کوتاه‌تر)
+        // وقتی مسدودسازی روشن است رمز می‌خواهد
+        boolean wasOn = Prefs.isEyeEnabled(this);
+        boolean loosens = wasOn && (!en
+                || (Prefs.isEyeStrict(this) && !strict)
+                || min > Prefs.getEyeIntervalMin(this)
+                || sec < Prefs.getEyeBreakSec(this));
+        if (loosens && Prefs.isBlocking(this)) PasswordDialog.ask(this, save);
+        else save.run();
     }
 
     // ------------------------------------------------------------------ filter

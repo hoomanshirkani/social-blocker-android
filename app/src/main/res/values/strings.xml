@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <!-- نام برنامه ترجمه نمی‌شود چون سرویس با همین متن تنظیمات را تشخیص می‌دهد -->
-    <string name="app_name" translatable="false">Social Blocker</string>
+    <string name="app_name" translatable="false">Social Blocker + Eye Protector + Firewall</string>
 
     <string name="acc_description">Closes blocked apps (like Instagram and TikTok) when they are opened, and prevents disabling or uninstalling this app from Settings without the password.</string>
     <string name="admin_explanation">While device admin is active, this app cannot be uninstalled without the password.</string>
@@ -154,8 +154,8 @@
     <string name="toast_locked">🔒 Locked</string>
     <string name="status_unlocked">🔓 Unlocked · %1$s</string>
     <string name="menu_lock">🔒 Lock now</string>
-    <string name="fw_screen_off_title">Only when the screen is off</string>
-    <string name="fw_screen_off_sub">While you use the phone, internet stays open; the schedule starts when the screen turns off</string>
+    <string name="fw_screen_off_title">Full internet while the screen is on</string>
+    <string name="fw_screen_off_sub">The periodic window applies only while the screen is off</string>
     <string name="fw_waiting_title">Internet open</string>
     <string name="fw_waiting_sub">The schedule starts when the screen turns off</string>
 
@@ -175,8 +175,8 @@
     <string name="eye_break_len">Break for</string>
     <string name="unit_minutes">minutes</string>
     <string name="unit_seconds">seconds</string>
-    <string name="eye_strict">Strict mode</string>
-    <string name="eye_strict_sub">No skip button on the break screen</string>
+    <string name="eye_strict">Strict mode (locked)</string>
+    <string name="eye_strict_sub">No skip button, and you cannot leave the break screen or open other apps until it ends (phone calls are allowed)</string>
     <string name="eye_p1">20 min / 20 s (20-20-20)</string>
     <string name="eye_p2">45 min / 5 min</string>
     <string name="eye_p3">60 min / 10 min</string>
@@ -212,4 +212,31 @@
         <item>Stand up, stretch your back and neck, and drink a glass of water.</item>
     </string-array>
     <string name="fw_off_lockdown_hint">Firewall off. If \"Block connections without VPN\" is on in Android VPN settings, turn it off too — otherwise internet stays blocked.</string>
+    <string name="rule_free">Free</string>
+    <string name="rule_periodic">⏱ Periodic</string>
+    <string name="rule_burst">⚡ Screen on/off</string>
+    <string name="rule_always">🚫 Always blocked</string>
+    <string name="rule_free_desc">Normal internet access</string>
+    <string name="rule_periodic_desc">Opens for a short window every period (and fully while the screen is on, if enabled)</string>
+    <string name="rule_burst_desc">Internet only for a few seconds each time the screen turns on or off</string>
+    <string name="rule_always_desc">No internet at all</string>
+    <string name="fw_burst_header">⚡ RULE: SCREEN ON / OFF</string>
+    <string name="fw_burst_desc">Apps with this rule get internet only for this many seconds each time the screen turns on, and again when it turns off.</string>
+    <string name="fw_burst_invalid">Enter 3–600 seconds</string>
+    <string name="fw_periodic_header">⏱ RULE: PERIODIC</string>
+    <string name="fw_periodic_desc">Apps with this rule get internet only during the window below, repeating every period.</string>
+    <string name="fw_all_apps_title">Apply to all other apps too</string>
+    <string name="fw_all_apps_sub">Apps without a rule (Free) also follow this periodic schedule</string>
+    <string name="fw_apps_header3">APPS · TAP TO CHOOSE A RULE · %1$d WITH A RULE</string>
+    <string name="fw_st_always">🚫 %1$d always blocked</string>
+    <string name="fw_st_burst_open">⚡ %1$d open · closes in %2$s</string>
+    <string name="fw_st_burst_closed">⚡ %1$d closed until the screen turns on/off</string>
+    <string name="fw_st_all">all</string>
+    <string name="fw_st_periodic_screen">⏱ %1$s open (screen is on)</string>
+    <string name="fw_st_periodic_open">⏱ %1$s open · closes in %2$s</string>
+    <string name="fw_st_periodic_closed">⏱ %1$s closed · opens in %2$s</string>
+    <string name="fw_st_none">No app has a rule yet — tap an app below</string>
+    <string name="chip_fw_all">🚫 All → always blocked</string>
+    <string name="chip_fw_none">✕ All → free</string>
+    <string name="launcher_name" translatable="false">Social Blocker+</string>
 </resources>

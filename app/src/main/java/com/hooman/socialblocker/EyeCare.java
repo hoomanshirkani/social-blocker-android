@@ -26,6 +26,17 @@ final class EyeCare {
     /** زمان استراحت بعدی (System.currentTimeMillis) برای نمایش در UI؛ 0 = ندارد */
     static volatile long nextBreakAt = 0;
 
+    /** استراحت سخت‌گیرانه تا این زمان (elapsedRealtime) قفل است: هیچ صفحه دیگری اجازه ندارد */
+    private static volatile long lockUntil = 0;
+
+    static boolean isBreakLocked() { return SystemClock.elapsedRealtime() < lockUntil; }
+
+    static int lockRemainingSec() {
+        return (int) Math.max(1, (lockUntil - SystemClock.elapsedRealtime()) / 1000);
+    }
+
+    static void unlockBreak() { lockUntil = 0; }
+
     private final AccessibilityService svc;
     private final Handler h = new Handler(Looper.getMainLooper());
     private final Runnable fire = this::fireBreak;
@@ -101,6 +112,7 @@ final class EyeCare {
             nextBreakAt = System.currentTimeMillis() + 60_000;
             return;
         }
+        if (Prefs.isEyeStrict(svc)) lockUntil = SystemClock.elapsedRealtime() + breakMs() + 1000;
         Intent i = new Intent(svc, BreakActivity.class);
         i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         i.putExtra(BreakActivity.EXTRA_SECONDS, Prefs.getEyeBreakSec(svc));

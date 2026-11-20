@@ -1,4 +1,4 @@
-# Social Blocker (Android)
+# Social Blocker + Eye Protector + Firewall (Android)
 
 **[English](#english) | [فارسی](#فارسی)**
 
@@ -15,9 +15,9 @@ An Android app that blocks social media apps and locks itself behind a password,
 - **Daily allowance:** optionally allow blocked apps for a limited time per day (e.g. 30 minutes or 1 hour, shared across all blocked apps). Time counts only while a blocked app is on screen; it resets at midnight. Giving yourself more time needs the password.
 - **Calm block screen:** instead of jumping to the home screen, a random classical Persian poem (Saadi, Hafez, Khayyam, Ferdowsi, Rumi) or a positive message is shown in Persian and English.
 - **Self-protection:** while blocking is on, any Settings or installer screen showing "Social Blocker" (Accessibility toggle, Force stop, Uninstall, Device Admin, VPN) is closed immediately. A Device Admin receiver prevents direct uninstalling.
-- **Firewall (no root):** cut internet access (Wi-Fi and mobile data) for selected apps, using a local VPN. Blocked connections are refused immediately (TCP reset / DNS refused / ICMP unreachable), so apps fail fast instead of hanging. No traffic leaves the phone and nothing is sent to any server.
+- **Firewall (no root):** a rule per app — 🚫 always blocked, ⚡ internet only for a few seconds each time the screen turns on/off, ⏱ periodic (e.g. 10 s every minute, optionally full access while the screen is on), or free — using a local VPN. Blocked connections are refused immediately (TCP reset / DNS refused / ICMP unreachable), so apps fail fast instead of hanging. No traffic leaves the phone and nothing is sent to any server.
 - **Internet schedule:** "open for *N seconds / minutes / hours* every *M seconds / minutes / hours / days*". Outside that window, internet is blocked for **all** apps. Periods start at the moment you save.
-- **Eye care (like Eye Relax):** break reminders — after every N minutes of screen use a full-screen break with a countdown and an eye exercise (optional strict mode without skip). Warm screen filter to reduce blue light, with adjustable strength and a night-only schedule.
+- **Eye care (like Eye Relax):** break reminders — after every N minutes of screen use a full-screen break with a countdown and an eye exercise (strict mode: no skip and the break screen is locked until it ends; phone calls are allowed). Warm screen filter to reduce blue light, with adjustable strength and a night-only schedule.
 - **Languages:** English and Persian (فارسی), or follow the system language.
 
 ### Requirements
@@ -85,9 +85,9 @@ Fork the repo, create a branch, and open a pull request. Translations are welcom
 - **سهمیه روزانه:** اختیاری؛ اپ‌های مسدود هر روز به مدت محدودی باز باشند (مثلاً ۳۰ دقیقه یا ۱ ساعت، مشترک برای همه‌ی اپ‌های مسدود). زمان فقط وقتی شمرده می‌شود که اپ مسدود روی صفحه باز باشد و نیمه‌شب صفر می‌شود. زیاد کردن سهمیه رمز می‌خواهد.
 - **صفحه‌ی آرام مسدودسازی:** به‌جای پریدن به صفحه‌ی اصلی، یک شعر کلاسیک فارسی (سعدی، حافظ، خیام، فردوسی، مولانا) یا یک پیام مثبت، به فارسی و انگلیسی نمایش داده می‌شود.
 - **محافظت از خود:** وقتی مسدودسازی روشن است، هر صفحه‌ای از تنظیمات یا نصب‌کننده که اسم «Social Blocker» در آن باشد فوراً بسته می‌شود؛ مثل خاموش کردن Accessibility، Force stop، Uninstall، Device Admin و VPN. Device Admin هم جلوی حذف مستقیم را می‌گیرد.
-- **فایروال (بدون روت):** قطع اینترنت اپ‌های انتخابی، هم Wi-Fi و هم دیتا، با یک VPN محلی. اتصال‌های مسدود فوراً رد می‌شوند (TCP reset / DNS refused / ICMP unreachable)، پس اپ‌ها به‌جای هنگ کردن سریع خطا می‌دهند. هیچ ترافیکی از گوشی خارج نمی‌شود و به هیچ سروری فرستاده نمی‌شود.
+- **فایروال (بدون روت):** یک قانون برای هر اپ: 🚫 همیشه قطع، ⚡ فقط چند ثانیه اینترنت با هر روشن/خاموش شدن صفحه، ⏱ دوره‌ای (مثلاً ۱۰ ثانیه در هر دقیقه، اختیاری با اینترنت کامل وقتی صفحه روشن است) یا آزاد؛ هم Wi-Fi و هم دیتا، با یک VPN محلی. اتصال‌های مسدود فوراً رد می‌شوند (TCP reset / DNS refused / ICMP unreachable)، پس اپ‌ها به‌جای هنگ کردن سریع خطا می‌دهند. هیچ ترافیکی از گوشی خارج نمی‌شود و به هیچ سروری فرستاده نمی‌شود.
 - **زمان‌بندی اینترنت:** «باز به مدت *N ثانیه/دقیقه/ساعت* در هر *M ثانیه/دقیقه/ساعت/روز*». خارج از این بازه، اینترنت **همه‌ی** اپ‌ها قطع است. شروع دوره‌ها از لحظه‌ی ذخیره حساب می‌شود.
-- **مراقبت از چشم (مثل Eye Relax):** یادآوری استراحت؛ بعد از هر N دقیقه استفاده، صفحه استراحت با شمارش معکوس و یک تمرین چشم (حالت سخت‌گیرانه بدون دکمه رد کردن). فیلتر گرم برای کاهش نور آبی، با شدت قابل تنظیم و زمان‌بندی شبانه.
+- **مراقبت از چشم (مثل Eye Relax):** یادآوری استراحت؛ بعد از هر N دقیقه استفاده، صفحه استراحت با شمارش معکوس و یک تمرین چشم (حالت سخت‌گیرانه: بدون رد کردن و صفحه استراحت تا پایان قفل است؛ تماس تلفنی آزاد است). فیلتر گرم برای کاهش نور آبی، با شدت قابل تنظیم و زمان‌بندی شبانه.
 - **زبان:** انگلیسی و فارسی، یا زبان سیستم.
 
 ### پیش‌نیازها

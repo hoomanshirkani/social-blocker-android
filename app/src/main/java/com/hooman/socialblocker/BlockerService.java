@@ -5,6 +5,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.media.AudioManager;
 import android.os.Build;
 import android.os.Handler;
 import android.os.Looper;
@@ -118,6 +119,10 @@ public class BlockerService extends AccessibilityService {
         if (event == null || event.getPackageName() == null) return;
         boolean windowChanged = event.getEventType() == AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED;
         String pkg = event.getPackageName().toString();
+        if (EyeCare.isBreakLocked()) {
+            enforceBreak(pkg, event.getClassName(), windowChanged);
+            return;
+        }
         if (windowChanged && !ignored.contains(pkg)) {
             CharSequence cls = event.getClassName();
             if (!isInstaller(pkg)) {
@@ -182,6 +187,43 @@ public class BlockerService extends AccessibilityService {
         }
     }
 
+    // ------------------------------------------------------------------ strict eye break
+
+    private long lastBreakBounce = 0;
+
+    /** در استراحت سخت‌گیرانه هر صفحه دیگری (Home، اپ‌ها، تنظیمات، Recents) به صفحه استراحت برمی‌گردد. */
+    private void enforceBreak(String pkg, CharSequence cls, boolean windowChanged) {
+        if (!windowChanged) return;
+        if (inCall()) return; // تماس تلفنی همیشه آزاد است
+        if (pkg.equals(getPackageName()) && cls != null && cls.toString().endsWith("BreakActivity")) return;
+        if (pkg.equals("com.android.systemui")) { // نوار اعلان / Recents
+            performGlobalAction(GLOBAL_ACTION_BACK);
+            return;
+        }
+        if (ignored.contains(pkg)) return; // کیبورد
+        long now = SystemClock.uptimeMillis();
+        if (now - lastBreakBounce < 400) return;
+        lastBreakBounce = now;
+        Intent i = new Intent(this, BreakActivity.class);
+        i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        i.putExtra(BreakActivity.EXTRA_RESUME, true);
+        i.putExtra(BreakActivity.EXTRA_SECONDS, EyeCare.lockRemainingSec());
+        i.putExtra(BreakActivity.EXTRA_STRICT, true);
+        try {
+            startActivity(i);
+        } catch (Exception e) {
+            performGlobalAction(GLOBAL_ACTION_BACK);
+        }
+    }
+
+    private boolean inCall() {
+        AudioManager am = (AudioManager) getSystemService(AUDIO_SERVICE);
+        if (am == null) return false;
+        int m = am.getMode();
+        return m == AudioManager.MODE_RINGTONE || m == AudioManager.MODE_IN_CALL
+                || m == AudioManager.MODE_IN_COMMUNICATION;
+    }
+
     // ------------------------------------------------------------------ usage sessions
 
     private long usedNow() {
@@ -222,10 +264,10 @@ public class BlockerService extends AccessibilityService {
         if (pkg.equals(lastFwToastPkg) && SystemClock.uptimeMillis() - lastFwToast < 15_000) return;
         Context lc = LocaleHelper.wrap(this);
         String msg = null;
-        if (FirewallVpnService.allBlocked) {
+        if (FirewallVpnService.allBlocked && FirewallVpnService.isAppBlockedNow(pkg)) {
             msg = lc.getString(R.string.fw_toast_sched,
                     MainActivity.fmt(FirewallVpnService.nextChangeAt - System.currentTimeMillis()));
-        } else if (Prefs.isFwBlocked(this, pkg)) {
+        } else if (FirewallVpnService.isAppBlockedNow(pkg)) {
             String name = pkg;
             try {
                 name = getPackageManager().getApplicationLabel(

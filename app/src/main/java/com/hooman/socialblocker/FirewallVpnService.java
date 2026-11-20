@@ -21,6 +21,8 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Set;
+import java.util.TreeSet;
 
 /**
  * فایروال بدون روت با VpnService محلی.
@@ -28,9 +30,12 @@ import java.util.List;
  * می‌خواند و فوراً «اتصال رد شد» برمی‌گرداند (TCP RST / DNS REFUSED) تا اپ‌ها منتظر
  * timeout نمانند و هنگ نکنند. هیچ ترافیکی به سروری فرستاده نمی‌شود.
  *
- * حالت‌ها:
- *  - زمان‌بندی روشن و الان خارج از بازه مجاز → همه اپ‌ها قطع
- *  - در غیر این صورت → فقط اپ‌های تیک‌خورده در لیست فایروال قطع
+ * قانون هر اپ:
+ *  - 🚫 همیشه قطع
+ *  - ⚡ روشن/خاموش شدن صفحه: بعد از هر روشن یا خاموش شدن صفحه، N ثانیه اینترنت؛ بقیه وقت قطع
+ *  - ⏱ دوره‌ای: باز به مدت X در هر Y (اختیاری: با صفحه روشن کاملاً آزاد)
+ *  - آزاد
+ * اگر «زمان‌بندی برای همه اپ‌ها» روشن باشد، اپ‌های بدون قانون هم از قانون دوره‌ای پیروی می‌کنند.
  */
 public class FirewallVpnService extends VpnService {
 
@@ -46,6 +51,24 @@ public class FirewallVpnService extends VpnService {
     static volatile long nextChangeAt = 0;
     /** زمان‌بندی روشن است ولی چون صفحه روشن است فعلاً اعمال نمی‌شود */
     static volatile boolean scheduleWaiting = false;
+    /** وضعیت گروه ⚡ */
+    static volatile boolean burstOpen = false;
+    static volatile long burstOpenUntil = 0;
+    /** وضعیت گروه ⏱ */
+    static volatile boolean periodicOpen = true;
+    static volatile long periodicNextChange = 0;
+    /** اپ‌هایی که همین الان اینترنت ندارند (یا در حالت «همه»، استثناها) */
+    private static volatile Set<String> blockedNow = java.util.Collections.emptySet();
+    private static volatile Set<String> exemptNow = java.util.Collections.emptySet();
+
+    /** آیا اینترنت این اپ همین الان قطع است؟ */
+    static boolean isAppBlockedNow(String pkg) {
+        if (!running) return false;
+        return allBlocked ? !exemptNow.contains(pkg) : blockedNow.contains(pkg);
+    }
+
+    /** پنجره گروه ⚡ تا این زمان (currentTimeMillis) باز است */
+    private long burstUntil = 0;
 
     private final Handler handler = new Handler(Looper.getMainLooper());
     private final Runnable tick = this::apply;
@@ -58,6 +81,8 @@ public class FirewallVpnService extends VpnService {
     private final BroadcastReceiver screenReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context c, Intent i) {
+            // هر روشن یا خاموش شدن صفحه → پنجره کوتاه اینترنت برای گروه ⚡
+            burstUntil = System.currentTimeMillis() + Prefs.getBurstSec(FirewallVpnService.this) * 1000L;
             if (running) apply();
         }
     };
@@ -104,29 +129,46 @@ public class FirewallVpnService extends VpnService {
         if (!Prefs.isFwEnabled(this)) { shutdown(); stopSelf(); return; }
 
         long now = System.currentTimeMillis();
-        boolean scheduleOn = Prefs.isSchedEnabled(this);
-        boolean waiting = scheduleOn && Prefs.isSchedScreenOffOnly(this) && isScreenOn();
-        if (waiting) scheduleOn = false; // صفحه روشن است → اینترنت آزاد (فقط لیست اپ‌ها)
-        boolean blockAll = false;
-        long next = 0;
+        Set<String> always = Prefs.getFwBlocked(this);
+        Set<String> burst = Prefs.getFwBurst(this);
+        Set<String> periodic = Prefs.getFwPeriodic(this);
+        boolean periodicAll = Prefs.isSchedEnabled(this);
+        boolean periodicUsed = periodicAll || !periodic.isEmpty();
 
-        if (scheduleOn) {
+        // ⏱ دوره‌ای
+        boolean waiting = periodicUsed && Prefs.isSchedScreenOffOnly(this) && isScreenOn();
+        boolean pOpen = true;
+        long pNext = 0;
+        if (periodicUsed && !waiting) {
             long on = Prefs.getSchedOnMs(this);
             long period = Prefs.getSchedPeriodMs(this);
             long anchor = Prefs.getSchedAnchor(this);
             long elapsed = Math.floorMod(now - anchor, period);
-            boolean allowed = elapsed < on;
-            blockAll = !allowed;
-            next = now + (allowed ? on - elapsed : period - elapsed);
+            pOpen = elapsed < on;
+            pNext = now + (pOpen ? on - elapsed : period - elapsed);
+        }
+
+        // ⚡ روشن/خاموش شدن صفحه
+        boolean bOpen = now < burstUntil;
+
+        long next = pNext;
+        if (bOpen) next = next == 0 ? burstUntil : Math.min(next, burstUntil);
+
+        boolean blockAll = periodicAll && !pOpen;
+        Set<String> blocked = new TreeSet<>(always);
+        if (!bOpen) blocked.addAll(burst);
+        if (!pOpen) blocked.addAll(periodic);
+        Set<String> exempt = new TreeSet<>();
+        if (blockAll && bOpen) {
+            exempt.addAll(burst);
+            exempt.removeAll(always);
         }
 
         // کلید پیکربندی: اگر همان قبلی است، تونل را دست نزن (جلوگیری از قطع و وصل بی‌دلیل)
-        List<String> pkgs = new ArrayList<>(Prefs.getFwBlocked(this));
-        Collections.sort(pkgs);
-        String key = blockAll ? "ALL" : "LIST:" + pkgs;
+        String key = blockAll ? "ALL-" + exempt : "LIST:" + blocked;
 
         if (tun == null || !key.equals(tunKey)) {
-            ParcelFileDescriptor newTun = build(blockAll, pkgs);
+            ParcelFileDescriptor newTun = build(blockAll, new ArrayList<>(blockAll ? exempt : blocked));
             if (newTun == null) { // اجازه VPN داده نشده یا VPN دیگری فعال است
                 shutdown();
                 stopSelf();
@@ -142,13 +184,20 @@ public class FirewallVpnService extends VpnService {
             closeQuietly(oldTun);
         }
 
+        blockedNow = java.util.Collections.unmodifiableSet(blocked);
+        exemptNow = java.util.Collections.unmodifiableSet(exempt);
+        burstOpen = bOpen;
+        burstOpenUntil = bOpen ? burstUntil : 0;
+        periodicOpen = pOpen;
+        periodicNextChange = pNext;
         running = true;
         allBlocked = blockAll;
-        nextChangeAt = next;
+        nextChangeAt = blockAll ? pNext : next;
         scheduleWaiting = waiting;
         if (next > 0) handler.postDelayed(tick, Math.max(500, next - now));
     }
 
+    /** blockAll: همه به‌جز خود ما و pkgs؛ در غیر این صورت فقط pkgs داخل تونل (= قطع). */
     private ParcelFileDescriptor build(boolean blockAll, List<String> pkgs) {
         Builder b = new Builder()
                 .setSession(getString(R.string.app_name))
@@ -164,6 +213,11 @@ public class FirewallVpnService extends VpnService {
         try {
             if (blockAll) {
                 b.addDisallowedApplication(getPackageName()); // همه به‌جز خود ما
+                for (String pkg : pkgs) {
+                    try {
+                        b.addDisallowedApplication(pkg); // استثنا: پنجره ⚡ باز
+                    } catch (PackageManager.NameNotFoundException ignored) {}
+                }
             } else {
                 int added = 0;
                 for (String pkg : pkgs) {
@@ -194,6 +248,12 @@ public class FirewallVpnService extends VpnService {
         allBlocked = false;
         nextChangeAt = 0;
         scheduleWaiting = false;
+        burstOpen = false;
+        burstOpenUntil = 0;
+        periodicOpen = true;
+        periodicNextChange = 0;
+        blockedNow = java.util.Collections.emptySet();
+        exemptNow = java.util.Collections.emptySet();
     }
 
     private static void closeQuietly(ParcelFileDescriptor p) {

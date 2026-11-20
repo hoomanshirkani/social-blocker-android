@@ -115,6 +115,55 @@ public final class Prefs {
         sp(c).edit().putStringSet("fw_blocked", new HashSet<>(s)).commit();
     }
 
+    // ---------- قانون فایروال برای هر اپ ----------
+    // ترتیب از آزاد به سخت‌گیرانه (برای تشخیص «شل کردن» که رمز می‌خواهد)
+    static final int FW_FREE = 0, FW_PERIODIC = 1, FW_BURST = 2, FW_ALWAYS = 3;
+
+    static Set<String> getFwBurst(Context c) {
+        return new HashSet<>(sp(c).getStringSet("fw_burst", new HashSet<>()));
+    }
+
+    static Set<String> getFwPeriodic(Context c) {
+        return new HashSet<>(sp(c).getStringSet("fw_periodic", new HashSet<>()));
+    }
+
+    static int getFwRule(Context c, String pkg) {
+        if (isFwBlocked(c, pkg)) return FW_ALWAYS;
+        Set<String> b = sp(c).getStringSet("fw_burst", null);
+        if (b != null && b.contains(pkg)) return FW_BURST;
+        Set<String> p = sp(c).getStringSet("fw_periodic", null);
+        if (p != null && p.contains(pkg)) return FW_PERIODIC;
+        return FW_FREE;
+    }
+
+    static void setFwRule(Context c, java.util.Collection<String> pkgs, int rule) {
+        Set<String> always = getFwBlocked(c), burst = getFwBurst(c), periodic = getFwPeriodic(c);
+        always.removeAll(pkgs);
+        burst.removeAll(pkgs);
+        periodic.removeAll(pkgs);
+        if (rule == FW_ALWAYS) always.addAll(pkgs);
+        else if (rule == FW_BURST) burst.addAll(pkgs);
+        else if (rule == FW_PERIODIC) periodic.addAll(pkgs);
+        sp(c).edit()
+                .putStringSet("fw_blocked", always)
+                .putStringSet("fw_burst", burst)
+                .putStringSet("fw_periodic", periodic)
+                .commit();
+    }
+
+    /** همه اپ‌هایی که قانونی دارند (برای مرتب‌سازی لیست) */
+    static Set<String> getFwRuled(Context c) {
+        Set<String> s = getFwBlocked(c);
+        s.addAll(getFwBurst(c));
+        s.addAll(getFwPeriodic(c));
+        return s;
+    }
+
+    /** چند ثانیه اینترنت برای گروه «⚡ روشن/خاموش شدن صفحه» */
+    static int getBurstSec(Context c) { return sp(c).getInt("fw_burst_sec", 10); }
+
+    static void setBurstSec(Context c, int sec) { sp(c).edit().putInt("fw_burst_sec", sec).commit(); }
+
     // ---------- برنامه زمانی اینترنت ----------
     /** واحدها: 0=ثانیه 1=دقیقه 2=ساعت 3=روز */
     static final long[] UNIT_MS = {1000L, 60_000L, 3_600_000L, 86_400_000L};
@@ -185,7 +234,7 @@ public final class Prefs {
     static boolean isEyeEnabled(Context c) { return sp(c).getBoolean("eye_enabled", false); }
     static int getEyeIntervalMin(Context c) { return sp(c).getInt("eye_interval_min", 20); }
     static int getEyeBreakSec(Context c) { return sp(c).getInt("eye_break_sec", 20); }
-    static boolean isEyeStrict(Context c) { return sp(c).getBoolean("eye_strict", false); }
+    static boolean isEyeStrict(Context c) { return sp(c).getBoolean("eye_strict", true); }
 
     static void setEye(Context c, boolean enabled, int intervalMin, int breakSec, boolean strict) {
         sp(c).edit()
