@@ -154,4 +154,8 @@
     <string name="toast_locked">🔒 Locked</string>
     <string name="status_unlocked">🔓 Unlocked · %1$s</string>
     <string name="menu_lock">🔒 Lock now</string>
+    <string name="fw_screen_off_title">Only when the screen is off</string>
+    <string name="fw_screen_off_sub">While you use the phone, internet stays open; the schedule starts when the screen turns off</string>
+    <string name="fw_waiting_title">Internet open</string>
+    <string name="fw_waiting_sub">The schedule starts when the screen turns off</string>
 </resources>

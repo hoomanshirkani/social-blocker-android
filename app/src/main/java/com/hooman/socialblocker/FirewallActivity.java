@@ -28,7 +28,7 @@ public class FirewallActivity extends Activity {
 
     private View card;
     private TextView icon, title, sub, appsHeader;
-    private Switch fwSwitch, schedSwitch;
+    private Switch fwSwitch, schedSwitch, screenOffSwitch;
     private EditText onVal, everyVal;
     private Spinner onUnit, everyUnit;
     private ListView list;
@@ -61,6 +61,7 @@ public class FirewallActivity extends Activity {
         sub = h.findViewById(R.id.fwSub);
         fwSwitch = h.findViewById(R.id.fwSwitch);
         schedSwitch = h.findViewById(R.id.schedSwitch);
+        screenOffSwitch = h.findViewById(R.id.screenOffSwitch);
         onVal = h.findViewById(R.id.onVal);
         everyVal = h.findViewById(R.id.everyVal);
         onUnit = h.findViewById(R.id.onUnit);
@@ -76,6 +77,7 @@ public class FirewallActivity extends Activity {
 
         // مقادیر ذخیره‌شده
         schedSwitch.setChecked(Prefs.isSchedEnabled(this));
+        screenOffSwitch.setChecked(Prefs.isSchedScreenOffOnly(this));
         setScheduleFields(Prefs.getSchedOnVal(this), Prefs.getSchedOnUnit(this),
                 Prefs.getSchedEveryVal(this), Prefs.getSchedEveryUnit(this));
 
@@ -166,6 +168,7 @@ public class FirewallActivity extends Activity {
         long onMs = on * Prefs.UNIT_MS[onU];
         long periodMs = every * Prefs.UNIT_MS[evU];
         boolean enable = schedSwitch.isChecked();
+        boolean screenOffOnly = screenOffSwitch.isChecked();
 
         if (enable && (on <= 0 || every <= 0 || onMs < 5000 || periodMs - onMs < 5000)) {
             toast(R.string.fw_invalid);
@@ -173,7 +176,7 @@ public class FirewallActivity extends Activity {
         }
 
         Runnable save = () -> {
-            Prefs.setSchedule(this, enable, Math.max(on, 1), onU, Math.max(every, 1), evU);
+            Prefs.setSchedule(this, enable, Math.max(on, 1), onU, Math.max(every, 1), evU, screenOffOnly);
             FirewallVpnService.refresh(this);
             toast(Prefs.isFwEnabled(this) || !enable ? R.string.fw_sched_saved : R.string.fw_need_fw);
             refreshStatus();
@@ -253,6 +256,8 @@ public class FirewallActivity extends Activity {
             show(R.drawable.bg_status_off, "🌐", R.string.fw_off_title, getString(R.string.fw_off_sub));
         } else if (!FirewallVpnService.running) {
             show(R.drawable.bg_status_paused, "⚠️", R.string.fw_nr_title, getString(R.string.fw_nr_sub));
+        } else if (FirewallVpnService.scheduleWaiting) {
+            show(R.drawable.bg_status_on, "📱", R.string.fw_waiting_title, getString(R.string.fw_waiting_sub));
         } else if (Prefs.isSchedEnabled(this) && FirewallVpnService.nextChangeAt > 0) {
             String left = MainActivity.fmt(FirewallVpnService.nextChangeAt - System.currentTimeMillis());
             if (FirewallVpnService.allBlocked) {

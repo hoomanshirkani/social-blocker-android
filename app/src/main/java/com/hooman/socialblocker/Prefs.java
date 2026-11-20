@@ -119,10 +119,15 @@ public final class Prefs {
     static long getSchedPeriodMs(Context c) { return getSchedEveryVal(c) * UNIT_MS[getSchedEveryUnit(c)]; }
     static long getSchedAnchor(Context c) { return sp(c).getLong("sched_anchor", 0); }
 
+    /** زمان‌بندی فقط وقتی صفحه خاموش است اعمال شود (پیش‌فرض: بله) */
+    static boolean isSchedScreenOffOnly(Context c) { return sp(c).getBoolean("sched_screen_off_only", true); }
+
     /** ذخیره برنامه؛ شروع بازه‌ها از همین لحظه حساب می‌شود. */
-    static void setSchedule(Context c, boolean enabled, int onVal, int onUnit, int everyVal, int everyUnit) {
+    static void setSchedule(Context c, boolean enabled, int onVal, int onUnit, int everyVal, int everyUnit,
+                            boolean screenOffOnly) {
         sp(c).edit()
                 .putBoolean("sched_enabled", enabled)
+                .putBoolean("sched_screen_off_only", screenOffOnly)
                 .putInt("sched_on_val", onVal)
                 .putInt("sched_on_unit", onUnit)
                 .putInt("sched_every_val", everyVal)

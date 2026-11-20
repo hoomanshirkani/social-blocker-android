@@ -151,4 +151,8 @@
     <string name="toast_locked">🔒 قفل شد</string>
     <string name="status_unlocked">🔓 باز · %1$s</string>
     <string name="menu_lock">🔒 همین حالا قفل کن</string>
+    <string name="fw_screen_off_title">فقط وقتی صفحه خاموش است</string>
+    <string name="fw_screen_off_sub">وقتی با گوشی کار می‌کنی اینترنت باز است؛ زمان‌بندی با خاموش شدن صفحه شروع می‌شود</string>
+    <string name="fw_waiting_title">اینترنت باز است</string>
+    <string name="fw_waiting_sub">زمان‌بندی با خاموش شدن صفحه شروع می‌شود</string>
 </resources>

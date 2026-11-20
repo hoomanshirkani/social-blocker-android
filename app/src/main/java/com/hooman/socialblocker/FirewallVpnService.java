@@ -1,12 +1,16 @@
 package com.hooman.socialblocker;
 
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.net.VpnService;
+import android.os.Build;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.ParcelFileDescriptor;
+import android.os.PowerManager;
 
 import java.io.IOException;
 import java.util.Set;
@@ -30,10 +34,35 @@ public class FirewallVpnService extends VpnService {
     static volatile boolean running = false;
     static volatile boolean allBlocked = false;
     static volatile long nextChangeAt = 0;
+    /** زمان‌بندی روشن است ولی چون صفحه روشن است فعلاً اعمال نمی‌شود */
+    static volatile boolean scheduleWaiting = false;
 
     private final Handler handler = new Handler(Looper.getMainLooper());
     private final Runnable tick = this::apply;
     private ParcelFileDescriptor tun;
+
+    /** با روشن/خاموش شدن صفحه، حالت تونل دوباره محاسبه می‌شود. */
+    private final BroadcastReceiver screenReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context c, Intent i) {
+            if (running) apply();
+        }
+    };
+
+    @Override
+    public void onCreate() {
+        super.onCreate();
+        IntentFilter f = new IntentFilter();
+        f.addAction(Intent.ACTION_SCREEN_ON);
+        f.addAction(Intent.ACTION_SCREEN_OFF);
+        if (Build.VERSION.SDK_INT >= 33) registerReceiver(screenReceiver, f, Context.RECEIVER_EXPORTED);
+        else registerReceiver(screenReceiver, f);
+    }
+
+    private boolean isScreenOn() {
+        PowerManager pm = (PowerManager) getSystemService(POWER_SERVICE);
+        return pm == null || pm.isInteractive();
+    }
 
     /** از هر جای برنامه بعد از تغییر تنظیمات صدا زده می‌شود. */
     static void refresh(Context c) {
@@ -63,6 +92,8 @@ public class FirewallVpnService extends VpnService {
 
         long now = System.currentTimeMillis();
         boolean scheduleOn = Prefs.isSchedEnabled(this);
+        boolean waiting = scheduleOn && Prefs.isSchedScreenOffOnly(this) && isScreenOn();
+        if (waiting) scheduleOn = false; // صفحه روشن است → اینترنت آزاد (فقط لیست اپ‌ها)
         boolean blockAll = false;
         long next = 0;
 
@@ -118,6 +149,7 @@ public class FirewallVpnService extends VpnService {
         running = true;
         allBlocked = blockAll;
         nextChangeAt = next;
+        scheduleWaiting = waiting;
         if (next > 0) handler.postDelayed(tick, Math.max(500, next - now));
     }
 
@@ -128,6 +160,7 @@ public class FirewallVpnService extends VpnService {
         running = false;
         allBlocked = false;
         nextChangeAt = 0;
+        scheduleWaiting = false;
     }
 
     private static void closeQuietly(ParcelFileDescriptor p) {
@@ -144,6 +177,7 @@ public class FirewallVpnService extends VpnService {
 
     @Override
     public void onDestroy() {
+        try { unregisterReceiver(screenReceiver); } catch (Exception ignored) {}
         shutdown();
         super.onDestroy();
     }
