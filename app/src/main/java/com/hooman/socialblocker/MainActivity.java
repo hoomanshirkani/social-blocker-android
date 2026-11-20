@@ -25,6 +25,7 @@ import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.util.Collection;
 import java.util.Locale;
 import java.util.Set;
 
@@ -114,6 +115,10 @@ public class MainActivity extends Activity {
             public void onTextChanged(CharSequence s, int a, int b, int c) {}
             public void afterTextChanged(Editable s) { adapter.setFilter(s.toString()); }
         });
+
+        h.findViewById(R.id.chipSocial).setOnClickListener(v -> addAll(installedSocial()));
+        h.findViewById(R.id.chipAll).setOnClickListener(v -> addAll(adapter.shownPkgs()));
+        h.findViewById(R.id.chipNone).setOnClickListener(v -> removeAll(adapter.shownPkgs()));
 
         if (!Prefs.hasPassword(this)) showSetPasswordDialog(true);
         AppLoader.load(this, Prefs.getBlocked(this), adapter::setItems);
@@ -335,6 +340,41 @@ public class MainActivity extends Activity {
             adapter.notifyDataSetChanged();
             refresh();
         }
+    }
+
+    // ------------------------------------------------------------------ bulk select
+
+    private java.util.List<String> installedSocial() {
+        java.util.List<String> out = new java.util.ArrayList<>();
+        for (String pkg : Prefs.DEFAULT_SOCIAL) {
+            try {
+                getPackageManager().getApplicationInfo(pkg, 0);
+                out.add(pkg);
+            } catch (Exception ignored) {}
+        }
+        return out;
+    }
+
+    /** اضافه کردن به لیست همیشه آزاد است. */
+    private void addAll(Collection<String> pkgs) {
+        Set<String> b = Prefs.getBlocked(this);
+        b.addAll(pkgs);
+        Prefs.setBlocked(this, b);
+        adapter.notifyDataSetChanged();
+        refresh();
+        Toast.makeText(this, getString(R.string.toast_selected, b.size()), Toast.LENGTH_SHORT).show();
+    }
+
+    /** برداشتن از لیست وقتی مسدودسازی روشن است رمز می‌خواهد. */
+    private void removeAll(Collection<String> pkgs) {
+        Runnable r = () -> {
+            Set<String> b = Prefs.getBlocked(this);
+            b.removeAll(pkgs);
+            Prefs.setBlocked(this, b);
+            adapter.notifyDataSetChanged();
+            refresh();
+        };
+        if (Prefs.isBlocking(this)) PasswordDialog.ask(this, r); else r.run();
     }
 
     // ------------------------------------------------------------------ dialogs

@@ -3,7 +3,7 @@
     <string name="acc_description">این سرویس وقتی اپ‌های مسدودشده (مثل اینستاگرام و تیک‌تاک) باز شوند، آن‌ها را می‌بندد. همچنین جلوی غیرفعال کردن یا حذف برنامه از تنظیمات را بدون رمز می‌گیرد.</string>
     <string name="admin_explanation">با فعال کردن مدیر دستگاه، حذف برنامه بدون وارد کردن رمز ممکن نیست.</string>
     <string name="admin_disable_warning">برای غیرفعال کردن، اول داخل برنامه مسدودسازی را با رمز خاموش کنید.</string>
-    <string name="search_hint">جستجوی اپ…</string>
+    <string name="search_hint">🔍 جستجوی اپ…</string>
     <string name="blocked_title">این اپ مسدود است</string>
     <string name="blocked_settings_title">تنظیمات قفل است</string>
     <string name="blocked_settings">این بخش از تنظیمات محافظت شده است. برای تغییر، اول مسدودسازی را داخل Social Blocker با رمز خاموش کنید.</string>
@@ -138,4 +138,8 @@
         <item>ساعت</item>
     </string-array>
     <string name="next_quote">↻ یکی دیگر</string>
+    <string name="chip_social">📱 اپ‌های سوشال</string>
+    <string name="chip_select_all">✓ انتخاب همه</string>
+    <string name="chip_clear">✕ پاک کردن همه</string>
+    <string name="toast_selected">%1$d اپ انتخاب شد</string>
 </resources>

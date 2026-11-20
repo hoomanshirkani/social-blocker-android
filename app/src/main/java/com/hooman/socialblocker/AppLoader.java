@@ -81,6 +81,13 @@ public final class AppLoader {
 
         AppItem at(int pos) { return shown.get(pos); }
 
+        /** پکیج‌های قابل‌مشاهده (با فیلتر جستجوی فعلی) — برای «انتخاب همه». */
+        List<String> shownPkgs() {
+            List<String> out = new ArrayList<>();
+            for (AppItem it : shown) out.add(it.pkg);
+            return out;
+        }
+
         private void apply() {
             shown.clear();
             for (AppItem it : all) {

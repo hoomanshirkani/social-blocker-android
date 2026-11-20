@@ -18,6 +18,7 @@ import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.util.Collection;
 import java.util.Set;
 
 /** صفحه فایروال: قطع اینترنت اپ‌ها + برنامه زمانی اینترنت. */
@@ -96,6 +97,8 @@ public class FirewallActivity extends Activity {
             public void onTextChanged(CharSequence s, int a, int b, int c) {}
             public void afterTextChanged(Editable s) { adapter.setFilter(s.toString()); }
         });
+        h.findViewById(R.id.fwChipAll).setOnClickListener(v -> addAll(adapter.shownPkgs()));
+        h.findViewById(R.id.fwChipNone).setOnClickListener(v -> removeAll(adapter.shownPkgs()));
         AppLoader.load(this, Prefs.getFwBlocked(this), adapter::setItems);
     }
 
@@ -212,6 +215,30 @@ public class FirewallActivity extends Activity {
             adapter.notifyDataSetChanged();
             refreshStatus();
         }
+    }
+
+    /** قطع کردن اینترنت همیشه آزاد است. */
+    private void addAll(Collection<String> pkgs) {
+        Set<String> b = Prefs.getFwBlocked(this);
+        b.addAll(pkgs);
+        Prefs.setFwBlocked(this, b);
+        FirewallVpnService.refresh(this);
+        adapter.notifyDataSetChanged();
+        refreshStatus();
+        Toast.makeText(this, getString(R.string.toast_selected, b.size()), Toast.LENGTH_SHORT).show();
+    }
+
+    /** وصل کردن دوباره اینترنت وقتی فایروال روشن است رمز می‌خواهد. */
+    private void removeAll(Collection<String> pkgs) {
+        Runnable r = () -> {
+            Set<String> b = Prefs.getFwBlocked(this);
+            b.removeAll(pkgs);
+            Prefs.setFwBlocked(this, b);
+            FirewallVpnService.refresh(this);
+            adapter.notifyDataSetChanged();
+            refreshStatus();
+        };
+        if (Prefs.isFwEnabled(this)) PasswordDialog.ask(this, r); else r.run();
     }
 
     // ------------------------------------------------------------------ status

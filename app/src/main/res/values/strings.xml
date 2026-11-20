@@ -6,7 +6,7 @@
     <string name="acc_description">Closes blocked apps (like Instagram and TikTok) when they are opened, and prevents disabling or uninstalling this app from Settings without the password.</string>
     <string name="admin_explanation">While device admin is active, this app cannot be uninstalled without the password.</string>
     <string name="admin_disable_warning">To disable this, first turn off blocking inside the app with your password.</string>
-    <string name="search_hint">Search apps…</string>
+    <string name="search_hint">🔍 Search apps…</string>
     <string name="blocked_title">This app is blocked</string>
     <string name="blocked_settings_title">Settings are locked</string>
     <string name="blocked_settings">This part of Settings is protected. To change it, first turn off blocking in Social Blocker with your password.</string>
@@ -141,4 +141,8 @@
         <item>hours</item>
     </string-array>
     <string name="next_quote">↻ Another one</string>
+    <string name="chip_social">📱 Social apps</string>
+    <string name="chip_select_all">✓ Select all</string>
+    <string name="chip_clear">✕ Clear all</string>
+    <string name="toast_selected">%1$d apps selected</string>
 </resources>
