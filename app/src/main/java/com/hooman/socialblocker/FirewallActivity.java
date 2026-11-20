@@ -22,6 +22,8 @@ import android.widget.Toast;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.List;
 
 /**
@@ -46,6 +48,9 @@ public class FirewallActivity extends Activity {
     private Spinner onUnit, everyUnit;
     private ListView list;
     private AppLoader.Adapter adapter;
+    /** اپ‌های انتخاب‌شده برای تغییر گروهی قانون */
+    private final Set<String> selected = new HashSet<>();
+    private TextView chipApply;
 
     private final Handler handler = new Handler(Looper.getMainLooper());
     private final Runnable ticker = new Runnable() {
@@ -122,20 +127,38 @@ public class FirewallActivity extends Activity {
         h.findViewById(R.id.preset2).setOnClickListener(v -> setScheduleFields(5, 1, 1, 2));
         h.findViewById(R.id.preset3).setOnClickListener(v -> setScheduleFields(30, 1, 1, 3));
 
-        adapter = new AppLoader.Adapter(this, pkg -> false);
+        adapter = new AppLoader.Adapter(this, selected::contains);
         adapter.setBadge(pkg -> getString(RULE_LABELS[Prefs.getFwRule(this, pkg)]));
         list.setAdapter(adapter);
         list.setOnItemClickListener((p, v, pos, id) -> {
             int i = pos - list.getHeaderViewsCount();
-            if (i >= 0 && i < adapter.getCount()) pickRule(adapter.at(i));
+            if (i < 0 || i >= adapter.getCount()) return;
+            // در حالت انتخاب: ضربه = انتخاب/لغو؛ در غیر این صورت: انتخاب قانون همان اپ
+            if (selected.isEmpty()) pickRule(adapter.at(i));
+            else toggle(adapter.at(i).pkg);
+        });
+        list.setOnItemLongClickListener((p, v, pos, id) -> {
+            int i = pos - list.getHeaderViewsCount();
+            if (i < 0 || i >= adapter.getCount()) return false;
+            toggle(adapter.at(i).pkg);
+            return true;
         });
         search.addTextChangedListener(new TextWatcher() {
             public void beforeTextChanged(CharSequence s, int a, int b, int c) {}
             public void onTextChanged(CharSequence s, int a, int b, int c) {}
             public void afterTextChanged(Editable s) { adapter.setFilter(s.toString()); }
         });
-        h.findViewById(R.id.fwChipAll).setOnClickListener(v -> setRule(adapter.shownPkgs(), Prefs.FW_ALWAYS));
-        h.findViewById(R.id.fwChipNone).setOnClickListener(v -> setRule(adapter.shownPkgs(), Prefs.FW_FREE));
+        chipApply = h.findViewById(R.id.fwChipApply);
+        chipApply.setOnClickListener(v -> pickRuleForSelected());
+        h.findViewById(R.id.fwChipAll).setOnClickListener(v -> {
+            selected.addAll(adapter.shownPkgs()); // همه نتایج جستجوی فعلی
+            updateSelection();
+        });
+        h.findViewById(R.id.fwChipNone).setOnClickListener(v -> {
+            selected.clear();
+            updateSelection();
+        });
+        updateSelection();
         AppLoader.load(this, Prefs.getFwRuled(this), adapter::setItems);
     }
 
@@ -248,6 +271,40 @@ public class FirewallActivity extends Activity {
                 .setSingleChoiceItems(names, current, (d, which) -> {
                     d.dismiss();
                     if (which != current) setRule(Collections.singletonList(item.pkg), which);
+                })
+                .setNegativeButton(R.string.cancel, null)
+                .show();
+    }
+
+    // ------------------------------------------------------------------ bulk selection
+
+    private void toggle(String pkg) {
+        if (!selected.remove(pkg)) selected.add(pkg);
+        updateSelection();
+    }
+
+    private void updateSelection() {
+        int n = selected.size();
+        chipApply.setText(n == 0 ? getString(R.string.chip_fw_apply_none) : getString(R.string.chip_fw_apply, n));
+        adapter.setSelectionMode(n > 0);
+    }
+
+    private void pickRuleForSelected() {
+        if (selected.isEmpty()) {
+            toast(R.string.fw_select_first);
+            return;
+        }
+        CharSequence[] names = new CharSequence[RULE_LABELS.length];
+        for (int i = 0; i < names.length; i++) {
+            names[i] = getString(RULE_LABELS[i]) + "\n" + getString(RULE_DESCS[i]);
+        }
+        new AlertDialog.Builder(this)
+                .setTitle(getString(R.string.fw_bulk_title, selected.size()))
+                .setItems(names, (d, which) -> {
+                    List<String> pkgs = new ArrayList<>(selected);
+                    selected.clear();
+                    updateSelection();
+                    setRule(pkgs, which);
                 })
                 .setNegativeButton(R.string.cancel, null)
                 .show();

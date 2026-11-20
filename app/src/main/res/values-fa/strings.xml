@@ -253,4 +253,10 @@
         <item>۵ دقیقه</item>
         <item>۱۰ دقیقه</item>
     </string-array>
+    <string name="chip_deselect">✕ لغو انتخاب</string>
+    <string name="chip_fw_apply_none">⚙ قانون برای انتخاب‌شده‌ها</string>
+    <string name="chip_fw_apply">⚙ قانون برای %1$d اپ انتخاب‌شده</string>
+    <string name="fw_select_first">اول اپ‌ها را انتخاب کن: روی یک اپ انگشت را نگه دار، یا «انتخاب همه» را بزن</string>
+    <string name="fw_bulk_title">قانون برای %1$d اپ</string>
+    <string name="fw_select_hint">ضربه روی اپ: انتخاب قانون همان اپ · نگه داشتن: انتخاب چندتایی · «انتخاب همه» روی نتیجه جستجوی فعلی کار می‌کند</string>
 </resources>

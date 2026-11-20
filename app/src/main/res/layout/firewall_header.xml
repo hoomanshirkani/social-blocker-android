@@ -322,6 +322,15 @@
         android:id="@+id/fwAppsHeader"
         style="@style/SectionTitle" />
 
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="8dp"
+        android:paddingStart="4dp"
+        android:text="@string/fw_select_hint"
+        android:textColor="@color/text_muted"
+        android:textSize="13sp" />
+
     <EditText
         android:id="@+id/fwSearch"
         android:layout_width="match_parent"
@@ -347,14 +356,19 @@
             android:orientation="horizontal">
 
             <TextView
+                android:id="@+id/fwChipApply"
+                style="@style/Chip"
+                android:text="@string/chip_fw_apply_none" />
+
+            <TextView
                 android:id="@+id/fwChipAll"
                 style="@style/Chip"
-                android:text="@string/chip_fw_all" />
+                android:text="@string/chip_select_all" />
 
             <TextView
                 android:id="@+id/fwChipNone"
                 style="@style/Chip"
-                android:text="@string/chip_fw_none" />
+                android:text="@string/chip_deselect" />
         </LinearLayout>
     </HorizontalScrollView>
 

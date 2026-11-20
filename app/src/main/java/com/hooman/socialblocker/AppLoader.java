@@ -72,6 +72,14 @@ public final class AppLoader {
 
         void setBadge(java.util.function.Function<String, CharSequence> b) { badge = b; }
 
+        /** در حالت انتخاب، کنار برچسب قانون یک چک‌باکس هم نمایش داده می‌شود */
+        private boolean selectionMode = false;
+
+        void setSelectionMode(boolean on) {
+            selectionMode = on;
+            notifyDataSetChanged();
+        }
+
         void setItems(List<AppItem> items) {
             all.clear();
             all.addAll(items);
@@ -118,9 +126,10 @@ public final class AppLoader {
             CheckBox cb = v.findViewById(R.id.check);
             TextView bd = v.findViewById(R.id.badge);
             if (badge != null) {
-                cb.setVisibility(View.GONE);
                 bd.setVisibility(View.VISIBLE);
                 bd.setText(badge.apply(it.pkg));
+                cb.setVisibility(selectionMode ? View.VISIBLE : View.GONE);
+                cb.setChecked(selectionMode && isChecked.test(it.pkg));
             } else {
                 bd.setVisibility(View.GONE);
                 cb.setVisibility(View.VISIBLE);

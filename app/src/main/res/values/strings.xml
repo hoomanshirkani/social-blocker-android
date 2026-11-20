@@ -257,4 +257,10 @@
         <item>5 minutes</item>
         <item>10 minutes</item>
     </string-array>
+    <string name="chip_deselect">✕ Deselect all</string>
+    <string name="chip_fw_apply_none">⚙ Set rule for selected</string>
+    <string name="chip_fw_apply">⚙ Set rule for %1$d selected</string>
+    <string name="fw_select_first">Select apps first: long-press an app, or use \"Select all\"</string>
+    <string name="fw_bulk_title">Rule for %1$d apps</string>
+    <string name="fw_select_hint">Tap an app to choose its rule · Long-press to select several · \"Select all\" uses the current search</string>
 </resources>
