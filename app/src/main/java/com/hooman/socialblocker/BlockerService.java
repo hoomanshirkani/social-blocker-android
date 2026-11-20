@@ -32,6 +32,7 @@ public class BlockerService extends AccessibilityService {
     static final int REASON_BLOCKED = 0;
     static final int REASON_SETTINGS = 1;
     static final int REASON_LIMIT = 2;
+    static final int REASON_UNINSTALL = 3;
 
     private static final Set<String> GUARDED = new HashSet<>(Arrays.asList(
             "com.android.settings",
@@ -54,6 +55,8 @@ public class BlockerService extends AccessibilityService {
     /** آخرین صفحه‌ی نصب‌کننده (Install… یا Uninstall…) برای تشخیص آپدیت از حذف */
     private String installerScreen = null;
     private long lastBlock = 0;
+    private String lastFwToastPkg = null;
+    private long lastFwToast = 0;
 
     // جلسه استفاده فعلی از یک اپ مسدود (در حالت سهمیه)
     private String sessionPkg = null;
@@ -142,7 +145,10 @@ public class BlockerService extends AccessibilityService {
         }
 
         // ۲) اپ دیگری جلوی صفحه آمد → جلسه تمام
-        if (windowChanged) endSession();
+        if (windowChanged) {
+            endSession();
+            if (!isGuarded(pkg)) maybeFirewallNotice(pkg);
+        }
 
         // ۳) محافظت از تنظیمات
         if (Prefs.isProtect(this) && isGuarded(pkg)) {
@@ -151,7 +157,7 @@ public class BlockerService extends AccessibilityService {
             long now = SystemClock.uptimeMillis();
             if (!windowChanged && now - lastGuardCheck < 400) return; // throttle
             lastGuardCheck = now;
-            if (screenMentionsThisApp()) block(pkg, REASON_SETTINGS);
+            if (screenMentionsThisApp()) block(pkg, isInstaller(pkg) ? REASON_UNINSTALL : REASON_SETTINGS);
         }
     }
 
@@ -189,6 +195,29 @@ public class BlockerService extends AccessibilityService {
 
     // ------------------------------------------------------------------ helpers
 
+    /** وقتی اینترنت یک اپ با فایروال قطع است، یک پیام کوتاه نشان بده (حداکثر هر ۱۵ ثانیه). */
+    private void maybeFirewallNotice(String pkg) {
+        if (!Prefs.isFwEnabled(this) || !FirewallVpnService.running) return;
+        if (pkg.equals(lastFwToastPkg) && SystemClock.uptimeMillis() - lastFwToast < 15_000) return;
+        Context lc = LocaleHelper.wrap(this);
+        String msg = null;
+        if (FirewallVpnService.allBlocked) {
+            msg = lc.getString(R.string.fw_toast_sched,
+                    MainActivity.fmt(FirewallVpnService.nextChangeAt - System.currentTimeMillis()));
+        } else if (Prefs.getFwBlocked(this).contains(pkg)) {
+            String name = pkg;
+            try {
+                name = getPackageManager().getApplicationLabel(
+                        getPackageManager().getApplicationInfo(pkg, 0)).toString();
+            } catch (Exception ignoredEx) {}
+            msg = lc.getString(R.string.fw_toast_app, name);
+        }
+        if (msg == null) return;
+        lastFwToastPkg = pkg;
+        lastFwToast = SystemClock.uptimeMillis();
+        Toast.makeText(this, msg, Toast.LENGTH_LONG).show();
+    }
+
     private static boolean isInstaller(String pkg) {
         return pkg.contains("packageinstaller");
     }
@@ -210,8 +239,7 @@ public class BlockerService extends AccessibilityService {
     }
 
     private void block(String pkg, int reason) {
-        // از تنظیمات فوراً بیرون می‌رویم؛ برای اپ‌ها مستقیم صفحه پیام/شعر را رویشان باز می‌کنیم
-        if (reason == REASON_SETTINGS) performGlobalAction(GLOBAL_ACTION_HOME);
+        // صفحه توضیح مستقیم روی همان صفحه باز می‌شود (بدون پریدن ناگهانی به Home)
         long now = SystemClock.uptimeMillis();
         if (now - lastBlock < 800) return; // صفحه را پشت‌سرهم باز نکن
         lastBlock = now;

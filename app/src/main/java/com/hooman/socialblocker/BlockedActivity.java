@@ -28,6 +28,12 @@ public class BlockedActivity extends Activity {
         setContentView(R.layout.activity_blocked);
         findViewById(R.id.homeBtn).setOnClickListener(v -> goHome());
         findViewById(R.id.nextQuote).setOnClickListener(v -> showQuote());
+        findViewById(R.id.openAppBtn).setOnClickListener(v -> {
+            Intent i = new Intent(this, MainActivity.class);
+            i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+            startActivity(i);
+            finish();
+        });
         bind(getIntent());
     }
 
@@ -41,9 +47,15 @@ public class BlockedActivity extends Activity {
         TextView title = findViewById(R.id.title);
         TextView msg = findViewById(R.id.message);
         int reason = intent.getIntExtra(EXTRA_REASON, BlockerService.REASON_BLOCKED);
+        View openApp = findViewById(R.id.openAppBtn);
+        openApp.setVisibility(reason == BlockerService.REASON_SETTINGS
+                || reason == BlockerService.REASON_UNINSTALL ? View.VISIBLE : View.GONE);
         if (reason == BlockerService.REASON_SETTINGS) {
             title.setText(R.string.blocked_settings_title);
             msg.setText(R.string.blocked_settings);
+        } else if (reason == BlockerService.REASON_UNINSTALL) {
+            title.setText(R.string.blocked_uninstall_title);
+            msg.setText(R.string.blocked_uninstall);
         } else if (reason == BlockerService.REASON_LIMIT) {
             title.setText(R.string.limit_up_title);
             msg.setText(getString(R.string.limit_up_msg, MainActivity.fmt(Prefs.getLimitMs(this))));

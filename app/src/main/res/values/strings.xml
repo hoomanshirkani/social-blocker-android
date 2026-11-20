@@ -8,8 +8,8 @@
     <string name="admin_disable_warning">To disable this, first turn off blocking inside the app with your password.</string>
     <string name="search_hint">🔍 Search apps…</string>
     <string name="blocked_title">This app is blocked</string>
-    <string name="blocked_settings_title">Settings are locked</string>
-    <string name="blocked_settings">This part of Settings is protected. To change it, first turn off blocking in Social Blocker with your password.</string>
+    <string name="blocked_settings_title">Settings are locked 🔒</string>
+    <string name="blocked_settings">This setting is protected because \"Lock settings\" is on in Social Blocker.\n\nTo change it: open Social Blocker → Turn off blocking (password) → then come back here.</string>
     <string name="blocked_msg">%1$s is blocked.\nDo something useful instead 💪</string>
     <string name="go_home">Go to home screen</string>
     <string name="protect_label">Protect settings (prevent disabling/uninstalling this app)</string>
@@ -145,4 +145,9 @@
     <string name="chip_select_all">✓ Select all</string>
     <string name="chip_clear">✕ Clear all</string>
     <string name="toast_selected">%1$d apps selected</string>
+    <string name="blocked_uninstall_title">Uninstall is locked 🔒</string>
+    <string name="blocked_uninstall">Social Blocker can\'t be uninstalled while blocking is on — that is what keeps it working.\n\nTo uninstall: open Social Blocker → Turn off blocking (password) → Settings → Device admin apps → deactivate Social Blocker → uninstall.</string>
+    <string name="open_app">Open Social Blocker</string>
+    <string name="fw_toast_app">🌐 %1$s has no internet — blocked by the firewall</string>
+    <string name="fw_toast_sched">🌐 Internet is closed by the schedule — opens in %1$s</string>
 </resources>

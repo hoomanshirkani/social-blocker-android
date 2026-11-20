@@ -5,8 +5,8 @@
     <string name="admin_disable_warning">برای غیرفعال کردن، اول داخل برنامه مسدودسازی را با رمز خاموش کنید.</string>
     <string name="search_hint">🔍 جستجوی اپ…</string>
     <string name="blocked_title">این اپ مسدود است</string>
-    <string name="blocked_settings_title">تنظیمات قفل است</string>
-    <string name="blocked_settings">این بخش از تنظیمات محافظت شده است. برای تغییر، اول مسدودسازی را داخل Social Blocker با رمز خاموش کنید.</string>
+    <string name="blocked_settings_title">تنظیمات قفل است 🔒</string>
+    <string name="blocked_settings">این تنظیم محافظت شده، چون «قفل تنظیمات» در Social Blocker روشن است.\n\nبرای تغییرش: Social Blocker را باز کن ← مسدودسازی را با رمز خاموش کن ← بعد برگرد اینجا.</string>
     <string name="blocked_msg">%1$s مسدود شده است.\nبه‌جایش یک کار مفید انجام بده 💪</string>
     <string name="go_home">بازگشت به صفحه اصلی</string>
     <string name="protect_label">محافظت از تنظیمات (جلوگیری از خاموش/حذف کردن برنامه)</string>
@@ -142,4 +142,9 @@
     <string name="chip_select_all">✓ انتخاب همه</string>
     <string name="chip_clear">✕ پاک کردن همه</string>
     <string name="toast_selected">%1$d اپ انتخاب شد</string>
+    <string name="blocked_uninstall_title">حذف برنامه قفل است 🔒</string>
+    <string name="blocked_uninstall">تا وقتی مسدودسازی روشن است، Social Blocker حذف نمی‌شود؛ همین باعث می‌شود کار کند.\n\nبرای حذف: Social Blocker را باز کن ← مسدودسازی را با رمز خاموش کن ← Settings ← Device admin apps ← غیرفعال کردن Social Blocker ← Uninstall.</string>
+    <string name="open_app">باز کردن Social Blocker</string>
+    <string name="fw_toast_app">🌐 اینترنت %1$s با فایروال قطع است</string>
+    <string name="fw_toast_sched">🌐 اینترنت طبق زمان‌بندی بسته است — %1$s تا باز شدن</string>
 </resources>
