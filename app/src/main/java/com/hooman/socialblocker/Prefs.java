@@ -328,6 +328,43 @@ public final class Prefs {
                 .commit();
     }
 
+    // ---------- خلاصه نوتیفیکیشن‌ها ----------
+    /** فاصله نمایش خلاصه (ساعت) */
+    static final int[] DIGEST_HOURS = {1, 2, 3, 4, 6, 12, 24};
+
+    static boolean isDigestEnabled(Context c) { return sp(c).getBoolean("digest_enabled", false); }
+    static int getDigestIntervalIdx(Context c) { return sp(c).getInt("digest_interval_idx", 2); }
+    static long getDigestIntervalMs(Context c) {
+        int i = Math.max(0, Math.min(DIGEST_HOURS.length - 1, getDigestIntervalIdx(c)));
+        return DIGEST_HOURS[i] * 3_600_000L;
+    }
+    /** ساعتی از روز که همه چیز پاک می‌شود */
+    static int getDigestClearHour(Context c) { return sp(c).getInt("digest_clear_hour", 23); }
+    static long getDigestNext(Context c) { return sp(c).getLong("digest_next", 0); }
+    static void setDigestNext(Context c, long t) { sp(c).edit().putLong("digest_next", t).commit(); }
+
+    static void setDigest(Context c, boolean enabled, int intervalIdx, int clearHour) {
+        sp(c).edit()
+                .putBoolean("digest_enabled", enabled)
+                .putInt("digest_interval_idx", intervalIdx)
+                .putInt("digest_clear_hour", clearHour)
+                .putLong("digest_next", 0)
+                .commit();
+    }
+
+    /** اپ‌هایی که نوتیفیکیشنشان همیشه مستقیم نشان داده می‌شود */
+    static Set<String> getDigestExceptions(Context c) {
+        return new HashSet<>(sp(c).getStringSet("digest_exceptions", new HashSet<>()));
+    }
+
+    static void setDigestExceptions(Context c, Set<String> s) {
+        sp(c).edit().putStringSet("digest_exceptions", new HashSet<>(s)).commit();
+    }
+
+    /** ذخیره خام نوتیفیکیشن‌های جمع‌شده (JSON) */
+    static String getDigestJson(Context c) { return sp(c).getString("digest_items", "[]"); }
+    static void setDigestJson(Context c, String json) { sp(c).edit().putString("digest_items", json).commit(); }
+
     // ---------- زبان ("" = سیستم، "en"، "fa") ----------
     static String getLanguage(Context c) { return sp(c).getString(K_LANG, ""); }
 

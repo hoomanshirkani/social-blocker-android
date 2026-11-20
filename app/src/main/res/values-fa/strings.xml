@@ -157,7 +157,7 @@
     <string name="fw_waiting_sub">زمان‌بندی با خاموش شدن صفحه شروع می‌شود</string>
 
     <!-- مراقبت از چشم -->
-    <string name="section_eye">مراقبت از چشم</string>
+    <string name="section_eye">ابزارها</string>
     <string name="row_eye_title">مراقبت از چشم</string>
     <string name="row_eye_off">خاموش — یادآوری استراحت و فیلتر گرم</string>
     <string name="row_eye_breaks">استراحت هر %1$d دقیقه</string>
@@ -269,4 +269,38 @@
     <string name="fw_inuse_all_sub">فقط اپی که با آن کار می‌کنی اینترنت دارد؛ بقیه فقط همان زمان پس‌زمینه را می‌گیرند</string>
     <string name="fw_inuse_all_replaced">ذخیره شد. «برای همه» در قانون دوره‌ای خاموش شد (فقط یکی می‌تواند روشن باشد).</string>
     <string name="fw_st_inuse">📱 %1$s فقط هنگام استفاده (+%2$s در پس‌زمینه)</string>
+    <string name="row_digest_title">خلاصه نوتیفیکیشن‌ها</string>
+    <string name="row_digest_off">خاموش — جمع کردن نوتیفیکیشن‌ها در یک خلاصه</string>
+    <string name="row_digest_on">خلاصه %1$s</string>
+    <string name="digest_title">خلاصه نوتیفیکیشن‌ها</string>
+    <string name="digest_channel">خلاصه نوتیفیکیشن‌ها</string>
+    <string name="digest_section_settings">تنظیمات</string>
+    <string name="digest_enable">جمع کردن نوتیفیکیشن‌ها</string>
+    <string name="digest_enable_sub">نوتیفیکیشن‌ها داخل اپ نگه داشته و از نوار اعلان پاک می‌شوند؛ به‌جایشان فقط یک خلاصه می‌بینی</string>
+    <string name="digest_access_needed">⚠️ دسترسی به نوتیفیکیشن‌ها لازم است — اینجا را بزن و Social Blocker+ را روشن کن (در اندروید ۱۳+ شاید اول «Allow restricted settings» لازم باشد)</string>
+    <string name="digest_interval_label">نمایش خلاصه</string>
+    <string name="digest_clear_label">پاک کردن همه، هر روز ساعت</string>
+    <string name="digest_exceptions_row">همیشه مستقیم نشان بده: %1$d اپ (برای انتخاب بزن)</string>
+    <string name="digest_exceptions_title">نوتیفیکیشن این اپ‌ها همیشه مستقیم بیاید</string>
+    <string name="digest_kept_note">تماس، زنگ ساعت، مسیریابی، موسیقی/رسانه و نوتیفیکیشن‌های دائمی هرگز جمع نمی‌شوند.</string>
+    <string name="digest_clear_all">🗑 پاک کردن همه</string>
+    <string name="digest_list_header">جمع‌شده امروز · %1$d</string>
+    <string name="digest_empty">هنوز چیزی جمع نشده.</string>
+    <string name="digest_off_title">خلاصه خاموش است</string>
+    <string name="digest_off_sub">نوتیفیکیشن‌ها مثل همیشه نمایش داده می‌شوند</string>
+    <string name="digest_need_access_title">دسترسی به نوتیفیکیشن‌ها لازم است</string>
+    <string name="digest_on_title">%1$d نوتیفیکیشن جمع شده</string>
+    <string name="digest_on_sub">%1$s تا خلاصه بعدی</string>
+    <string name="digest_on_sub_soon">خلاصه بعدی به‌زودی</string>
+    <string name="digest_notif_title">📬 %1$d نوتیفیکیشن از %2$d اپ</string>
+    <string name="eye_saved_generic">ذخیره شد ✓</string>
+    <string-array name="digest_intervals">
+        <item>هر ۱ ساعت</item>
+        <item>هر ۲ ساعت</item>
+        <item>هر ۳ ساعت</item>
+        <item>هر ۴ ساعت</item>
+        <item>هر ۶ ساعت</item>
+        <item>هر ۱۲ ساعت</item>
+        <item>روزی یک بار</item>
+    </string-array>
 </resources>

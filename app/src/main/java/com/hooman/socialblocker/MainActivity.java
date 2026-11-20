@@ -33,7 +33,7 @@ public class MainActivity extends Activity {
 
     private static final long PAUSE_MS = 15 * 60 * 1000L;
 
-    private View statusCard, rowAcc, rowAdmin, rowFw, rowEye;
+    private View statusCard, rowAcc, rowAdmin, rowFw, rowEye, rowDigest;
     private TextView statusIcon, statusTitle, statusSub, accWarning, appsHeader;
     private Button toggleBtn, pauseBtn;
     private Switch protectSwitch, limitSwitch;
@@ -75,6 +75,7 @@ public class MainActivity extends Activity {
         rowAdmin = h.findViewById(R.id.rowAdmin);
         rowFw = h.findViewById(R.id.rowFw);
         rowEye = h.findViewById(R.id.rowEye);
+        rowDigest = h.findViewById(R.id.rowDigest);
         protectSwitch = h.findViewById(R.id.protectSwitch);
         appsHeader = h.findViewById(R.id.appsHeader);
         EditText search = h.findViewById(R.id.search);
@@ -111,6 +112,7 @@ public class MainActivity extends Activity {
         rowAdmin.setOnClickListener(v -> onAdmin());
         rowFw.setOnClickListener(v -> startActivity(new Intent(this, FirewallActivity.class)));
         rowEye.setOnClickListener(v -> startActivity(new Intent(this, EyeCareActivity.class)));
+        rowDigest.setOnClickListener(v -> startActivity(new Intent(this, DigestActivity.class)));
         protectSwitch.setOnClickListener(v -> onProtectClicked());
         search.addTextChangedListener(new TextWatcher() {
             public void beforeTextChanged(CharSequence s, int a, int b, int c) {}
@@ -214,6 +216,11 @@ public class MainActivity extends Activity {
         else if (filter) eyeSub = getString(R.string.row_eye_filter);
         else eyeSub = getString(R.string.row_eye_off);
         setRow(rowEye, "👁", R.string.row_eye_title, eyeSub, eye || filter);
+        boolean dg = Prefs.isDigestEnabled(this);
+        setRow(rowDigest, "📬", R.string.row_digest_title, dg
+                ? getString(R.string.row_digest_on, getResources().getStringArray(R.array.digest_intervals)[
+                        Math.max(0, Math.min(Prefs.DIGEST_HOURS.length - 1, Prefs.getDigestIntervalIdx(this)))])
+                : getString(R.string.row_digest_off), dg);
 
         protectSwitch.setChecked(Prefs.isProtect(this));
 

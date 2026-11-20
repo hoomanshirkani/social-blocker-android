@@ -160,7 +160,7 @@
     <string name="fw_waiting_sub">The schedule starts when the screen turns off</string>
 
     <!-- مراقبت از چشم -->
-    <string name="section_eye">EYE CARE</string>
+    <string name="section_eye">TOOLS</string>
     <string name="row_eye_title">Eye care</string>
     <string name="row_eye_off">Off — break reminders &amp; warm filter</string>
     <string name="row_eye_breaks">Break every %1$d min</string>
@@ -273,4 +273,38 @@
     <string name="fw_inuse_all_sub">Only the app you are using has internet; every other app gets just the background time</string>
     <string name="fw_inuse_all_replaced">Saved. \"Apply to all\" of the periodic rule was turned off (only one can be on).</string>
     <string name="fw_st_inuse">📱 %1$s only while in use (+%2$s in background)</string>
+    <string name="row_digest_title">Notification digest</string>
+    <string name="row_digest_off">Off — collect notifications into one summary</string>
+    <string name="row_digest_on">Summary %1$s</string>
+    <string name="digest_title">Notification digest</string>
+    <string name="digest_channel">Notification digest</string>
+    <string name="digest_section_settings">SETTINGS</string>
+    <string name="digest_enable">Collect notifications</string>
+    <string name="digest_enable_sub">Notifications are kept inside the app and removed from the notification shade; you get one summary instead</string>
+    <string name="digest_access_needed">⚠️ Notification access is needed — tap here and turn on Social Blocker+ (on Android 13+, \"Allow restricted settings\" may be needed first)</string>
+    <string name="digest_interval_label">Show a summary</string>
+    <string name="digest_clear_label">Clear everything every day at</string>
+    <string name="digest_exceptions_row">Always show directly: %1$d apps (tap to choose)</string>
+    <string name="digest_exceptions_title">Always show notifications from</string>
+    <string name="digest_kept_note">Calls, alarms, navigation, music/media and ongoing notifications are never collected.</string>
+    <string name="digest_clear_all">🗑 Clear all</string>
+    <string name="digest_list_header">COLLECTED TODAY · %1$d</string>
+    <string name="digest_empty">Nothing collected yet.</string>
+    <string name="digest_off_title">Digest is off</string>
+    <string name="digest_off_sub">Notifications appear as usual</string>
+    <string name="digest_need_access_title">Notification access needed</string>
+    <string name="digest_on_title">%1$d notifications collected</string>
+    <string name="digest_on_sub">Next summary in %1$s</string>
+    <string name="digest_on_sub_soon">Next summary soon</string>
+    <string name="digest_notif_title">📬 %1$d notifications from %2$d apps</string>
+    <string name="eye_saved_generic">Saved ✓</string>
+    <string-array name="digest_intervals">
+        <item>every hour</item>
+        <item>every 2 hours</item>
+        <item>every 3 hours</item>
+        <item>every 4 hours</item>
+        <item>every 6 hours</item>
+        <item>every 12 hours</item>
+        <item>once a day</item>
+    </string-array>
 </resources>
