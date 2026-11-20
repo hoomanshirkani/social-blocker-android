@@ -142,6 +142,11 @@ public class MainActivity extends Activity {
         if (id == R.id.action_password) {
             PasswordDialog.ask(this, () -> showSetPasswordDialog(false));
             return true;
+        } else if (id == R.id.action_lock) {
+            PasswordDialog.lock();
+            toast(R.string.toast_locked);
+            refresh();
+            return true;
         } else if (id == R.id.action_language) {
             showLanguageDialog();
             return true;
@@ -187,6 +192,9 @@ public class MainActivity extends Activity {
             pauseBtn.setVisibility(View.VISIBLE);
         }
         accWarning.setVisibility(blocking && !acc ? View.VISIBLE : View.GONE);
+        if (PasswordDialog.isUnlocked()) {
+            statusSub.append("\n" + getString(R.string.status_unlocked, fmt(PasswordDialog.unlockedRemaining())));
+        }
 
         setRow(rowAcc, "1", R.string.row_acc_title,
                 getString(acc ? R.string.row_done : R.string.row_acc_todo), acc);

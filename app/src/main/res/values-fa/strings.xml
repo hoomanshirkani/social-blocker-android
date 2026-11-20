@@ -147,4 +147,8 @@
     <string name="open_app">باز کردن Social Blocker</string>
     <string name="fw_toast_app">🌐 اینترنت %1$s با فایروال قطع است</string>
     <string name="fw_toast_sched">🌐 اینترنت طبق زمان‌بندی بسته است — %1$s تا باز شدن</string>
+    <string name="toast_unlocked">🔓 تا ۵ دقیقه بدون رمز</string>
+    <string name="toast_locked">🔒 قفل شد</string>
+    <string name="status_unlocked">🔓 باز · %1$s</string>
+    <string name="menu_lock">🔒 همین حالا قفل کن</string>
 </resources>

@@ -150,4 +150,8 @@
     <string name="open_app">Open Social Blocker</string>
     <string name="fw_toast_app">🌐 %1$s has no internet — blocked by the firewall</string>
     <string name="fw_toast_sched">🌐 Internet is closed by the schedule — opens in %1$s</string>
+    <string name="toast_unlocked">🔓 Unlocked for 5 minutes</string>
+    <string name="toast_locked">🔒 Locked</string>
+    <string name="status_unlocked">🔓 Unlocked · %1$s</string>
+    <string name="menu_lock">🔒 Lock now</string>
 </resources>

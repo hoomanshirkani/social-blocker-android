@@ -68,6 +68,7 @@ public class BlockerService extends AccessibilityService {
         public void onReceive(Context c, Intent i) {
             if (Intent.ACTION_SCREEN_OFF.equals(i.getAction())) {
                 endSession();
+                PasswordDialog.lock(); // با خاموش شدن صفحه، باز بودن قفل تمام می‌شود
             } else {
                 // باز شدن قفل: اپ جلوی صفحه را دوباره بررسی کن
                 AccessibilityNodeInfo root = getRootInActiveWindow();
