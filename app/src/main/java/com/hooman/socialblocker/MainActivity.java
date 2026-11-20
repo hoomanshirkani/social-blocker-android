@@ -163,7 +163,7 @@ public class MainActivity extends Activity {
         boolean paused = Prefs.isPaused(this);
         boolean acc = isAccessibilityEnabled();
         boolean admin = isAdminActive();
-        int count = Prefs.getBlocked(this).size();
+        int count = Prefs.countInstalled(this, Prefs.getBlocked(this)); // فقط اپ‌های نصب‌شده
 
         if (!blocking) {
             statusCard.setBackgroundResource(R.drawable.bg_status_off);

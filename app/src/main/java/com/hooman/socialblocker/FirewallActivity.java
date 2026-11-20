@@ -159,10 +159,19 @@ public class FirewallActivity extends Activity {
             updateSelection();
         });
         updateSelection();
+        if (Prefs.pruneFwRules(this)) FirewallVpnService.refresh(this); // اپ‌های پاک‌شده
         AppLoader.load(this, Prefs.getFwRuled(this), adapter::setItems);
     }
 
-    @Override protected void onResume() { super.onResume(); handler.post(ticker); }
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if (Prefs.pruneFwRules(this)) {
+            FirewallVpnService.refresh(this);
+            adapter.notifyDataSetChanged();
+        }
+        handler.post(ticker);
+    }
 
     @Override protected void onPause() { super.onPause(); handler.removeCallbacks(ticker); }
 

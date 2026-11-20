@@ -157,6 +157,7 @@ public class FirewallVpnService extends VpnService {
         handler.removeCallbacks(tick);
         if (!Prefs.isFwEnabled(this)) { shutdown(); stopSelf(); return; }
 
+        Prefs.pruneFwRules(this); // اپ‌های پاک‌شده از قانون‌ها حذف می‌شوند
         long now = System.currentTimeMillis();
         Set<String> always = Prefs.getFwBlocked(this);
         Set<String> burst = Prefs.getFwBurst(this);

@@ -151,6 +151,31 @@ public final class Prefs {
                 .commit();
     }
 
+    static boolean isInstalled(Context c, String pkg) {
+        try {
+            c.getPackageManager().getApplicationInfo(pkg, 0);
+            return true;
+        } catch (Exception e) {
+            return false;
+        }
+    }
+
+    /** تعداد اپ‌های نصب‌شده از یک لیست (برای نمایش) */
+    static int countInstalled(Context c, Set<String> pkgs) {
+        int n = 0;
+        for (String p : pkgs) if (isInstalled(c, p)) n++;
+        return n;
+    }
+
+    /** اپ‌های پاک‌شده را از قانون‌های فایروال حذف می‌کند. @return true اگر چیزی حذف شد */
+    static boolean pruneFwRules(Context c) {
+        Set<String> gone = new HashSet<>();
+        for (String p : getFwRuled(c)) if (!isInstalled(c, p)) gone.add(p);
+        if (gone.isEmpty()) return false;
+        setFwRule(c, gone, FW_FREE);
+        return true;
+    }
+
     /** همه اپ‌هایی که قانونی دارند (برای مرتب‌سازی لیست) */
     static Set<String> getFwRuled(Context c) {
         Set<String> s = getFwBlocked(c);
