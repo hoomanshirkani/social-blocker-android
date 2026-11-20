@@ -31,7 +31,23 @@ jobs:
       - name: Build release APK
         run: |
           chmod +x gradlew
-          ./gradlew --no-daemon assembleRelease
+          set -o pipefail
+          ./gradlew --no-daemon assembleRelease 2>&1 | tee /tmp/build.log
+
+      # اگر بیلد شکست خورد، لاگ در شاخه ci-log ذخیره می‌شود تا راحت بررسی شود
+      # If the build fails, save the log to the ci-log branch for easy debugging
+      - name: Save build log on failure
+        if: failure()
+        run: |
+          git config user.name "CI"
+          git config user.email "ci@users.noreply.github.com"
+          cp /tmp/build.log /tmp/keep.log || echo "no log" > /tmp/keep.log
+          git checkout --orphan ci-log
+          git rm -rf -q --cached . >/dev/null 2>&1 || true
+          cp /tmp/keep.log build.log
+          git add build.log
+          git commit -q -m "Build log for ${GITHUB_SHA}"
+          git push -f origin ci-log
 
       - name: Read version
         id: ver
