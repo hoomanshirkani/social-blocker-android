@@ -67,6 +67,17 @@ public final class Prefs {
         return new HashSet<>(sp(c).getStringSet(K_BLOCKED, new HashSet<>()));
     }
 
+    /** بدون کپی کردن لیست (برای رویدادهای پرتکرار سرویس) */
+    static boolean isBlocked(Context c, String pkg) {
+        Set<String> s = sp(c).getStringSet(K_BLOCKED, null);
+        return s != null && s.contains(pkg);
+    }
+
+    static boolean isFwBlocked(Context c, String pkg) {
+        Set<String> s = sp(c).getStringSet("fw_blocked", null);
+        return s != null && s.contains(pkg);
+    }
+
     static void setBlocked(Context c, Set<String> s) {
         sp(c).edit().putStringSet(K_BLOCKED, new HashSet<>(s)).apply();
     }
@@ -168,6 +179,38 @@ public final class Prefs {
         if (ms <= 0) return;
         long used = getUsedToday(c) + ms;
         sp(c).edit().putString("usage_day", today()).putLong("usage_ms", used).commit();
+    }
+
+    // ---------- مراقبت از چشم: یادآوری استراحت ----------
+    static boolean isEyeEnabled(Context c) { return sp(c).getBoolean("eye_enabled", false); }
+    static int getEyeIntervalMin(Context c) { return sp(c).getInt("eye_interval_min", 20); }
+    static int getEyeBreakSec(Context c) { return sp(c).getInt("eye_break_sec", 20); }
+    static boolean isEyeStrict(Context c) { return sp(c).getBoolean("eye_strict", false); }
+
+    static void setEye(Context c, boolean enabled, int intervalMin, int breakSec, boolean strict) {
+        sp(c).edit()
+                .putBoolean("eye_enabled", enabled)
+                .putInt("eye_interval_min", intervalMin)
+                .putInt("eye_break_sec", breakSec)
+                .putBoolean("eye_strict", strict)
+                .commit();
+    }
+
+    // ---------- مراقبت از چشم: فیلتر گرم (نور آبی) ----------
+    static boolean isFilterEnabled(Context c) { return sp(c).getBoolean("filter_enabled", false); }
+    static int getFilterIntensity(Context c) { return sp(c).getInt("filter_intensity", 40); }
+    static boolean isFilterNightOnly(Context c) { return sp(c).getBoolean("filter_night_only", false); }
+    static int getFilterFrom(Context c) { return sp(c).getInt("filter_from", 21); }
+    static int getFilterTo(Context c) { return sp(c).getInt("filter_to", 7); }
+
+    static void setFilter(Context c, boolean enabled, int intensity, boolean nightOnly, int from, int to) {
+        sp(c).edit()
+                .putBoolean("filter_enabled", enabled)
+                .putInt("filter_intensity", intensity)
+                .putBoolean("filter_night_only", nightOnly)
+                .putInt("filter_from", from)
+                .putInt("filter_to", to)
+                .commit();
     }
 
     // ---------- زبان ("" = سیستم، "en"، "fa") ----------

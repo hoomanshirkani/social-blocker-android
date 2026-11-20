@@ -128,6 +128,7 @@ public class FirewallActivity extends Activity {
                 Prefs.setFwEnabled(this, false);
                 FirewallVpnService.refresh(this);
                 refreshStatus();
+                Toast.makeText(this, R.string.fw_off_lockdown_hint, Toast.LENGTH_LONG).show();
             });
         }
     }

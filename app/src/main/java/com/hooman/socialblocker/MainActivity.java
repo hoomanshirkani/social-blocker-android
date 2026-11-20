@@ -33,7 +33,7 @@ public class MainActivity extends Activity {
 
     private static final long PAUSE_MS = 15 * 60 * 1000L;
 
-    private View statusCard, rowAcc, rowAdmin, rowFw;
+    private View statusCard, rowAcc, rowAdmin, rowFw, rowEye;
     private TextView statusIcon, statusTitle, statusSub, accWarning, appsHeader;
     private Button toggleBtn, pauseBtn;
     private Switch protectSwitch, limitSwitch;
@@ -74,6 +74,7 @@ public class MainActivity extends Activity {
         rowAcc = h.findViewById(R.id.rowAcc);
         rowAdmin = h.findViewById(R.id.rowAdmin);
         rowFw = h.findViewById(R.id.rowFw);
+        rowEye = h.findViewById(R.id.rowEye);
         protectSwitch = h.findViewById(R.id.protectSwitch);
         appsHeader = h.findViewById(R.id.appsHeader);
         EditText search = h.findViewById(R.id.search);
@@ -109,6 +110,7 @@ public class MainActivity extends Activity {
         rowAcc.setOnClickListener(v -> startActivity(new Intent(Settings.ACTION_ACCESSIBILITY_SETTINGS)));
         rowAdmin.setOnClickListener(v -> onAdmin());
         rowFw.setOnClickListener(v -> startActivity(new Intent(this, FirewallActivity.class)));
+        rowEye.setOnClickListener(v -> startActivity(new Intent(this, EyeCareActivity.class)));
         protectSwitch.setOnClickListener(v -> onProtectClicked());
         search.addTextChangedListener(new TextWatcher() {
             public void beforeTextChanged(CharSequence s, int a, int b, int c) {}
@@ -204,6 +206,14 @@ public class MainActivity extends Activity {
         int fwSub = !fw ? R.string.row_fw_off
                 : Prefs.isSchedEnabled(this) ? R.string.row_fw_sched : R.string.row_fw_on;
         setRow(rowFw, "🌐", R.string.row_fw_title, getString(fwSub), fw);
+
+        boolean eye = Prefs.isEyeEnabled(this), filter = Prefs.isFilterEnabled(this);
+        String eyeSub;
+        if (eye && filter) eyeSub = getString(R.string.row_eye_both, Prefs.getEyeIntervalMin(this));
+        else if (eye) eyeSub = getString(R.string.row_eye_breaks, Prefs.getEyeIntervalMin(this));
+        else if (filter) eyeSub = getString(R.string.row_eye_filter);
+        else eyeSub = getString(R.string.row_eye_off);
+        setRow(rowEye, "👁", R.string.row_eye_title, eyeSub, eye || filter);
 
         protectSwitch.setChecked(Prefs.isProtect(this));
 

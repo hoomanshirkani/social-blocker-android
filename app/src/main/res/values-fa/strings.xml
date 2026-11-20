@@ -155,4 +155,58 @@
     <string name="fw_screen_off_sub">وقتی با گوشی کار می‌کنی اینترنت باز است؛ زمان‌بندی با خاموش شدن صفحه شروع می‌شود</string>
     <string name="fw_waiting_title">اینترنت باز است</string>
     <string name="fw_waiting_sub">زمان‌بندی با خاموش شدن صفحه شروع می‌شود</string>
+
+    <!-- مراقبت از چشم -->
+    <string name="section_eye">مراقبت از چشم</string>
+    <string name="row_eye_title">مراقبت از چشم</string>
+    <string name="row_eye_off">خاموش — یادآوری استراحت و فیلتر گرم</string>
+    <string name="row_eye_breaks">استراحت هر %1$d دقیقه</string>
+    <string name="row_eye_filter">فیلتر گرم روشن</string>
+    <string name="row_eye_both">استراحت هر %1$d دقیقه · فیلتر گرم</string>
+    <string name="eye_title">مراقبت از چشم</string>
+    <string name="eye_section_breaks">یادآوری استراحت</string>
+    <string name="eye_section_filter">فیلتر گرم صفحه</string>
+    <string name="eye_enable">یادآوری استراحت چشم</string>
+    <string name="eye_enable_sub">مثل Eye Relax: بعد از هر دوره استفاده از گوشی، یک صفحه استراحت کوتاه نمایش داده می‌شود</string>
+    <string name="eye_every">هر</string>
+    <string name="eye_break_len">استراحت</string>
+    <string name="unit_minutes">دقیقه</string>
+    <string name="unit_seconds">ثانیه</string>
+    <string name="eye_strict">حالت سخت‌گیرانه</string>
+    <string name="eye_strict_sub">صفحه استراحت دکمه «رد کردن» ندارد</string>
+    <string name="eye_p1">۲۰ دقیقه / ۲۰ ثانیه (۲۰-۲۰-۲۰)</string>
+    <string name="eye_p2">۴۵ دقیقه / ۵ دقیقه</string>
+    <string name="eye_p3">۶۰ دقیقه / ۱۰ دقیقه</string>
+    <string name="eye_test">▶ امتحان یک استراحت</string>
+    <string name="eye_invalid">هر: ۱ تا ۶۰۰ دقیقه. استراحت: ۵ تا ۳۶۰۰ ثانیه و کوتاه‌تر از فاصله.</string>
+    <string name="eye_saved">مراقبت از چشم ذخیره شد ✓</string>
+    <string name="eye_warn">👁 ۱۰ ثانیه تا استراحت چشم</string>
+    <string name="eye_need_acc_title">سرویس دسترسی‌پذیری لازم است</string>
+    <string name="eye_need_acc_sub">از بخش راه‌اندازی روشنش کن تا مراقبت از چشم کار کند</string>
+    <string name="eye_on_title">یادآوری استراحت روشن است</string>
+    <string name="eye_on_sub">%1$s تا استراحت بعدی</string>
+    <string name="eye_filter_only">فیلتر گرم روشن است</string>
+    <string name="eye_off_title">مراقبت از چشم خاموش است</string>
+    <string name="eye_off_sub">یادآوری استراحت یا فیلتر گرم را روشن کن</string>
+    <string name="filter_enable">فیلتر گرم</string>
+    <string name="filter_enable_sub">نور آبی را کم می‌کند؛ برای چشم راحت‌تر است، مخصوصاً شب</string>
+    <string name="filter_strength">شدت: %1$d%%</string>
+    <string name="filter_night_only">فقط در شب</string>
+    <string name="filter_from">از</string>
+    <string name="filter_to">تا</string>
+    <string name="break_title">وقت استراحت چشم‌هاست</string>
+    <string name="break_next_tip">↻ تمرین دیگر</string>
+    <string name="break_skip">رد کردن</string>
+    <string name="break_done">آفرین ✓</string>
+    <string-array name="eye_tips">
+        <item>۲۰ ثانیه به چیزی دست‌کم ۶ متر دورتر نگاه کن.</item>
+        <item>۱۰ بار آرام پلک بزن تا چشم‌هایت تازه و مرطوب شوند.</item>
+        <item>چشم‌هایت را ببند و صورت، فک و شانه‌هایت را شل کن.</item>
+        <item>چشم‌هایت را آرام بچرخان: بالا، راست، پایین، چپ — بعد برعکس.</item>
+        <item>کف دست‌ها را به هم بمال تا گرم شوند و آرام روی چشم‌های بسته بگذار.</item>
+        <item>از پنجره بیرون را نگاه کن و روی دورترین نقطه تمرکز کن.</item>
+        <item>روی انگشتت نزدیک صورت تمرکز کن، بعد روی چیزی دور. ۵ بار تکرار کن.</item>
+        <item>بلند شو، کمر و گردنت را کش بده و یک لیوان آب بخور.</item>
+    </string-array>
+    <string name="fw_off_lockdown_hint">فایروال خاموش شد. اگر «Block connections without VPN» در تنظیمات VPN اندروید روشن است، آن را هم خاموش کن؛ وگرنه اینترنت قطع می‌ماند.</string>
 </resources>

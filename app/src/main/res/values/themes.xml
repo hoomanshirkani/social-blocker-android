@@ -8,6 +8,12 @@
         <item name="android:windowBackground">@color/bg</item>
     </style>
 
+    <style name="BreakTheme" parent="android:Theme.Material.NoActionBar">
+        <item name="android:statusBarColor">#064E3B</item>
+        <item name="android:navigationBarColor">#0F766E</item>
+        <item name="android:colorAccent">#A7F3D0</item>
+    </style>
+
     <style name="BlockedTheme" parent="android:Theme.Material.NoActionBar">
         <item name="android:statusBarColor">#1E1B4B</item>
         <item name="android:navigationBarColor">#312E81</item>

@@ -8,6 +8,7 @@ import android.content.IntentFilter;
 import android.os.Build;
 import android.os.Handler;
 import android.os.Looper;
+import android.os.PowerManager;
 import android.os.SystemClock;
 import android.view.accessibility.AccessibilityEvent;
 import android.view.accessibility.AccessibilityNodeInfo;
@@ -50,6 +51,16 @@ public class BlockerService extends AccessibilityService {
     /** این‌ها پنجره‌ی «اپ» نیستند (نوار اعلان، کیبورد)؛ جلسه را قطع نمی‌کنند. */
     private final Set<String> ignored = new HashSet<>(Arrays.asList("com.android.systemui"));
 
+    /** نمونه در حال اجرا (برای اطلاع‌رسانی تغییر تنظیمات مراقبت از چشم) */
+    static volatile BlockerService instance = null;
+    private EyeCare eyeCare;
+
+    /** از صفحه تنظیمات چشم صدا زده می‌شود. */
+    static void eyeSettingsChanged() {
+        BlockerService s = instance;
+        if (s != null && s.eyeCare != null) s.eyeCare.settingsChanged();
+    }
+
     private final Handler handler = new Handler(Looper.getMainLooper());
     private long lastGuardCheck = 0;
     /** آخرین صفحه‌ی نصب‌کننده (Install… یا Uninstall…) برای تشخیص آپدیت از حذف */
@@ -68,8 +79,10 @@ public class BlockerService extends AccessibilityService {
         public void onReceive(Context c, Intent i) {
             if (Intent.ACTION_SCREEN_OFF.equals(i.getAction())) {
                 endSession();
+                if (eyeCare != null) eyeCare.onScreenOff();
                 PasswordDialog.lock(); // با خاموش شدن صفحه، باز بودن قفل تمام می‌شود
             } else {
+                if (eyeCare != null) eyeCare.onScreenOn();
                 // باز شدن قفل: اپ جلوی صفحه را دوباره بررسی کن
                 AccessibilityNodeInfo root = getRootInActiveWindow();
                 if (root != null && root.getPackageName() != null) {
@@ -88,9 +101,16 @@ public class BlockerService extends AccessibilityService {
         }
         IntentFilter f = new IntentFilter();
         f.addAction(Intent.ACTION_SCREEN_OFF);
+        f.addAction(Intent.ACTION_SCREEN_ON);
         f.addAction(Intent.ACTION_USER_PRESENT);
         if (Build.VERSION.SDK_INT >= 33) registerReceiver(screenReceiver, f, Context.RECEIVER_EXPORTED);
         else registerReceiver(screenReceiver, f);
+
+        instance = this;
+        eyeCare = new EyeCare(this);
+        PowerManager pm = (PowerManager) getSystemService(POWER_SERVICE);
+        if (pm == null || pm.isInteractive()) eyeCare.onScreenOn();
+        eyeCare.updateFilter();
     }
 
     @Override
@@ -122,7 +142,7 @@ public class BlockerService extends AccessibilityService {
         }
 
         // ۱) اپ مسدود
-        if (Prefs.getBlocked(this).contains(pkg)) {
+        if (Prefs.isBlocked(this, pkg)) {
             long allowance = Prefs.getAllowanceMs(this);
             if (allowance <= 0) {
                 endSession();
@@ -205,7 +225,7 @@ public class BlockerService extends AccessibilityService {
         if (FirewallVpnService.allBlocked) {
             msg = lc.getString(R.string.fw_toast_sched,
                     MainActivity.fmt(FirewallVpnService.nextChangeAt - System.currentTimeMillis()));
-        } else if (Prefs.getFwBlocked(this).contains(pkg)) {
+        } else if (Prefs.isFwBlocked(this, pkg)) {
             String name = pkg;
             try {
                 name = getPackageManager().getApplicationLabel(
@@ -262,6 +282,9 @@ public class BlockerService extends AccessibilityService {
 
     @Override
     public void onDestroy() {
+        if (eyeCare != null) eyeCare.destroy();
+        eyeCare = null;
+        instance = null;
         endSession();
         try { unregisterReceiver(screenReceiver); } catch (Exception ignoredEx) {}
         super.onDestroy();

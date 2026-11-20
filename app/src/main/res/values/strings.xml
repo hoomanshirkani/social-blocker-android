@@ -158,4 +158,58 @@
     <string name="fw_screen_off_sub">While you use the phone, internet stays open; the schedule starts when the screen turns off</string>
     <string name="fw_waiting_title">Internet open</string>
     <string name="fw_waiting_sub">The schedule starts when the screen turns off</string>
+
+    <!-- مراقبت از چشم -->
+    <string name="section_eye">EYE CARE</string>
+    <string name="row_eye_title">Eye care</string>
+    <string name="row_eye_off">Off — break reminders &amp; warm filter</string>
+    <string name="row_eye_breaks">Break every %1$d min</string>
+    <string name="row_eye_filter">Warm filter on</string>
+    <string name="row_eye_both">Break every %1$d min · warm filter</string>
+    <string name="eye_title">Eye care</string>
+    <string name="eye_section_breaks">BREAK REMINDERS</string>
+    <string name="eye_section_filter">WARM SCREEN FILTER</string>
+    <string name="eye_enable">Remind me to rest my eyes</string>
+    <string name="eye_enable_sub">Like Eye Relax: after every period of screen use, a short break screen appears</string>
+    <string name="eye_every">Every</string>
+    <string name="eye_break_len">Break for</string>
+    <string name="unit_minutes">minutes</string>
+    <string name="unit_seconds">seconds</string>
+    <string name="eye_strict">Strict mode</string>
+    <string name="eye_strict_sub">No skip button on the break screen</string>
+    <string name="eye_p1">20 min / 20 s (20-20-20)</string>
+    <string name="eye_p2">45 min / 5 min</string>
+    <string name="eye_p3">60 min / 10 min</string>
+    <string name="eye_test">▶ Try a break now</string>
+    <string name="eye_invalid">Every: 1–600 minutes. Break: 5–3600 seconds, and shorter than the interval.</string>
+    <string name="eye_saved">Eye care saved ✓</string>
+    <string name="eye_warn">👁 Eye break in 10 seconds</string>
+    <string name="eye_need_acc_title">Accessibility service needed</string>
+    <string name="eye_need_acc_sub">Turn it on in Setup so eye care can run</string>
+    <string name="eye_on_title">Break reminders on</string>
+    <string name="eye_on_sub">Next break in %1$s</string>
+    <string name="eye_filter_only">Warm filter on</string>
+    <string name="eye_off_title">Eye care is off</string>
+    <string name="eye_off_sub">Turn on break reminders or the warm filter</string>
+    <string name="filter_enable">Warm filter</string>
+    <string name="filter_enable_sub">Reduces blue light — easier on the eyes, especially at night</string>
+    <string name="filter_strength">Strength: %1$d%%</string>
+    <string name="filter_night_only">Only at night</string>
+    <string name="filter_from">From</string>
+    <string name="filter_to">to</string>
+    <string name="break_title">Time to rest your eyes</string>
+    <string name="break_next_tip">↻ Another exercise</string>
+    <string name="break_skip">Skip</string>
+    <string name="break_done">Well done ✓</string>
+    <string-array name="eye_tips">
+        <item>Look at something at least 6 metres (20 feet) away for 20 seconds.</item>
+        <item>Blink slowly 10 times to refresh and moisten your eyes.</item>
+        <item>Close your eyes and relax your face, jaw and shoulders.</item>
+        <item>Roll your eyes slowly: up, right, down, left — then the other way.</item>
+        <item>Rub your palms until warm and cup them gently over your closed eyes.</item>
+        <item>Look out of a window and focus on the farthest point you can see.</item>
+        <item>Focus on your finger close to your face, then on something far away. Repeat 5 times.</item>
+        <item>Stand up, stretch your back and neck, and drink a glass of water.</item>
+    </string-array>
+    <string name="fw_off_lockdown_hint">Firewall off. If \"Block connections without VPN\" is on in Android VPN settings, turn it off too — otherwise internet stays blocked.</string>
 </resources>

@@ -37,6 +37,18 @@
             android:name=".FirewallActivity"
             android:exported="false" />
 
+        <activity
+            android:name=".EyeCareActivity"
+            android:exported="false" />
+
+        <activity
+            android:name=".BreakActivity"
+            android:excludeFromRecents="true"
+            android:exported="false"
+            android:launchMode="singleTask"
+            android:taskAffinity=""
+            android:theme="@style/BreakTheme" />
+
         <service
             android:name=".FirewallVpnService"
             android:exported="false"
