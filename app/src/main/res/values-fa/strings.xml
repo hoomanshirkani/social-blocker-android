@@ -115,4 +115,26 @@
     <string name="fw_nr_title">VPN اجرا نمی‌شود</string>
     <string name="fw_nr_sub">فایروال را یک بار خاموش و روشن کنید</string>
     <string name="fw_apps_header2">قطع همیشگی اینترنت · %1$d اپ</string>
+
+    <!-- سهمیه روزانه -->
+    <string name="section_limit">سهمیه روزانه</string>
+    <string name="limit_title">زمان روزانه برای اپ‌های مسدود</string>
+    <string name="limit_sub">اپ‌های مسدود هر روز به مدت محدودی باز هستند. خاموش = همیشه مسدود.</string>
+    <string name="limit_per_day">در روز</string>
+    <string name="limit_p15">۱۵ دقیقه</string>
+    <string name="limit_p30">۳۰ دقیقه</string>
+    <string name="limit_p60">۱ ساعت</string>
+    <string name="limit_p120">۲ ساعت</string>
+    <string name="limit_used">مصرف امروز: %1$s از %2$s · نیمه‌شب صفر می‌شود</string>
+    <string name="limit_off_text">خاموش — اپ‌های مسدود همیشه بسته‌اند</string>
+    <string name="limit_saved">سهمیه روزانه ذخیره شد ✓</string>
+    <string name="limit_invalid">زمانی بیشتر از صفر وارد کنید</string>
+    <string name="limit_toast">⏳ %1$s از سهمیه امروز مانده</string>
+    <string name="limit_up_title">سهمیه امروز تمام شد</string>
+    <string name="limit_up_msg">%1$s امروزِ اپ‌های مسدود را استفاده کردی.\nنیمه‌شب دوباره شروع می‌شود. 🌙</string>
+    <string name="status_on_sub_limit">%1$d اپ · %2$s از امروز مانده</string>
+    <string-array name="limit_units">
+        <item>دقیقه</item>
+        <item>ساعت</item>
+    </string-array>
 </resources>

@@ -15,9 +15,12 @@ import android.text.TextWatcher;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
+import android.widget.ProgressBar;
+import android.widget.Spinner;
 import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -32,7 +35,11 @@ public class MainActivity extends Activity {
     private View statusCard, rowAcc, rowAdmin, rowFw;
     private TextView statusIcon, statusTitle, statusSub, accWarning, appsHeader;
     private Button toggleBtn, pauseBtn;
-    private Switch protectSwitch;
+    private Switch protectSwitch, limitSwitch;
+    private ProgressBar limitProgress;
+    private TextView limitUsed;
+    private EditText limitVal;
+    private Spinner limitUnit;
     private ListView list;
     private AppLoader.Adapter adapter;
 
@@ -69,6 +76,25 @@ public class MainActivity extends Activity {
         protectSwitch = h.findViewById(R.id.protectSwitch);
         appsHeader = h.findViewById(R.id.appsHeader);
         EditText search = h.findViewById(R.id.search);
+        limitSwitch = h.findViewById(R.id.limitSwitch);
+        limitProgress = h.findViewById(R.id.limitProgress);
+        limitUsed = h.findViewById(R.id.limitUsed);
+        limitVal = h.findViewById(R.id.limitVal);
+        limitUnit = h.findViewById(R.id.limitUnit);
+
+        ArrayAdapter<CharSequence> units = ArrayAdapter.createFromResource(
+                this, R.array.limit_units, android.R.layout.simple_spinner_item);
+        units.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        limitUnit.setAdapter(units);
+        limitSwitch.setChecked(Prefs.isLimitEnabled(this));
+        limitVal.setText(String.valueOf(Prefs.getLimitVal(this)));
+        limitUnit.setSelection(Prefs.getLimitUnit(this));
+        h.findViewById(R.id.limitSave).setOnClickListener(v -> onSaveLimit());
+        // پیش‌تنظیم‌ها فقط فرم را پر می‌کنند؛ با «ذخیره» اعمال می‌شوند
+        h.findViewById(R.id.limitP15).setOnClickListener(v -> limitPreset(15, 0));
+        h.findViewById(R.id.limitP30).setOnClickListener(v -> limitPreset(30, 0));
+        h.findViewById(R.id.limitP60).setOnClickListener(v -> limitPreset(1, 1));
+        h.findViewById(R.id.limitP120).setOnClickListener(v -> limitPreset(2, 1));
 
         adapter = new AppLoader.Adapter(this, pkg -> Prefs.getBlocked(this).contains(pkg));
         list.setAdapter(adapter);
@@ -147,7 +173,10 @@ public class MainActivity extends Activity {
             statusCard.setBackgroundResource(R.drawable.bg_status_on);
             statusIcon.setText("🔒");
             statusTitle.setText(R.string.status_on_title);
-            statusSub.setText(getString(R.string.status_on_sub, count));
+            statusSub.setText(Prefs.isLimitEnabled(this)
+                    ? getString(R.string.status_on_sub_limit, count, fmt(Math.max(0,
+                            Prefs.getLimitMs(this) - Prefs.getUsedToday(this))))
+                    : getString(R.string.status_on_sub, count));
             toggleBtn.setText(R.string.btn_turn_off);
             pauseBtn.setText(R.string.btn_pause);
             pauseBtn.setVisibility(View.VISIBLE);
@@ -164,6 +193,16 @@ public class MainActivity extends Activity {
         setRow(rowFw, "🌐", R.string.row_fw_title, getString(fwSub), fw);
 
         protectSwitch.setChecked(Prefs.isProtect(this));
+
+        if (Prefs.isLimitEnabled(this)) {
+            long limit = Prefs.getLimitMs(this), used = Math.min(Prefs.getUsedToday(this), limit);
+            limitProgress.setVisibility(View.VISIBLE);
+            limitProgress.setProgress((int) (used * 1000 / Math.max(1, limit)));
+            limitUsed.setText(getString(R.string.limit_used, fmt(used), fmt(limit)));
+        } else {
+            limitProgress.setVisibility(View.GONE);
+            limitUsed.setText(R.string.limit_off_text);
+        }
         appsHeader.setText(getString(R.string.apps_header, count));
     }
 
@@ -229,6 +268,43 @@ public class MainActivity extends Activity {
         i.putExtra(DevicePolicyManager.EXTRA_DEVICE_ADMIN, adminComponent());
         i.putExtra(DevicePolicyManager.EXTRA_ADD_EXPLANATION, getString(R.string.admin_explanation));
         startActivity(i);
+    }
+
+    private void limitPreset(int val, int unit) {
+        limitVal.setText(String.valueOf(val));
+        limitUnit.setSelection(unit);
+        limitSwitch.setChecked(true);
+    }
+
+    /**
+     * دادن زمان بیشتر = شل کردن؛ پس وقتی مسدودسازی روشن است رمز می‌خواهد.
+     * (روشن کردن سهمیه هم شل کردن است، چون بدون سهمیه اپ‌ها کاملاً بسته‌اند.)
+     */
+    private void onSaveLimit() {
+        int val;
+        try {
+            val = Integer.parseInt(limitVal.getText().toString().trim());
+        } catch (NumberFormatException e) {
+            val = 0;
+        }
+        boolean enable = limitSwitch.isChecked();
+        int unit = Math.max(0, limitUnit.getSelectedItemPosition());
+        if (enable && val <= 0) {
+            toast(R.string.limit_invalid);
+            return;
+        }
+        final int v = Math.max(val, 1);
+        long newAllowance = enable ? v * Prefs.LIMIT_UNIT_MS[unit] : 0;
+        Runnable save = () -> {
+            Prefs.setLimit(this, enable, v, unit);
+            toast(R.string.limit_saved);
+            refresh();
+        };
+        if (Prefs.isBlocking(this) && newAllowance > Prefs.getAllowanceMs(this)) {
+            PasswordDialog.ask(this, save);
+        } else {
+            save.run();
+        }
     }
 
     private void onProtectClicked() {

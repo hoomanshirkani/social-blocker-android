@@ -9,7 +9,7 @@ import android.widget.TextView;
 
 public class BlockedActivity extends Activity {
     static final String EXTRA_PKG = "pkg";
-    static final String EXTRA_SETTINGS = "settings";
+    static final String EXTRA_REASON = "reason";
 
     @Override
     protected void attachBaseContext(Context base) {
@@ -33,9 +33,13 @@ public class BlockedActivity extends Activity {
     private void bind(Intent intent) {
         TextView title = findViewById(R.id.title);
         TextView msg = findViewById(R.id.message);
-        if (intent.getBooleanExtra(EXTRA_SETTINGS, false)) {
+        int reason = intent.getIntExtra(EXTRA_REASON, BlockerService.REASON_BLOCKED);
+        if (reason == BlockerService.REASON_SETTINGS) {
             title.setText(R.string.blocked_settings_title);
             msg.setText(R.string.blocked_settings);
+        } else if (reason == BlockerService.REASON_LIMIT) {
+            title.setText(R.string.limit_up_title);
+            msg.setText(getString(R.string.limit_up_msg, MainActivity.fmt(Prefs.getLimitMs(this))));
         } else {
             title.setText(R.string.blocked_title);
             String pkg = intent.getStringExtra(EXTRA_PKG);

@@ -12,6 +12,7 @@ An Android app that blocks social media apps and locks itself behind a password,
 ### Features
 - **App blocking:** blocked apps (Instagram, TikTok, X, Facebook, Snapchat, YouTube, Threads, … preselected) are closed the moment they open, and a "blocked" screen appears.
 - **Password lock:** turning blocking off, pausing it for 15 minutes, removing an app from the list, and changing the password all need the password. The password is stored only as a salted PBKDF2 hash.
+- **Daily allowance:** optionally allow blocked apps for a limited time per day (e.g. 30 minutes or 1 hour, shared across all blocked apps). Time counts only while a blocked app is on screen; it resets at midnight. Giving yourself more time needs the password.
 - **Self-protection:** while blocking is on, any Settings or installer screen showing "Social Blocker" (Accessibility toggle, Force stop, Uninstall, Device Admin, VPN) is closed immediately. A Device Admin receiver prevents direct uninstalling.
 - **Firewall (no root):** cut internet access (Wi-Fi and mobile data) for selected apps, using a local VPN. No traffic leaves the phone and nothing is sent to any server.
 - **Internet schedule:** "open for *N seconds / minutes / hours* every *M seconds / minutes / hours / days*". Outside that window, internet is blocked for **all** apps. Periods start at the moment you save.
@@ -73,6 +74,7 @@ Fork the repo, create a branch, and open a pull request. Translations are welcom
 ### امکانات
 - **مسدود کردن اپ‌ها:** اپ‌های مسدود (اینستاگرام، تیک‌تاک، X، فیسبوک، اسنپ‌چت، یوتیوب، Threads و … از قبل انتخاب شده‌اند) همان لحظه که باز شوند بسته می‌شوند و یک صفحه‌ی «مسدود است» نمایش داده می‌شود.
 - **قفل رمز:** این کارها رمز می‌خواهند: خاموش کردن، ۱۵ دقیقه توقف، برداشتن اپ از لیست و تغییر رمز. رمز فقط به‌صورت هش (PBKDF2 با salt) ذخیره می‌شود.
+- **سهمیه روزانه:** اختیاری؛ اپ‌های مسدود هر روز به مدت محدودی باز باشند (مثلاً ۳۰ دقیقه یا ۱ ساعت، مشترک برای همه‌ی اپ‌های مسدود). زمان فقط وقتی شمرده می‌شود که اپ مسدود روی صفحه باز باشد و نیمه‌شب صفر می‌شود. زیاد کردن سهمیه رمز می‌خواهد.
 - **محافظت از خود:** وقتی مسدودسازی روشن است، هر صفحه‌ای از تنظیمات یا نصب‌کننده که اسم «Social Blocker» در آن باشد فوراً بسته می‌شود؛ مثل خاموش کردن Accessibility، Force stop، Uninstall، Device Admin و VPN. Device Admin هم جلوی حذف مستقیم را می‌گیرد.
 - **فایروال (بدون روت):** قطع اینترنت اپ‌های انتخابی، هم Wi-Fi و هم دیتا، با یک VPN محلی. هیچ ترافیکی از گوشی خارج نمی‌شود و به هیچ سروری فرستاده نمی‌شود.
 - **زمان‌بندی اینترنت:** «باز به مدت *N ثانیه/دقیقه/ساعت* در هر *M ثانیه/دقیقه/ساعت/روز*». خارج از این بازه، اینترنت **همه‌ی** اپ‌ها قطع است. شروع دوره‌ها از لحظه‌ی ذخیره حساب می‌شود.

@@ -118,4 +118,26 @@
     <string name="fw_nr_title">VPN not running</string>
     <string name="fw_nr_sub">Turn the firewall off and on again</string>
     <string name="fw_apps_header2">ALWAYS BLOCK INTERNET · %1$d APPS</string>
+
+    <!-- سهمیه روزانه -->
+    <string name="section_limit">DAILY ALLOWANCE</string>
+    <string name="limit_title">Daily time for blocked apps</string>
+    <string name="limit_sub">Blocked apps can be used for a limited time each day. Off = always blocked.</string>
+    <string name="limit_per_day">Per day</string>
+    <string name="limit_p15">15 min</string>
+    <string name="limit_p30">30 min</string>
+    <string name="limit_p60">1 hour</string>
+    <string name="limit_p120">2 hours</string>
+    <string name="limit_used">Used today: %1$s of %2$s · resets at midnight</string>
+    <string name="limit_off_text">Off — blocked apps are always blocked</string>
+    <string name="limit_saved">Daily allowance saved ✓</string>
+    <string name="limit_invalid">Enter a time greater than 0</string>
+    <string name="limit_toast">⏳ %1$s left today</string>
+    <string name="limit_up_title">Time is up for today</string>
+    <string name="limit_up_msg">You have used today\'s %1$s for blocked apps.\nIt resets at midnight. 🌙</string>
+    <string name="status_on_sub_limit">%1$d apps · %2$s left today</string>
+    <string-array name="limit_units">
+        <item>minutes</item>
+        <item>hours</item>
+    </string-array>
 </resources>

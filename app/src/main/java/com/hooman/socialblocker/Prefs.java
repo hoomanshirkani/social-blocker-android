@@ -131,6 +131,40 @@ public final class Prefs {
                 .commit();
     }
 
+    // ---------- سهمیه روزانه اپ‌های مسدود ----------
+    /** واحدهای سهمیه: 0=دقیقه 1=ساعت */
+    static final long[] LIMIT_UNIT_MS = {60_000L, 3_600_000L};
+
+    static boolean isLimitEnabled(Context c) { return sp(c).getBoolean("limit_enabled", false); }
+    static int getLimitVal(Context c) { return sp(c).getInt("limit_val", 30); }
+    static int getLimitUnit(Context c) { return sp(c).getInt("limit_unit", 0); }
+    static long getLimitMs(Context c) { return getLimitVal(c) * LIMIT_UNIT_MS[getLimitUnit(c)]; }
+
+    /** سهمیه‌ای که الان واقعاً اعمال می‌شود (0 = اصلاً اجازه نیست) */
+    static long getAllowanceMs(Context c) { return isLimitEnabled(c) ? getLimitMs(c) : 0; }
+
+    static void setLimit(Context c, boolean enabled, int val, int unit) {
+        sp(c).edit()
+                .putBoolean("limit_enabled", enabled)
+                .putInt("limit_val", val)
+                .putInt("limit_unit", unit)
+                .commit();
+    }
+
+    private static String today() { return java.time.LocalDate.now().toString(); }
+
+    /** زمان مصرف‌شده امروز (میلی‌ثانیه)؛ با شروع روز جدید صفر می‌شود. */
+    static long getUsedToday(Context c) {
+        if (!today().equals(sp(c).getString("usage_day", ""))) return 0;
+        return sp(c).getLong("usage_ms", 0);
+    }
+
+    static void addUsage(Context c, long ms) {
+        if (ms <= 0) return;
+        long used = getUsedToday(c) + ms;
+        sp(c).edit().putString("usage_day", today()).putLong("usage_ms", used).commit();
+    }
+
     // ---------- زبان ("" = سیستم، "en"، "fa") ----------
     static String getLanguage(Context c) { return sp(c).getString(K_LANG, ""); }
 
