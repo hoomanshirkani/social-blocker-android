@@ -276,7 +276,7 @@
     <string name="digest_channel">خلاصه نوتیفیکیشن‌ها</string>
     <string name="digest_section_settings">تنظیمات</string>
     <string name="digest_enable">جمع کردن نوتیفیکیشن‌ها</string>
-    <string name="digest_enable_sub">نوتیفیکیشن‌ها داخل اپ نگه داشته و از نوار اعلان پاک می‌شوند؛ به‌جایشان فقط یک خلاصه می‌بینی</string>
+    <string name="digest_enable_sub">نوتیفیکیشن‌ها از نوار اعلان پاک می‌شوند و همه با هم داخل یک نوتیفیکیشن خلاصه نمایش داده می‌شوند (بازش کن تا همه را بخوانی)</string>
     <string name="digest_access_needed">⚠️ دسترسی به نوتیفیکیشن‌ها لازم است — اینجا را بزن و Social Blocker+ را روشن کن (در اندروید ۱۳+ شاید اول «Allow restricted settings» لازم باشد)</string>
     <string name="digest_interval_label">نمایش خلاصه</string>
     <string name="digest_clear_label">پاک کردن همه، هر روز ساعت</string>
@@ -303,4 +303,6 @@
         <item>هر ۱۲ ساعت</item>
         <item>روزی یک بار</item>
     </string-array>
+    <string name="digest_more">+%1$d مورد دیگر</string>
+    <string name="digest_action_clear">🗑 پاک کردن</string>
 </resources>

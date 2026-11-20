@@ -10,6 +10,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -23,6 +24,8 @@ final class DigestScheduler {
     static final String ACTION_CLEAR = "com.hooman.socialblocker.DIGEST_CLEAR";
     private static final String CHANNEL = "digest";
     static final int NOTIF_ID = 4242;
+    /** حداکثر طول متن داخل نوتیفیکیشن (بقیه با «+N مورد دیگر») */
+    private static final int MAX_CHARS = 4500;
 
     private static PendingIntent pi(Context c, String action, int req) {
         Intent i = new Intent(c, Receiver.class).setAction(action);
@@ -63,36 +66,59 @@ final class DigestScheduler {
         nm.createNotificationChannel(new NotificationChannel(CHANNEL,
                 lc.getString(R.string.digest_channel), NotificationManager.IMPORTANCE_LOW));
 
-        Map<String, Integer> perApp = new LinkedHashMap<>();
+        // گروه‌بندی بر اساس اپ، جدیدترین اول
+        Map<String, List<DigestStore.Item>> byApp = new LinkedHashMap<>();
         for (int i = items.size() - 1; i >= 0; i--) {
-            String label = label(c, items.get(i).pkg);
-            Integer n = perApp.get(label);
-            perApp.put(label, n == null ? 1 : n + 1);
+            DigestStore.Item it = items.get(i);
+            List<DigestStore.Item> l = byApp.get(it.pkg);
+            if (l == null) {
+                l = new ArrayList<>();
+                byApp.put(it.pkg, l);
+            }
+            l.add(it);
         }
-        Notification.InboxStyle style = new Notification.InboxStyle();
-        StringBuilder line = new StringBuilder();
-        int shown = 0;
-        for (Map.Entry<String, Integer> e : perApp.entrySet()) {
-            String s = e.getKey() + " (" + e.getValue() + ")";
-            if (shown < 6) style.addLine(s);
-            if (line.length() > 0) line.append(" · ");
-            line.append(s);
-            shown++;
-        }
-        String title = lc.getString(R.string.digest_notif_title, items.size(), perApp.size());
-        style.setBigContentTitle(title);
 
-        Intent open = new Intent(c, DigestActivity.class).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        PendingIntent content = PendingIntent.getActivity(c, 3, open,
-                PendingIntent.FLAG_IMMUTABLE | PendingIntent.FLAG_UPDATE_CURRENT);
+        // کل محتوا داخل خود نوتیفیکیشن (بدون نیاز به باز کردن اپ)
+        java.text.DateFormat tf = android.text.format.DateFormat.getTimeFormat(c);
+        StringBuilder big = new StringBuilder();
+        StringBuilder line = new StringBuilder();
+        int hidden = 0;
+        for (Map.Entry<String, List<DigestStore.Item>> e : byApp.entrySet()) {
+            String label = label(c, e.getKey());
+            if (line.length() > 0) line.append(" · ");
+            line.append(label).append(" (").append(e.getValue().size()).append(')');
+            if (big.length() > MAX_CHARS) {
+                hidden += e.getValue().size();
+                continue;
+            }
+            if (big.length() > 0) big.append("\n\n");
+            big.append("▪ ").append(label).append(" (").append(e.getValue().size()).append(')');
+            for (DigestStore.Item it : e.getValue()) {
+                if (big.length() > MAX_CHARS) {
+                    hidden++;
+                    continue;
+                }
+                String t = it.title.isEmpty() ? it.text
+                        : it.text.isEmpty() ? it.title : it.title + ": " + it.text;
+                t = t.replace('\n', ' ').trim();
+                if (t.length() > 120) t = t.substring(0, 117) + "…";
+                big.append("\n  ").append(tf.format(new java.util.Date(it.time))).append("  ").append(t);
+            }
+        }
+        if (hidden > 0) big.append("\n\n").append(lc.getString(R.string.digest_more, hidden));
+
+        String title = lc.getString(R.string.digest_notif_title, items.size(), byApp.size());
+        Notification.Action clear = new Notification.Action.Builder(
+                android.graphics.drawable.Icon.createWithResource(c, R.drawable.ic_stat_digest),
+                lc.getString(R.string.digest_action_clear), pi(c, ACTION_CLEAR, 4)).build();
         Notification n = new Notification.Builder(c, CHANNEL)
                 .setSmallIcon(R.drawable.ic_stat_digest)
                 .setContentTitle(title)
                 .setContentText(line.toString())
-                .setStyle(style)
-                .setContentIntent(content)
-                .setAutoCancel(true)
+                .setStyle(new Notification.BigTextStyle().setBigContentTitle(title).bigText(big.toString()))
+                .addAction(clear)
                 .setOnlyAlertOnce(true)
+                .setShowWhen(true)
                 .build();
         try {
             nm.notify(NOTIF_ID, n);

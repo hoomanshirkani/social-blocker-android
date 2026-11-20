@@ -280,7 +280,7 @@
     <string name="digest_channel">Notification digest</string>
     <string name="digest_section_settings">SETTINGS</string>
     <string name="digest_enable">Collect notifications</string>
-    <string name="digest_enable_sub">Notifications are kept inside the app and removed from the notification shade; you get one summary instead</string>
+    <string name="digest_enable_sub">Notifications are removed from the shade and shown together inside one summary notification (expand it to read them all)</string>
     <string name="digest_access_needed">⚠️ Notification access is needed — tap here and turn on Social Blocker+ (on Android 13+, \"Allow restricted settings\" may be needed first)</string>
     <string name="digest_interval_label">Show a summary</string>
     <string name="digest_clear_label">Clear everything every day at</string>
@@ -307,4 +307,6 @@
         <item>every 12 hours</item>
         <item>once a day</item>
     </string-array>
+    <string name="digest_more">+%1$d more</string>
+    <string name="digest_action_clear">🗑 Clear</string>
 </resources>
