@@ -5,11 +5,17 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.TextView;
+
+import java.util.Random;
 
 public class BlockedActivity extends Activity {
     static final String EXTRA_PKG = "pkg";
     static final String EXTRA_REASON = "reason";
+
+    private final Random random = new Random();
+    private int lastQuote = -1;
 
     @Override
     protected void attachBaseContext(Context base) {
@@ -21,6 +27,7 @@ public class BlockedActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_blocked);
         findViewById(R.id.homeBtn).setOnClickListener(v -> goHome());
+        findViewById(R.id.nextQuote).setOnClickListener(v -> showQuote());
         bind(getIntent());
     }
 
@@ -50,6 +57,31 @@ public class BlockedActivity extends Activity {
             } catch (Exception ignored) {}
             msg.setText(getString(R.string.blocked_msg, name));
         }
+        showQuote();
+    }
+
+    /** یک شعر/پیام تصادفی (غیرتکراری پشت‌سرهم) به فارسی و انگلیسی. */
+    private void showQuote() {
+        String[] fa = getResources().getStringArray(R.array.quote_fa);
+        String[] en = getResources().getStringArray(R.array.quote_en);
+        String[] byFa = getResources().getStringArray(R.array.quote_by_fa);
+        String[] byEn = getResources().getStringArray(R.array.quote_by_en);
+        int n = Math.min(Math.min(fa.length, en.length), Math.min(byFa.length, byEn.length));
+        if (n == 0) return;
+        int i = random.nextInt(n);
+        if (n > 1 && i == lastQuote) i = (i + 1) % n;
+        lastQuote = i;
+
+        ((TextView) findViewById(R.id.quoteFa)).setText(fa[i]);
+        ((TextView) findViewById(R.id.quoteEn)).setText(en[i]);
+        setAuthor(R.id.quoteByFa, byFa[i]);
+        setAuthor(R.id.quoteByEn, byEn[i]);
+    }
+
+    private void setAuthor(int id, String name) {
+        TextView t = findViewById(id);
+        t.setText("— " + name);
+        t.setVisibility(name.isEmpty() ? View.GONE : View.VISIBLE);
     }
 
     private void goHome() {

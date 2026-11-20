@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  شعرها و پیام‌های صفحه «مسدود است». هر چهار آرایه موازی‌اند (ایندکس یکسان = یک نقل‌قول).
+  شعرها از شاعران کلاسیک (مالکیت عمومی) هستند؛ برگردان‌های انگلیسی آزاد و مخصوص همین برنامه است.
+  برای افزودن نقل‌قول جدید، به هر چهار آرایه یک آیتم اضافه کنید.
+-->
+<resources>
+    <string-array name="quote_fa" translatable="false">
+        <item>ابر و باد و مه و خورشید و فلک در کارند\nتا تو نانی به کف آری و به غفلت نخوری</item>
+        <item>از دی که گذشت هیچ از او یاد مکن\nفردا که نیامده است فریاد مکن\nبر نامده و گذشته بنیاد مکن\nحالی خوش باش و عمر بر باد مکن</item>
+        <item>این قافلهٔ عمر عجب می‌گذرد\nدریاب دمی که با طرب می‌گذرد</item>
+        <item>توانا بود هر که دانا بود\nز دانش دل پیر برنا بود</item>
+        <item>درخت دوستی بنشان که کام دل به بار آرد\nنهال دشمنی برکن که رنج بی‌شمار آرد</item>
+        <item>از محبت تلخ‌ها شیرین شود\nاز محبت مس‌ها زرین شود</item>
+        <item>بنی‌آدم اعضای یک پیکرند\nکه در آفرینش ز یک گوهرند</item>
+        <item>میازار موری که دانه‌کش است\nکه جان دارد و جان شیرین خوش است</item>
+        <item>هر نفسی که فرو می‌رود ممد حیات است\nو چون برمی‌آید مفرح ذات</item>
+        <item>هرگز نمیرد آن که دلش زنده شد به عشق\nثبت است بر جریدهٔ عالم دوام ما</item>
+        <item>علم چندان که بیشتر خوانی\nچون عمل در تو نیست نادانی</item>
+        <item>به جهان خرم از آنم که جهان خرم از اوست\nعاشقم بر همه عالم که همه عالم از اوست</item>
+        <item>بیا تا گل برافشانیم و می در ساغر اندازیم\nفلک را سقف بشکافیم و طرحی نو دراندازیم</item>
+        <item>هر کسی کو دور ماند از اصل خویش\nباز جوید روزگار وصل خویش</item>
+        <item>سه نفس عمیق بکش.\nفید همیشه هست، ولی این لحظه نه.</item>
+        <item>ده صفحه کتاب\nاز ده دقیقه اسکرول بهتر است.</item>
+        <item>بلند شو، یک لیوان آب بخور\nو یک دقیقه کش‌وقوس بیا.</item>
+        <item>به کسی که دوستش داری پیام بده؛\nواقعی، نه یک لایک.</item>
+        <item>خودت این را مسدود کردی.\nخودِ دیروزت به تو ایمان داشت؛ ثابت کن حق داشت.</item>
+        <item>پنج دقیقه برو بیرون\nو به آسمان نگاه کن.</item>
+        <item>تمرکزِ کوچکِ هرروزه\nزندگی بزرگی می‌سازد.</item>
+    </string-array>
+
+    <string-array name="quote_en" translatable="false">
+        <item>Cloud and wind, moon, sun and sky are all at work,\nso you may earn your bread — and not eat it heedlessly.</item>
+        <item>Don\'t dwell on yesterday, it is gone;\ndon\'t fret over tomorrow, it hasn\'t come.\nBuild on neither the past nor the unborn —\nbe glad now, and don\'t waste your life.</item>
+        <item>How strangely the caravan of life passes by —\ncatch the moment that passes in joy.</item>
+        <item>Whoever is wise is strong;\nthrough knowledge, an old heart grows young.</item>
+        <item>Plant the tree of friendship — it bears the heart\'s desire;\nuproot the sapling of hatred — it bears endless pain.</item>
+        <item>Through love, bitter things turn sweet;\nthrough love, copper turns to gold.</item>
+        <item>All human beings are members of one body,\ncreated from one essence.</item>
+        <item>Do not harm the ant carrying its grain;\nit has a life, and sweet life is dear.</item>
+        <item>Each breath drawn in sustains life;\neach breath let out refreshes the soul.</item>
+        <item>One whose heart has come alive through love never dies;\nour lasting is written in the book of the world.</item>
+        <item>However much knowledge you read,\nwithout action you remain unknowing.</item>
+        <item>I rejoice in the world, for the world rejoices in Him;\nI love the whole world, for the whole world is His.</item>
+        <item>Come, let us scatter flowers and pour the wine,\nsplit the roof of the sky and draw up a new design.</item>
+        <item>Whoever is kept far from their source\nlongs to return to the time of union.</item>
+        <item>Take three deep breaths.\nThe feed will always be there; this moment won\'t.</item>
+        <item>Ten pages of a book\nbeat ten minutes of scrolling.</item>
+        <item>Stand up, drink a glass of water,\nand stretch for a minute.</item>
+        <item>Message someone you care about —\nfor real, not a like.</item>
+        <item>You chose to block this.\nYour past self believed in you — prove them right.</item>
+        <item>Step outside for five minutes\nand look at the sky.</item>
+        <item>Small focus, repeated every day,\nbuilds a big life.</item>
+    </string-array>
+
+    <string-array name="quote_by_fa" translatable="false">
+        <item>سعدی</item>
+        <item>خیام</item>
+        <item>خیام</item>
+        <item>فردوسی</item>
+        <item>حافظ</item>
+        <item>مولانا</item>
+        <item>سعدی</item>
+        <item>فردوسی</item>
+        <item>سعدی</item>
+        <item>حافظ</item>
+        <item>سعدی</item>
+        <item>سعدی</item>
+        <item>حافظ</item>
+        <item>مولانا</item>
+        <item></item>
+        <item></item>
+        <item></item>
+        <item></item>
+        <item></item>
+        <item></item>
+        <item></item>
+    </string-array>
+
+    <string-array name="quote_by_en" translatable="false">
+        <item>Saadi</item>
+        <item>Khayyam</item>
+        <item>Khayyam</item>
+        <item>Ferdowsi</item>
+        <item>Hafez</item>
+        <item>Rumi</item>
+        <item>Saadi</item>
+        <item>Ferdowsi</item>
+        <item>Saadi</item>
+        <item>Hafez</item>
+        <item>Saadi</item>
+        <item>Saadi</item>
+        <item>Hafez</item>
+        <item>Rumi</item>
+        <item></item>
+        <item></item>
+        <item></item>
+        <item></item>
+        <item></item>
+        <item></item>
+        <item></item>
+    </string-array>
+</resources>

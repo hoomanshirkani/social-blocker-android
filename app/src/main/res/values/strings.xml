@@ -140,4 +140,5 @@
         <item>minutes</item>
         <item>hours</item>
     </string-array>
+    <string name="next_quote">↻ Another one</string>
 </resources>

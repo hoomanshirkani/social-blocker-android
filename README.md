@@ -13,6 +13,7 @@ An Android app that blocks social media apps and locks itself behind a password,
 - **App blocking:** blocked apps (Instagram, TikTok, X, Facebook, Snapchat, YouTube, Threads, … preselected) are closed the moment they open, and a "blocked" screen appears.
 - **Password lock:** turning blocking off, pausing it for 15 minutes, removing an app from the list, and changing the password all need the password. The password is stored only as a salted PBKDF2 hash.
 - **Daily allowance:** optionally allow blocked apps for a limited time per day (e.g. 30 minutes or 1 hour, shared across all blocked apps). Time counts only while a blocked app is on screen; it resets at midnight. Giving yourself more time needs the password.
+- **Calm block screen:** instead of jumping to the home screen, a random classical Persian poem (Saadi, Hafez, Khayyam, Ferdowsi, Rumi) or a positive message is shown in Persian and English.
 - **Self-protection:** while blocking is on, any Settings or installer screen showing "Social Blocker" (Accessibility toggle, Force stop, Uninstall, Device Admin, VPN) is closed immediately. A Device Admin receiver prevents direct uninstalling.
 - **Firewall (no root):** cut internet access (Wi-Fi and mobile data) for selected apps, using a local VPN. No traffic leaves the phone and nothing is sent to any server.
 - **Internet schedule:** "open for *N seconds / minutes / hours* every *M seconds / minutes / hours / days*". Outside that window, internet is blocked for **all** apps. Periods start at the moment you save.
@@ -43,6 +44,12 @@ adb install app/build/outputs/apk/debug/app-debug.apk
 6. Check the apps to block, then tap **Turn on blocking**.
 
 Do steps 2–5 **before** turning blocking on. After that, those Settings screens are locked.
+
+### Download / Releases
+Every push to `main` builds the APK on GitHub Actions and publishes it under **Releases** with a new version number — no manual steps.
+- `versionCode` = number of commits; `versionName` = last `vX.Y` tag + commits since it (e.g. `1.5.3`).
+- To start a new minor/major version, create a tag like `v1.6` or `v2.0` and push it with the commit.
+- All builds are signed with the same key (`app/debug.keystore`), so a new APK installs over the old one and keeps your settings. ⚠️ This key is public — use your own private key for a Play Store release.
 
 ### Limitations
 - Safe Mode, ADB or a factory reset can bypass it. This app is a commitment device, not an MDM.
@@ -75,6 +82,7 @@ Fork the repo, create a branch, and open a pull request. Translations are welcom
 - **مسدود کردن اپ‌ها:** اپ‌های مسدود (اینستاگرام، تیک‌تاک، X، فیسبوک، اسنپ‌چت، یوتیوب، Threads و … از قبل انتخاب شده‌اند) همان لحظه که باز شوند بسته می‌شوند و یک صفحه‌ی «مسدود است» نمایش داده می‌شود.
 - **قفل رمز:** این کارها رمز می‌خواهند: خاموش کردن، ۱۵ دقیقه توقف، برداشتن اپ از لیست و تغییر رمز. رمز فقط به‌صورت هش (PBKDF2 با salt) ذخیره می‌شود.
 - **سهمیه روزانه:** اختیاری؛ اپ‌های مسدود هر روز به مدت محدودی باز باشند (مثلاً ۳۰ دقیقه یا ۱ ساعت، مشترک برای همه‌ی اپ‌های مسدود). زمان فقط وقتی شمرده می‌شود که اپ مسدود روی صفحه باز باشد و نیمه‌شب صفر می‌شود. زیاد کردن سهمیه رمز می‌خواهد.
+- **صفحه‌ی آرام مسدودسازی:** به‌جای پریدن به صفحه‌ی اصلی، یک شعر کلاسیک فارسی (سعدی، حافظ، خیام، فردوسی، مولانا) یا یک پیام مثبت، به فارسی و انگلیسی نمایش داده می‌شود.
 - **محافظت از خود:** وقتی مسدودسازی روشن است، هر صفحه‌ای از تنظیمات یا نصب‌کننده که اسم «Social Blocker» در آن باشد فوراً بسته می‌شود؛ مثل خاموش کردن Accessibility، Force stop، Uninstall، Device Admin و VPN. Device Admin هم جلوی حذف مستقیم را می‌گیرد.
 - **فایروال (بدون روت):** قطع اینترنت اپ‌های انتخابی، هم Wi-Fi و هم دیتا، با یک VPN محلی. هیچ ترافیکی از گوشی خارج نمی‌شود و به هیچ سروری فرستاده نمی‌شود.
 - **زمان‌بندی اینترنت:** «باز به مدت *N ثانیه/دقیقه/ساعت* در هر *M ثانیه/دقیقه/ساعت/روز*». خارج از این بازه، اینترنت **همه‌ی** اپ‌ها قطع است. شروع دوره‌ها از لحظه‌ی ذخیره حساب می‌شود.
@@ -105,6 +113,12 @@ adb install app/build/outputs/apk/debug/app-debug.apk
 6. اپ‌ها را تیک بزنید و **روشن کردن مسدودسازی** را بزنید.
 
 مراحل ۲ تا ۵ را **قبل** از روشن کردن مسدودسازی انجام دهید، چون بعد از آن این صفحه‌های تنظیمات قفل می‌شوند.
+
+### دانلود / نسخه‌ها
+با هر push به `main`، فایل APK روی GitHub Actions ساخته می‌شود و با شماره‌ی نسخه‌ی جدید در بخش **Releases** منتشر می‌شود؛ بدون هیچ کار دستی.
+- `versionCode` = تعداد commitها؛ `versionName` = آخرین تگ `vX.Y` + تعداد commitهای بعد از آن (مثلاً `1.5.3`).
+- برای شروع نسخه‌ی اصلی جدید، یک تگ مثل `v1.6` یا `v2.0` بسازید و همراه commit push کنید.
+- همه‌ی بیلدها با یک کلید (`app/debug.keystore`) امضا می‌شوند، پس APK جدید روی قبلی نصب می‌شود و تنظیمات می‌ماند. ⚠️ این کلید عمومی است؛ برای Play Store کلید خصوصی خودتان را بسازید.
 
 ### محدودیت‌ها
 - با Safe Mode، ADB یا Factory reset می‌شود دورش زد. این ابزار برای تعهد به خود است، نه MDM.

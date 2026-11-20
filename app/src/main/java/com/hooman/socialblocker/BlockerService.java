@@ -189,7 +189,8 @@ public class BlockerService extends AccessibilityService {
     }
 
     private void block(String pkg, int reason) {
-        performGlobalAction(GLOBAL_ACTION_HOME);
+        // از تنظیمات فوراً بیرون می‌رویم؛ برای اپ‌ها مستقیم صفحه پیام/شعر را رویشان باز می‌کنیم
+        if (reason == REASON_SETTINGS) performGlobalAction(GLOBAL_ACTION_HOME);
         long now = SystemClock.uptimeMillis();
         if (now - lastBlock < 800) return; // صفحه را پشت‌سرهم باز نکن
         lastBlock = now;
@@ -201,7 +202,8 @@ public class BlockerService extends AccessibilityService {
         try {
             startActivity(i);
         } catch (Exception ignoredEx) {
-            // اگر سیستم اجازه نداد، همان برگشت به Home کافی است
+            // اگر سیستم اجازه نداد، حداقل به Home برگرد
+            performGlobalAction(GLOBAL_ACTION_HOME);
         }
     }
 

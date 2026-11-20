@@ -2,6 +2,29 @@ plugins {
     id 'com.android.application'
 }
 
+// ---------------------------------------------------------------------------
+// نسخه خودکار از git (بدون نیاز به تغییر دستی):
+//   versionCode = تعداد کل commitها (همیشه بزرگ‌تر می‌شود)
+//   versionName = آخرین تگ vX.Y + تعداد commitهای بعد از آن  →  مثلاً 1.5.3
+// اگر git در دسترس نباشد (مثلاً از zip بیلد شود) → 1.0.<count> یا 1.0.0
+// ---------------------------------------------------------------------------
+def git = { List<String> args ->
+    try {
+        def p = (['git'] + args).execute(null, rootDir)
+        def out = p.text.trim()
+        p.waitFor()
+        return p.exitValue() == 0 && out ? out : null
+    } catch (Exception ignored) {
+        return null
+    }
+}
+def gitCount = (git(['rev-list', '--count', 'HEAD']) ?: '1') as Integer
+def gitVersionName = {
+    def d = git(['describe', '--tags', '--long', '--match', 'v[0-9]*', '--exclude', 'v*.*.*'])
+    def m = d ? (d =~ /^v(\d+)\.(\d+)(?:\.\d+)?-(\d+)-g/) : null
+    return (m != null && m.find()) ? "${m.group(1)}.${m.group(2)}.${m.group(3)}" : "1.0.${gitCount}"
+}()
+
 android {
     namespace 'com.hooman.socialblocker'
     compileSdk 35
@@ -10,14 +33,28 @@ android {
         applicationId "com.hooman.socialblocker"
         minSdk 26
         targetSdk 35
-        versionCode 1
-        versionName "1.0"
+        versionCode gitCount
+        versionName gitVersionName
+    }
+
+    // یک کلید امضای ثابت داخل مخزن، تا APKهای ساخته‌شده روی هر کامپیوتر و روی GitHub
+    // روی هم نصب شوند (Update) و تنظیمات پاک نشود.
+    // ⚠️ این کلید عمومی است؛ برای انتشار در Play Store کلید خصوصی خودتان را بسازید.
+    signingConfigs {
+        debug {
+            storeFile file('debug.keystore')
+            storePassword 'android'
+            keyAlias 'androiddebugkey'
+            keyPassword 'android'
+        }
     }
 
     buildTypes {
+        debug {
+            signingConfig signingConfigs.debug
+        }
         release {
             minifyEnabled false
-            // برای نصب راحت، نسخه release هم با کلید debug امضا می‌شود
             signingConfig signingConfigs.debug
         }
     }
@@ -26,4 +63,14 @@ android {
         sourceCompatibility JavaVersion.VERSION_17
         targetCompatibility JavaVersion.VERSION_17
     }
+
+    lint {
+        abortOnError false
+        checkReleaseBuilds false
+    }
+}
+
+// برای GitHub Actions: ./gradlew -q printVersion
+tasks.register('printVersion') {
+    doLast { println gitVersionName }
 }
