@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- نام برنامه ترجمه نمی‌شود چون سرویس با همین متن تنظیمات را تشخیص می‌دهد -->
+    <string name="app_name" translatable="false">Social Blocker</string>
+
+    <string name="acc_description">Closes blocked apps (like Instagram and TikTok) when they are opened, and prevents disabling or uninstalling this app from Settings without the password.</string>
+    <string name="admin_explanation">While device admin is active, this app cannot be uninstalled without the password.</string>
+    <string name="admin_disable_warning">To disable this, first turn off blocking inside the app with your password.</string>
+    <string name="search_hint">Search apps…</string>
+    <string name="blocked_title">This app is blocked</string>
+    <string name="blocked_settings_title">Settings are locked</string>
+    <string name="blocked_settings">This part of Settings is protected. To change it, first turn off blocking in Social Blocker with your password.</string>
+    <string name="blocked_msg">%1$s is blocked.\nDo something useful instead 💪</string>
+    <string name="go_home">Go to home screen</string>
+    <string name="protect_label">Protect settings (prevent disabling/uninstalling this app)</string>
+
+    <string name="status_off">🔓 Blocking is OFF</string>
+    <string name="status_paused">⏸ Paused — %1$d:%2$02d left</string>
+    <string name="status_on">🔒 Blocking is ON</string>
+    <string name="status_acc_warning">\n⚠️ Accessibility service is off — nothing will be blocked!</string>
+    <string name="btn_turn_off">Turn off blocking (password)</string>
+    <string name="btn_turn_on">Turn on blocking</string>
+    <string name="btn_resume">Resume blocking</string>
+    <string name="btn_pause">Pause 15 min (password)</string>
+    <string name="btn_acc_on">✓ Accessibility service is on</string>
+    <string name="btn_acc_off">1) Enable accessibility service</string>
+    <string name="btn_admin_on">✓ Uninstall protection (Device Admin) is on</string>
+    <string name="btn_admin_off">2) Enable uninstall protection (Device Admin)</string>
+    <string name="btn_change_password">Change password</string>
+    <string name="btn_language">Language / زبان</string>
+
+    <string name="toast_blocking_off">Blocking turned off</string>
+    <string name="toast_blocking_on">Blocking turned on</string>
+    <string name="toast_enable_acc_first">Enable the accessibility service first</string>
+    <string name="toast_admin_while_on">Turn off blocking first, enable Device Admin, then turn blocking back on</string>
+    <string name="toast_wrong_password">Wrong password ❌</string>
+    <string name="toast_pw_short">Password is too short</string>
+    <string name="toast_pw_mismatch">Passwords do not match</string>
+    <string name="toast_pw_saved">Password saved ✓</string>
+
+    <string name="pw_hint">Password</string>
+    <string name="pw_enter_title">Enter password</string>
+    <string name="pw_new_hint">New password (at least 4 characters)</string>
+    <string name="pw_repeat_hint">Repeat password</string>
+    <string name="pw_create_title">Create a password</string>
+    <string name="pw_change_title">Change password</string>
+    <string name="pw_create_msg">This password is needed to turn off blocking. Best if someone else types it so you don\'t know it 😉</string>
+    <string name="ok">OK</string>
+    <string name="cancel">Cancel</string>
+    <string name="save">Save</string>
+
+    <string name="lang_title">Language / زبان</string>
+    <string name="lang_system">System default</string>
+</resources>

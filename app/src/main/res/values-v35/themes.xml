@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- اندروید ۱۵+: حالت edge-to-edge اجباری را خاموش می‌کنیم تا نوار وضعیت
+         (ساعت/باتری) با رنگ تیره و آیکون‌های سفید دیده شود و محتوا زیرش نرود -->
+    <style name="AppTheme" parent="android:Theme.Material.Light.DarkActionBar">
+        <item name="android:colorPrimary">#C62828</item>
+        <item name="android:colorPrimaryDark">#8E0000</item>
+        <item name="android:colorAccent">#C62828</item>
+        <item name="android:statusBarColor">#8E0000</item>
+        <item name="android:windowOptOutEdgeToEdgeEnforcement">true</item>
+    </style>
+
+    <style name="BlockedTheme" parent="android:Theme.Material.NoActionBar">
+        <item name="android:statusBarColor">#212121</item>
+        <item name="android:navigationBarColor">#212121</item>
+        <item name="android:windowOptOutEdgeToEdgeEnforcement">true</item>
+    </style>
+</resources>

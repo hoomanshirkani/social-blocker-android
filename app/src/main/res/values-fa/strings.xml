@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="acc_description">این سرویس وقتی اپ‌های مسدودشده (مثل اینستاگرام و تیک‌تاک) باز شوند، آن‌ها را می‌بندد. همچنین جلوی غیرفعال کردن یا حذف برنامه از تنظیمات را بدون رمز می‌گیرد.</string>
+    <string name="admin_explanation">با فعال کردن مدیر دستگاه، حذف برنامه بدون وارد کردن رمز ممکن نیست.</string>
+    <string name="admin_disable_warning">برای غیرفعال کردن، اول داخل برنامه مسدودسازی را با رمز خاموش کنید.</string>
+    <string name="search_hint">جستجوی اپ…</string>
+    <string name="blocked_title">این اپ مسدود است</string>
+    <string name="blocked_settings_title">تنظیمات قفل است</string>
+    <string name="blocked_settings">این بخش از تنظیمات محافظت شده است. برای تغییر، اول مسدودسازی را داخل Social Blocker با رمز خاموش کنید.</string>
+    <string name="blocked_msg">%1$s مسدود شده است.\nبه‌جایش یک کار مفید انجام بده 💪</string>
+    <string name="go_home">بازگشت به صفحه اصلی</string>
+    <string name="protect_label">محافظت از تنظیمات (جلوگیری از خاموش/حذف کردن برنامه)</string>
+
+    <string name="status_off">🔓 مسدودسازی خاموش است</string>
+    <string name="status_paused">⏸ متوقف موقت — %1$d:%2$02d مانده</string>
+    <string name="status_on">🔒 مسدودسازی فعال است</string>
+    <string name="status_acc_warning">\n⚠️ سرویس دسترسی‌پذیری خاموش است؛ بدون آن چیزی بلاک نمی‌شود!</string>
+    <string name="btn_turn_off">خاموش کردن مسدودسازی (رمز لازم است)</string>
+    <string name="btn_turn_on">روشن کردن مسدودسازی</string>
+    <string name="btn_resume">ادامه مسدودسازی</string>
+    <string name="btn_pause">۱۵ دقیقه توقف (رمز)</string>
+    <string name="btn_acc_on">✓ سرویس دسترسی‌پذیری فعال است</string>
+    <string name="btn_acc_off">۱) فعال کردن سرویس دسترسی‌پذیری</string>
+    <string name="btn_admin_on">✓ ضد حذف (Device Admin) فعال است</string>
+    <string name="btn_admin_off">۲) فعال کردن ضد حذف (Device Admin)</string>
+    <string name="btn_change_password">تغییر رمز</string>
+    <string name="btn_language">زبان / Language</string>
+
+    <string name="toast_blocking_off">مسدودسازی خاموش شد</string>
+    <string name="toast_blocking_on">مسدودسازی روشن شد</string>
+    <string name="toast_enable_acc_first">اول سرویس دسترسی‌پذیری را فعال کنید</string>
+    <string name="toast_admin_while_on">اول مسدودسازی را خاموش کنید، Device Admin را فعال کنید، بعد دوباره روشن کنید</string>
+    <string name="toast_wrong_password">رمز اشتباه است ❌</string>
+    <string name="toast_pw_short">رمز خیلی کوتاه است</string>
+    <string name="toast_pw_mismatch">دو رمز یکی نیستند</string>
+    <string name="toast_pw_saved">رمز ذخیره شد ✓</string>
+
+    <string name="pw_hint">رمز</string>
+    <string name="pw_enter_title">رمز را وارد کنید</string>
+    <string name="pw_new_hint">رمز جدید (حداقل ۴ کاراکتر)</string>
+    <string name="pw_repeat_hint">تکرار رمز</string>
+    <string name="pw_create_title">یک رمز برای برنامه بسازید</string>
+    <string name="pw_change_title">تغییر رمز</string>
+    <string name="pw_create_msg">این رمز برای خاموش کردن مسدودسازی لازم است. بهتر است کس دیگری آن را تایپ کند تا خودتان ندانید 😉</string>
+    <string name="ok">تأیید</string>
+    <string name="cancel">لغو</string>
+    <string name="save">ذخیره</string>
+
+    <string name="lang_title">زبان / Language</string>
+    <string name="lang_system">پیش‌فرض سیستم</string>
+</resources>
