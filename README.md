@@ -1,51 +1,116 @@
-# Social Blocker (اندروید)
+# Social Blocker (Android)
 
-اپ‌های سوشال مدیا را بلاک می‌کند؛ خاموش کردنش رمز می‌خواهد.
+**[English](#english) | [فارسی](#فارسی)**
 
-## ساختن APK
-**با Android Studio:** پوشه `SocialBlocker` را با Open باز کنید، بگذارید Gradle Sync تمام شود، بعد
-`Build > Build App Bundle(s) / APK(s) > Build APK(s)`.
+---
 
-**از ترمینال** (اگر Android SDK نصب است):
+<a id="english"></a>
+## English
+
+An Android app that blocks social media apps and locks itself behind a password, so you can't simply turn it off when you're tempted. It also includes a no-root firewall and an internet schedule (for example: internet open for only 10 seconds every minute).
+
+### Features
+- **App blocking:** blocked apps (Instagram, TikTok, X, Facebook, Snapchat, YouTube, Threads, … preselected) are closed the moment they open, and a "blocked" screen appears.
+- **Password lock:** turning blocking off, pausing it for 15 minutes, removing an app from the list, and changing the password all need the password. The password is stored only as a salted PBKDF2 hash.
+- **Self-protection:** while blocking is on, any Settings or installer screen showing "Social Blocker" (Accessibility toggle, Force stop, Uninstall, Device Admin, VPN) is closed immediately. A Device Admin receiver prevents direct uninstalling.
+- **Firewall (no root):** cut internet access (Wi-Fi and mobile data) for selected apps, using a local VPN. No traffic leaves the phone and nothing is sent to any server.
+- **Internet schedule:** "open for *N seconds / minutes / hours* every *M seconds / minutes / hours / days*". Outside that window, internet is blocked for **all** apps. Periods start at the moment you save.
+- **Languages:** English and Persian (فارسی), or follow the system language.
+
+### Requirements
+- Android 8.0 (API 26) or newer
+- To build: Android Studio (or the Android SDK with JDK 17)
+
+### Build
+**Android Studio:** `File → Open` → select this folder (the one containing `settings.gradle`) → wait for Gradle Sync → `Build → Generate App Bundles or APKs → Generate APKs`.
+
+**Command line:**
 ```bash
-cd SocialBlocker
+echo "sdk.dir=$HOME/Android/Sdk" > local.properties
+./gradlew assembleDebug
+# Output: app/build/outputs/apk/debug/app-debug.apk
+adb install app/build/outputs/apk/debug/app-debug.apk
+```
+
+### Setup on the phone (in this order)
+1. Open the app and create a password. Tip: let someone else type it.
+2. Tap **Enable accessibility service** → Social Blocker → On.
+   - Android 13+: if it is greyed out ("restricted setting"), go to *Settings → Apps → Social Blocker → ⋮ → Allow restricted settings*. Installing with `adb install` or from Android Studio avoids this restriction.
+3. Tap **Enable uninstall protection (Device Admin)** → Activate.
+4. Optional: open **🌐 Firewall & internet schedule**, turn the firewall on and accept the VPN prompt. Then set *Settings → Network → VPN → Social Blocker → Always-on VPN*.
+5. Battery: set Social Blocker to *Unrestricted* (especially on Xiaomi, Samsung and Huawei).
+6. Check the apps to block, then tap **Turn on blocking**.
+
+Do steps 2–5 **before** turning blocking on. After that, those Settings screens are locked.
+
+### Limitations
+- Safe Mode, ADB or a factory reset can bypass it. This app is a commitment device, not an MDM.
+- It blocks **apps**, not websites in a browser. Block the browser too, or use a filtering Private DNS.
+- Android runs only one VPN at a time. While the firewall is on, WireGuard or other VPNs cannot connect.
+- Apps cannot toggle the Wi-Fi radio itself on Android 10+, so the schedule blocks internet traffic instead.
+
+### Project structure
+| File | Purpose |
+|---|---|
+| `BlockerService.java` | AccessibilityService: detects the foreground app, blocks apps, protects Settings |
+| `FirewallVpnService.java` | Local VPN firewall + schedule |
+| `MainActivity.java` / `FirewallActivity.java` | UI |
+| `Prefs.java` | Settings and password hashing |
+| `res/values*/strings.xml` | English / Persian texts |
+
+### Contributing
+Fork the repo, create a branch, and open a pull request. Translations are welcome: add `res/values-<lang>/strings.xml`.
+
+---
+
+<a id="فارسی"></a>
+<div dir="rtl">
+
+## فارسی
+
+یک اپ اندروید که اپ‌های سوشال مدیا را مسدود می‌کند و خودش با رمز قفل می‌شود، تا وقتی وسوسه شدید نتوانید راحت خاموشش کنید. فایروال بدون روت و زمان‌بندی اینترنت هم دارد (مثلاً اینترنت فقط ۱۰ ثانیه در هر دقیقه باز باشد).
+
+### امکانات
+- **مسدود کردن اپ‌ها:** اپ‌های مسدود (اینستاگرام، تیک‌تاک، X، فیسبوک، اسنپ‌چت، یوتیوب، Threads و … از قبل انتخاب شده‌اند) همان لحظه که باز شوند بسته می‌شوند و یک صفحه‌ی «مسدود است» نمایش داده می‌شود.
+- **قفل رمز:** این کارها رمز می‌خواهند: خاموش کردن، ۱۵ دقیقه توقف، برداشتن اپ از لیست و تغییر رمز. رمز فقط به‌صورت هش (PBKDF2 با salt) ذخیره می‌شود.
+- **محافظت از خود:** وقتی مسدودسازی روشن است، هر صفحه‌ای از تنظیمات یا نصب‌کننده که اسم «Social Blocker» در آن باشد فوراً بسته می‌شود؛ مثل خاموش کردن Accessibility، Force stop، Uninstall، Device Admin و VPN. Device Admin هم جلوی حذف مستقیم را می‌گیرد.
+- **فایروال (بدون روت):** قطع اینترنت اپ‌های انتخابی، هم Wi-Fi و هم دیتا، با یک VPN محلی. هیچ ترافیکی از گوشی خارج نمی‌شود و به هیچ سروری فرستاده نمی‌شود.
+- **زمان‌بندی اینترنت:** «باز به مدت *N ثانیه/دقیقه/ساعت* در هر *M ثانیه/دقیقه/ساعت/روز*». خارج از این بازه، اینترنت **همه‌ی** اپ‌ها قطع است. شروع دوره‌ها از لحظه‌ی ذخیره حساب می‌شود.
+- **زبان:** انگلیسی و فارسی، یا زبان سیستم.
+
+### پیش‌نیازها
+- اندروید ۸ (API 26) یا بالاتر
+- برای بیلد: Android Studio، یا Android SDK همراه با JDK 17
+
+### ساختن APK
+**Android Studio:** از `File → Open` همین پوشه را باز کنید (پوشه‌ای که `settings.gradle` در آن است). صبر کنید Gradle Sync تمام شود، بعد `Build → Generate App Bundles or APKs → Generate APKs` را بزنید.
+
+**ترمینال:**
+```bash
 echo "sdk.dir=$HOME/Android/Sdk" > local.properties
 ./gradlew assembleDebug
 # خروجی: app/build/outputs/apk/debug/app-debug.apk
 adb install app/build/outputs/apk/debug/app-debug.apk
 ```
 
-## راه‌اندازی روی گوشی (به همین ترتیب)
-1. برنامه را باز کنید و رمز بسازید.
-2. «فعال کردن سرویس دسترسی‌پذیری» → Social Blocker → روشن.
-   - اندروید ۱۳ به بعد اگر گزینه خاکستری بود: Settings → Apps → Social Blocker → منوی ⋮ → **Allow restricted settings**، بعد دوباره امتحان کنید.
-3. «فعال کردن ضد حذف (Device Admin)» → Activate.
-4. اپ‌ها را تیک بزنید (سوشال‌های معروف از قبل تیک خورده‌اند).
-5. «روشن کردن مسدودسازی».
+### راه‌اندازی روی گوشی (به همین ترتیب)
+1. برنامه را باز کنید و رمز بسازید. بهتر است کس دیگری آن را تایپ کند.
+2. **فعال کردن سرویس دسترسی‌پذیری** ← Social Blocker ← روشن.
+   - اندروید ۱۳ به بعد: اگر گزینه خاکستری بود («restricted setting»)، بروید به *Settings ← Apps ← Social Blocker ← ⋮ ← Allow restricted settings*. اگر با `adb install` یا از Android Studio نصب کنید، این محدودیت پیش نمی‌آید.
+3. **فعال کردن ضد حذف (Device Admin)** ← Activate.
+4. اختیاری: **🌐 فایروال و زمان‌بندی اینترنت** را باز کنید، فایروال را روشن کنید و مجوز VPN را تأیید کنید. بعد این را تنظیم کنید: *Settings ← Network ← VPN ← Social Blocker ← Always-on VPN*.
+5. باتری: Social Blocker را روی *Unrestricted* بگذارید (مخصوصاً در شیائومی، سامسونگ و هواوی).
+6. اپ‌ها را تیک بزنید و **روشن کردن مسدودسازی** را بزنید.
 
-## چه چیزی رمز می‌خواهد
-- خاموش کردن مسدودسازی
-- ۱۵ دقیقه توقف موقت
-- برداشتن اپ از لیست (اضافه کردن آزاد است)
-- خاموش کردن «محافظت از تنظیمات»
-- تغییر رمز
+مراحل ۲ تا ۵ را **قبل** از روشن کردن مسدودسازی انجام دهید، چون بعد از آن این صفحه‌های تنظیمات قفل می‌شوند.
 
-## محافظت در برابر دور زدن
-وقتی مسدودسازی روشن است، هر صفحه‌ای از Settings یا نصب‌کننده که اسم «Social Blocker» در آن باشد
-(خاموش کردن Accessibility، Force stop، Uninstall، غیرفعال کردن Device Admin) فوراً بسته می‌شود.
+### محدودیت‌ها
+- با Safe Mode، ADB یا Factory reset می‌شود دورش زد. این ابزار برای تعهد به خود است، نه MDM.
+- فقط **اپ‌ها** را می‌بندد، نه سایت‌ها را در مرورگر. برای سایت‌ها، مرورگر را هم مسدود کنید یا از یک Private DNS فیلترکننده استفاده کنید.
+- اندروید فقط یک VPN را همزمان اجرا می‌کند. وقتی فایروال روشن است، WireGuard یا VPN دیگری نمی‌تواند وصل شود.
+- از اندروید ۱۰ به بعد اپ‌ها نمی‌توانند خود Wi-Fi را روشن یا خاموش کنند. برای همین زمان‌بندی، ترافیک اینترنت را قطع می‌کند.
 
-## فایروال و زمان‌بندی اینترنت
-دکمه «🌐 فایروال و زمان‌بندی اینترنت» در صفحه اصلی.
-- **فایروال:** اینترنت اپ‌های تیک‌خورده همیشه قطع است (Wi-Fi و دیتا). با یک VPN محلی کار می‌کند؛ هیچ ترافیکی به جایی فرستاده نمی‌شود.
-- **زمان‌بندی:** مثلاً «باز به مدت ۱۰ ثانیه در هر ۱ دقیقه» یا «۳۰ دقیقه در هر روز». خارج از این بازه اینترنت **همه** اپ‌ها قطع است. شروع دوره‌ها از لحظه ذخیره حساب می‌شود.
-- خاموش کردن فایروال، باز کردن اینترنت یک اپ، یا تغییر زمان‌بندی فعال، رمز می‌خواهد.
-- **مهم:** در Settings → Network → VPN → Social Blocker گزینه **Always-on VPN** را روشن کنید تا اگر اندروید سرویس را بست، خودش دوباره وصلش کند. (این را قبل از روشن کردن مسدودسازی انجام دهید.)
-- چرا خود Wi-Fi خاموش/روشن نمی‌شود؟ از اندروید ۱۰ به بعد اپ‌های معمولی اجازه این کار را ندارند؛ قطع اینترنت با VPN همان نتیجه را می‌دهد.
-- اندروید فقط یک VPN را همزمان اجرا می‌کند؛ با روشن بودن فایروال، WireGuard یا VPN دیگر نمی‌تواند وصل باشد.
+### مشارکت
+مخزن را Fork کنید، یک branch بسازید و Pull Request بفرستید. ترجمه به زبان‌های دیگر هم خوشحال‌مان می‌کند: فایل `res/values-<زبان>/strings.xml` را اضافه کنید.
 
-## محدودیت‌ها (صادقانه)
-- با Safe Mode، ADB یا Factory reset می‌شود دورش زد.
-- فقط **اپ‌ها** را می‌بندد، نه نسخه وب (instagram.com در مرورگر). برای آن می‌شود مرورگر را هم بلاک کرد
-  یا Private DNS گوشی را روی یک DNS فیلترکننده گذاشت.
-- بعضی گوشی‌ها (Xiaomi، Huawei، Samsung) سرویس‌ها را برای صرفه‌جویی باتری می‌کشند؛ در تنظیمات باتری،
-  Social Blocker را روی «Unrestricted / No restrictions» بگذارید.
+</div>
