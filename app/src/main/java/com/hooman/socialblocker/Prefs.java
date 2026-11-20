@@ -91,6 +91,46 @@ public final class Prefs {
     /** مسدودسازی واقعاً الان اعمال می‌شود؟ */
     static boolean isActive(Context c) { return isBlocking(c) && !isPaused(c); }
 
+    // ---------- فایروال ----------
+    static boolean isFwEnabled(Context c) { return sp(c).getBoolean("fw_enabled", false); }
+
+    static void setFwEnabled(Context c, boolean on) { sp(c).edit().putBoolean("fw_enabled", on).commit(); }
+
+    static Set<String> getFwBlocked(Context c) {
+        return new HashSet<>(sp(c).getStringSet("fw_blocked", new HashSet<>()));
+    }
+
+    static void setFwBlocked(Context c, Set<String> s) {
+        sp(c).edit().putStringSet("fw_blocked", new HashSet<>(s)).commit();
+    }
+
+    // ---------- برنامه زمانی اینترنت ----------
+    /** واحدها: 0=ثانیه 1=دقیقه 2=ساعت 3=روز */
+    static final long[] UNIT_MS = {1000L, 60_000L, 3_600_000L, 86_400_000L};
+
+    static boolean isSchedEnabled(Context c) { return sp(c).getBoolean("sched_enabled", false); }
+
+    static int getSchedOnVal(Context c) { return sp(c).getInt("sched_on_val", 10); }
+    static int getSchedOnUnit(Context c) { return sp(c).getInt("sched_on_unit", 0); }
+    static int getSchedEveryVal(Context c) { return sp(c).getInt("sched_every_val", 1); }
+    static int getSchedEveryUnit(Context c) { return sp(c).getInt("sched_every_unit", 1); }
+
+    static long getSchedOnMs(Context c) { return getSchedOnVal(c) * UNIT_MS[getSchedOnUnit(c)]; }
+    static long getSchedPeriodMs(Context c) { return getSchedEveryVal(c) * UNIT_MS[getSchedEveryUnit(c)]; }
+    static long getSchedAnchor(Context c) { return sp(c).getLong("sched_anchor", 0); }
+
+    /** ذخیره برنامه؛ شروع بازه‌ها از همین لحظه حساب می‌شود. */
+    static void setSchedule(Context c, boolean enabled, int onVal, int onUnit, int everyVal, int everyUnit) {
+        sp(c).edit()
+                .putBoolean("sched_enabled", enabled)
+                .putInt("sched_on_val", onVal)
+                .putInt("sched_on_unit", onUnit)
+                .putInt("sched_every_val", everyVal)
+                .putInt("sched_every_unit", everyUnit)
+                .putLong("sched_anchor", System.currentTimeMillis())
+                .commit();
+    }
+
     // ---------- زبان ("" = سیستم، "en"، "fa") ----------
     static String getLanguage(Context c) { return sp(c).getString(K_LANG, ""); }
 

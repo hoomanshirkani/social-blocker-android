@@ -88,6 +88,8 @@ public class MainActivity extends Activity {
         accBtn.setOnClickListener(v -> startActivity(new Intent(Settings.ACTION_ACCESSIBILITY_SETTINGS)));
         adminBtn.setOnClickListener(v -> onAdmin());
         langBtn.setOnClickListener(v -> showLanguageDialog());
+        findViewById(R.id.firewallBtn).setOnClickListener(v ->
+                startActivity(new Intent(this, FirewallActivity.class)));
         protectBox.setOnClickListener(v -> onProtectClicked());
 
         search.addTextChangedListener(new TextWatcher() {

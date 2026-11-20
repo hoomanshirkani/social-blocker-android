@@ -48,4 +48,30 @@
 
     <string name="lang_title">زبان / Language</string>
     <string name="lang_system">پیش‌فرض سیستم</string>
+
+    <!-- فایروال -->
+    <string name="btn_firewall">🌐 فایروال و زمان‌بندی اینترنت</string>
+    <string name="fw_title">فایروال</string>
+    <string name="fw_enable">فایروال روشن (VPN محلی؛ هیچ داده‌ای از گوشی خارج نمی‌شود)</string>
+    <string name="fw_sched_header">زمان‌بندی اینترنت (همه اپ‌ها)</string>
+    <string name="fw_sched_enable">اینترنت فقط به‌صورت دوره‌ای باز باشد</string>
+    <string name="fw_allow_for">باز به مدت</string>
+    <string name="fw_every">در هر</string>
+    <string name="fw_save_sched">ذخیره زمان‌بندی</string>
+    <string name="fw_apps_header">اینترنت این اپ‌ها همیشه قطع باشد:</string>
+    <string name="fw_status_off">فایروال خاموش است</string>
+    <string name="fw_status_not_running">⚠️ فایروال روشن است ولی VPN اجرا نمی‌شود. یک بار خاموش و روشنش کنید.</string>
+    <string name="fw_status_on">🛡 فایروال روشن — اینترنت %1$d اپ قطع است</string>
+    <string name="fw_status_open">✅ اینترنت باز است — %1$s تا بسته شدن</string>
+    <string name="fw_status_closed">🚫 اینترنت قطع است — %1$s تا باز شدن</string>
+    <string name="fw_invalid">زمان‌بندی نامعتبر: مدت باز بودن حداقل ۵ ثانیه و حداقل ۵ ثانیه کمتر از دوره باشد.</string>
+    <string name="fw_sched_saved">زمان‌بندی ذخیره شد ✓</string>
+    <string name="fw_need_fw">ذخیره شد. برای اعمال، فایروال را روشن کنید.</string>
+    <string name="fw_vpn_denied">فایروال به مجوز VPN نیاز دارد</string>
+    <string-array name="time_units">
+        <item>ثانیه</item>
+        <item>دقیقه</item>
+        <item>ساعت</item>
+        <item>روز</item>
+    </string-array>
 </resources>

@@ -33,6 +33,19 @@
             android:taskAffinity=""
             android:theme="@style/BlockedTheme" />
 
+        <activity
+            android:name=".FirewallActivity"
+            android:exported="false" />
+
+        <service
+            android:name=".FirewallVpnService"
+            android:exported="false"
+            android:permission="android.permission.BIND_VPN_SERVICE">
+            <intent-filter>
+                <action android:name="android.net.VpnService" />
+            </intent-filter>
+        </service>
+
         <service
             android:name=".BlockerService"
             android:exported="false"

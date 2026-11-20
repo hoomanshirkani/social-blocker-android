@@ -51,4 +51,30 @@
 
     <string name="lang_title">Language / زبان</string>
     <string name="lang_system">System default</string>
+
+    <!-- فایروال -->
+    <string name="btn_firewall">🌐 Firewall &amp; internet schedule</string>
+    <string name="fw_title">Firewall</string>
+    <string name="fw_enable">Firewall on (local VPN, no data leaves the phone)</string>
+    <string name="fw_sched_header">Internet schedule (all apps)</string>
+    <string name="fw_sched_enable">Open internet only periodically</string>
+    <string name="fw_allow_for">Open for</string>
+    <string name="fw_every">every</string>
+    <string name="fw_save_sched">Save schedule</string>
+    <string name="fw_apps_header">Always block internet for these apps:</string>
+    <string name="fw_status_off">Firewall is OFF</string>
+    <string name="fw_status_not_running">⚠️ Firewall is on but the VPN is not running. Turn it off and on again.</string>
+    <string name="fw_status_on">🛡 Firewall on — %1$d apps blocked</string>
+    <string name="fw_status_open">✅ Internet open — closes in %1$s</string>
+    <string name="fw_status_closed">🚫 Internet blocked — opens in %1$s</string>
+    <string name="fw_invalid">Invalid schedule: open time must be at least 5 s, and at least 5 s shorter than the period.</string>
+    <string name="fw_sched_saved">Schedule saved ✓</string>
+    <string name="fw_need_fw">Saved. Turn the firewall on to apply the schedule.</string>
+    <string name="fw_vpn_denied">VPN permission is needed for the firewall</string>
+    <string-array name="time_units">
+        <item>seconds</item>
+        <item>minutes</item>
+        <item>hours</item>
+        <item>days</item>
+    </string-array>
 </resources>
