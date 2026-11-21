@@ -236,6 +236,8 @@ public class FirewallVpnService extends VpnService {
             blocked.removeAll(allowedRuled);
         }
         long next = nextCandidate;
+        long trialEnd = Pro.trialUntil(this); // پایان آزمایش ۲۴ ساعته Pro → دوباره محاسبه
+        if (trialEnd > now && (next <= 0 || trialEnd < next)) next = trialEnd;
         boolean inUse = pInUse;
 
         // کلید پیکربندی: اگر همان قبلی است، تونل را دست نزن (جلوگیری از قطع و وصل بی‌دلیل)

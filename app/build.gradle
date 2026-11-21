@@ -36,6 +36,11 @@ android {
         versionCode gitCount
         versionName gitVersionName
         // نسخه گوگل‌پلی (با کلید آپلود) امکانات Pro را قفل می‌کند؛ نسخه GitHub همه چیز را رایگان دارد
+        // AdMob: شناسه‌های واقعی از GitHub Secrets؛ در غیر این صورت شناسه‌های تستی رسمی گوگل
+        def admobApp = System.getenv('ADMOB_APP_ID') ?: 'ca-app-pub-3940256099942544~3347511713'
+        def admobRewarded = System.getenv('ADMOB_REWARDED_ID') ?: 'ca-app-pub-3940256099942544/5224354917'
+        manifestPlaceholders = [admobAppId: admobApp]
+        buildConfigField "String", "ADMOB_REWARDED_ID", "\"${admobRewarded}\""
         buildConfigField "boolean", "PRO_GATED", System.getenv('SB_UPLOAD_KEYSTORE') ? "true" : "false"
     }
 
@@ -93,4 +98,6 @@ tasks.register('printVersion') {
 
 dependencies {
     implementation "com.android.billingclient:billing:8.0.0"
+    implementation "com.google.android.gms:play-services-ads:24.4.0"
+    implementation "com.google.android.ump:user-messaging-platform:3.2.0"
 }

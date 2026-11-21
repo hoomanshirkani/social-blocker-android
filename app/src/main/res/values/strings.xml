@@ -331,12 +331,12 @@
     <string name="menu_about">About &amp; privacy</string>
     <string name="about_version">Version %1$s</string>
     <string name="about_privacy_header">PRIVACY</string>
-    <string name="about_privacy_text">• No account, no ads, no analytics, no trackers.\n• Everything (settings, blocked apps, usage time, collected notifications) is stored only on your device.\n• The firewall VPN is local; no traffic leaves your phone.\n• No personal data is collected, sent to a server or shared.</string>
+    <string name="about_privacy_text">• No account, no analytics, no banners. Google Play version: an ad is shown only if you choose to watch one for a Pro trial.\n• Everything (settings, blocked apps, usage time, collected notifications) is stored only on your device.\n• The firewall VPN is local; no traffic leaves your phone.\n• No personal data is collected, sent to a server or shared.</string>
     <string name="about_privacy_full">Full privacy policy ›</string>
     <string name="about_impressum_header">IMPRESSUM / LEGAL NOTICE</string>
     <string name="about_source">Source code on GitHub ›</string>
     <string name="pro_title">Social Blocker Pro</string>
-    <string name="pro_sub">One-time purchase · no subscription · no ads</string>
+    <string name="pro_sub">One-time purchase · no subscription · no banners</string>
     <string name="pro_owned_title">Pro is active ⭐</string>
     <string name="pro_owned_sub">Thank you for your support!</string>
     <string name="pro_open_source">Open-source version: all Pro features are free</string>
@@ -356,7 +356,7 @@
     <string name="pro_note">Paid once through Google Play. Works on all your devices with the same Google account.</string>
     <string name="pro_unavailable">Google Play is not reachable right now. Try again in a moment.</string>
     <string name="pro_needed_title">⭐ Pro feature</string>
-    <string name="pro_needed_msg">This feature is part of Social Blocker Pro — a one-time purchase, no subscription and no ads.</string>
+    <string name="pro_needed_msg">This feature is part of Social Blocker Pro — a one-time purchase, no subscription. Or watch one short video and try it free for 24 hours.</string>
     <string name="pro_see">See Pro</string>
     <string name="row_pro_sub">Unlock weekday free time, website blocking and advanced firewall rules</string>
     <string name="row_ft_title">Free time by weekday</string>
@@ -389,4 +389,13 @@
     <string name="site_remove">Remove</string>
     <string name="blocked_site_title">This website is blocked</string>
     <string name="blocked_site_msg">%1$s is on your blocked list. Take a breath — you chose this for yourself.</string>
+    <string name="ad_watch">🎬 Watch an ad — try Pro free for 24 hours</string>
+    <string name="ad_watch_extend">🎬 Watch an ad — extend the trial by 24 hours</string>
+    <string name="ad_watch_short">🎬 Try 24 h</string>
+    <string name="ad_loading">Loading the video…</string>
+    <string name="ad_failed">No ad available right now. Try again later.</string>
+    <string name="ad_no_consent">Ads need your consent first. You can still buy Pro.</string>
+    <string name="ad_trial_granted">⭐ Pro is unlocked for 24 hours. Enjoy!</string>
+    <string name="ad_privacy">Ad privacy settings</string>
+    <string name="pro_trial_left">Trial active — %1$s left</string>
 </resources>

@@ -5,7 +5,7 @@
 **Controller / Verantwortlicher:** ⟨Vorname Nachname⟩, ⟨Straße Hausnummer⟩, ⟨PLZ Ort⟩, Germany — ⟨E-Mail-Adresse⟩
 
 ## Summary
-Social Blocker+ works **entirely on your device**. It has no account, no ads, no analytics, no crash reporting and no third-party SDKs. **We do not collect, store on servers, sell or share any personal data.** The app does not even request the internet permission for itself; the only network component is a local VPN that *blocks* traffic.
+Social Blocker+ works **entirely on your device**. It has no account, no analytics and no crash reporting. **We do not collect, store on servers, sell or share any personal data.** The only exceptions are the optional Google services in the Google Play version described below (purchases and an optional reward video), which are provided by Google.
 
 ## What the app processes on your device, and why
 
@@ -18,6 +18,11 @@ Social Blocker+ works **entirely on your device**. It has no account, no ads, no
 | List of installed apps (QUERY launcher apps) | App names and icons | Let you choose which apps to block / firewall | **No** |
 
 Settings (blocked apps, schedules, usage minutes, a salted PBKDF2 hash of your password) are stored only in the app's private storage. Uninstalling the app deletes all of it.
+
+## Google Play version only: purchases and optional reward video
+- **Pro purchase** is processed by Google Play Billing. We receive no payment details; the app only checks on your device whether Pro was bought.
+- **Reward video (optional):** only if *you* tap "Watch an ad", the app loads one video ad from **Google AdMob** to unlock Pro for 24 hours. There are no banners and no ads at any other time. Before the first ad, Google's consent form (UMP) asks for your choice as required by the GDPR; you can change it any time under *Pro › Ad privacy settings*. Google may process device identifiers (e.g. advertising ID), IP address and ad-interaction data for ad delivery, measurement and — only with your consent — personalisation. See Google's policy: https://policies.google.com/technologies/partner-sites
+- The open-source GitHub version contains neither purchases nor ads.
 
 ## Your rights (GDPR)
 Because no personal data is transferred to us, we hold no data about you. You can delete all local data at any time by clearing the app's storage or uninstalling it. For questions, contact the e-mail above. You have the right to lodge a complaint with a data protection supervisory authority (in Bavaria: BayLDA).
@@ -32,7 +37,7 @@ Changes to this policy are published in this file in the public source repositor
 
 # سیاست حریم خصوصی (فارسی)
 
-این برنامه **کاملاً روی گوشی خودت** کار می‌کند: بدون حساب کاربری، بدون تبلیغ، بدون آمارگیر و بدون کتابخانه‌های شخص ثالث. **هیچ داده شخصی جمع‌آوری، به سرور فرستاده، فروخته یا به اشتراک گذاشته نمی‌شود.**
+این برنامه **کاملاً روی گوشی خودت** کار می‌کند: بدون حساب کاربری، بدون تبلیغ، بدون آمارگیر و بدون کتابخانه‌های شخص ثالث. **هیچ داده شخصی جمع‌آوری، به سرور فرستاده، فروخته یا به اشتراک گذاشته نمی‌شود.** فقط در نسخه گوگل‌پلی: خرید Pro از طریق Google Play انجام می‌شود، و اگر خودت «تبلیغ ببین» را بزنی یک ویدئوی Google AdMob (با فرم رضایت GDPR) پخش می‌شود که ممکن است شناسه تبلیغاتی دستگاه را پردازش کند.
 
 - **دسترسی‌پذیری:** نام اپ روی صفحه و متن صفحه‌های تنظیمات/نصب، فقط برای بستن اپ‌های مسدود، شمارش زمان، «قفل تنظیمات»، صفحه استراحت چشم و فایروال. ذخیره نمی‌شود.
 - **VPN محلی:** ترافیک اپ‌هایی که خودت انتخاب کردی روی گوشی رد می‌شود؛ چیزی فرستاده، بررسی یا ثبت نمی‌شود.

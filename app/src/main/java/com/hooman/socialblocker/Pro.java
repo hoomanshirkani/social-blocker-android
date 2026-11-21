@@ -48,7 +48,28 @@ final class Pro {
     }
 
     static boolean isPro(Context c) {
+        return !gated() || isOwned(c) || trialUntil(c) > System.currentTimeMillis();
+    }
+
+    static boolean isOwned(Context c) {
         return !gated() || sp(c).getBoolean("owned", false);
+    }
+
+    // ------------------------------------------------------------------ 24h trial (rewarded ad)
+
+    static final long TRIAL_MS = 24 * 60 * 60 * 1000L;
+
+    /** پایان آزمایش رایگان (۰ = ندارد) */
+    static long trialUntil(Context c) {
+        return gated() ? sp(c).getLong("trial_until", 0) : 0;
+    }
+
+    /** بعد از دیدن کامل ویدئوی جایزه‌دار */
+    static void grantTrial(Context c) {
+        long until = System.currentTimeMillis() + TRIAL_MS;
+        sp(c).edit().putLong("trial_until", until).apply();
+        FirewallVpnService.refresh(c);
+        notifyChanged();
     }
 
     private static void setOwned(Context c, boolean owned) {
@@ -185,12 +206,13 @@ final class Pro {
             ifPro.run();
             return;
         }
-        new AlertDialog.Builder(a)
+        AlertDialog.Builder b = new AlertDialog.Builder(a)
                 .setTitle(R.string.pro_needed_title)
                 .setMessage(R.string.pro_needed_msg)
                 .setPositiveButton(R.string.pro_see, (d, w) -> a.startActivity(new Intent(a, ProActivity.class)))
-                .setNegativeButton(R.string.cancel, null)
-                .show();
+                .setNegativeButton(R.string.cancel, null);
+        if (Ads.available()) b.setNeutralButton(R.string.ad_watch_short, (d, w) -> Ads.watchForTrial(a));
+        b.show();
     }
 
     private static final class Toast {

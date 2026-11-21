@@ -65,6 +65,8 @@ jobs:
           SB_UPLOAD_STORE_PASSWORD: ${{ secrets.UPLOAD_STORE_PASSWORD }}
           SB_UPLOAD_KEY_ALIAS: ${{ secrets.UPLOAD_KEY_ALIAS }}
           SB_UPLOAD_KEY_PASSWORD: ${{ secrets.UPLOAD_KEY_PASSWORD }}
+          ADMOB_APP_ID: ${{ secrets.ADMOB_APP_ID }}
+          ADMOB_REWARDED_ID: ${{ secrets.ADMOB_REWARDED_ID }}
         run: |
           if [ -z "$KEYSTORE_B64" ]; then echo "No upload key in secrets, skipping AAB"; exit 0; fi
           echo "$KEYSTORE_B64" | base64 -d > "$RUNNER_TEMP/upload.jks"

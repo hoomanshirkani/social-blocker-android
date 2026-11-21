@@ -162,4 +162,21 @@ APK گیت‌هاب با همان کلید قبلی امضا می‌شود تا 
 
 **Data safety:** خرید را گوگل پردازش می‌کند و اپ چیزی به سرور نمی‌فرستد، پس همچنان «No data collected».
 
-**چرا تبلیغ نه:** SDK تبلیغات (AdMob) شناسه تبلیغاتی و داده دستگاه جمع می‌کند. یعنی باید فرم رضایت GDPR بگذاری و Data safety عوض شود. این با شعار «بدون ردیاب» و با خود اپ ضد حواس‌پرتی تناقض دارد.
+**تبلیغ جایزه‌دار (اختیاری):** دکمه «🎬 یک تبلیغ ببین — Pro را ۲۴ ساعت امتحان کن». بدون بنر و بدون تبلیغ اجباری.
+
+۱. https://admob.google.com → ثبت‌نام با همان حساب گوگل. اطلاعات پرداخت و مالیات را در AdMob هم وارد کن.
+۲. Apps → Add app → Android → «Yes, it's listed on Google Play» (یا بعداً لینک کن).
+۳. Ad units → **Rewarded** → اسم: `pro_trial_24h` · Reward: `1 pro_day`.
+۴. Privacy & messaging → **GDPR message** بساز و منتشر کن (همان فرم رضایتی که اپ نشان می‌دهد).
+۵. دو Secret جدید در GitHub: `ADMOB_APP_ID` (`ca-app-pub-…~…`) و `ADMOB_REWARDED_ID` (`ca-app-pub-…/…`). بدون این‌ها، شناسه‌های تستی گوگل استفاده می‌شود. هرگز روی تبلیغ‌های واقعی خودت کلیک نکن، چون حساب AdMob بسته می‌شود.
+۶. **app-ads.txt:** AdMob یک خط می‌دهد. آن را در یک وب‌سایت (مثلاً GitHub Pages: `hoomanshirkani.github.io/app-ads.txt`) بگذار و همان دامنه را در Store listing → Website وارد کن.
+
+**تغییرات فرم‌های Play Console به خاطر تبلیغ:**
+- **Ads:** «Yes, my app contains ads»
+- **Advertising ID:** «Yes» — Purpose: Advertising or marketing
+- **Data safety** (طبق راهنمای Google Mobile Ads SDK):
+  - Collected and shared: Device or other IDs · Approximate location (from IP) · App interactions / App info and performance (diagnostics)
+  - Purpose: Advertising, Analytics, Fraud prevention
+  - Optional: Yes, چون فقط با زدن دکمه پخش می‌شود
+  - Encrypted in transit: Yes
+- **Target audience:** فقط ۱۸+. تبلیغ در اپ‌های مخصوص کودکان سیاست جداگانه دارد.

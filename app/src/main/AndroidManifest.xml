@@ -55,6 +55,14 @@
             android:name=".AboutActivity"
             android:exported="false" />
 
+        <!-- AdMob (فقط تبلیغ جایزه‌دار اختیاری در نسخه گوگل‌پلی) -->
+        <meta-data
+            android:name="com.google.android.gms.ads.APPLICATION_ID"
+            android:value="${admobAppId}" />
+        <meta-data
+            android:name="com.google.android.gms.ads.DELAY_APP_MEASUREMENT_INIT"
+            android:value="true" />
+
         <activity
             android:name=".ProActivity"
             android:exported="false" />

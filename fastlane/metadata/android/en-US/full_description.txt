@@ -22,7 +22,8 @@ Take back your time and your attention — without an account, ads or tracking.
 
 🔒 PRIVACY FIRST
 • Everything is processed on your device
-• No account, no ads, no analytics, no third-party SDKs
+• No account, no analytics, no banners
+• Pro: one-time purchase — or watch one optional video to try Pro free for 24 hours
 • Open source on GitHub
 
 Uses the Accessibility Service API to detect the app on screen (for blocking, time limits, eye breaks and the "while in use" firewall rule) and to protect its own settings when you turn that on. No data is collected or shared.

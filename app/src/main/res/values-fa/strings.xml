@@ -327,12 +327,12 @@
     <string name="menu_about">درباره و حریم خصوصی</string>
     <string name="about_version">نسخه %1$s</string>
     <string name="about_privacy_header">حریم خصوصی</string>
-    <string name="about_privacy_text">• بدون حساب کاربری، بدون تبلیغ، بدون آمارگیر و ردیاب.\n• همه چیز (تنظیمات، اپ‌های مسدود، زمان استفاده، نوتیفیکیشن‌های جمع‌شده) فقط روی گوشی خودت ذخیره می‌شود.\n• VPN فایروال محلی است؛ هیچ ترافیکی از گوشی خارج نمی‌شود.\n• هیچ داده شخصی جمع‌آوری، به سرور فرستاده یا به اشتراک گذاشته نمی‌شود.</string>
+    <string name="about_privacy_text">• بدون حساب کاربری، بدون آمارگیر و بدون بنر. نسخه گوگل‌پلی: تبلیغ فقط وقتی پخش می‌شود که خودت برای امتحان Pro انتخابش کنی.\n• همه چیز (تنظیمات، اپ‌های مسدود، زمان استفاده، نوتیفیکیشن‌های جمع‌شده) فقط روی گوشی خودت ذخیره می‌شود.\n• VPN فایروال محلی است؛ هیچ ترافیکی از گوشی خارج نمی‌شود.\n• هیچ داده شخصی جمع‌آوری، به سرور فرستاده یا به اشتراک گذاشته نمی‌شود.</string>
     <string name="about_privacy_full">سیاست کامل حریم خصوصی ›</string>
     <string name="about_impressum_header">IMPRESSUM / اطلاعات ناشر</string>
     <string name="about_source">کد منبع در GitHub ›</string>
     <string name="pro_title">Social Blocker Pro</string>
-    <string name="pro_sub">یک بار خرید · بدون اشتراک · بدون تبلیغ</string>
+    <string name="pro_sub">یک بار خرید · بدون اشتراک · بدون بنر</string>
     <string name="pro_owned_title">Pro فعال است ⭐</string>
     <string name="pro_owned_sub">ممنون از حمایتت!</string>
     <string name="pro_open_source">نسخه متن‌باز: همه امکانات Pro رایگان است</string>
@@ -352,7 +352,7 @@
     <string name="pro_note">یک بار از طریق Google Play پرداخت می‌شود و روی همه گوشی‌هایت با همان حساب گوگل کار می‌کند.</string>
     <string name="pro_unavailable">الان به Google Play دسترسی نیست. کمی بعد دوباره امتحان کن.</string>
     <string name="pro_needed_title">⭐ امکان Pro</string>
-    <string name="pro_needed_msg">این امکان جزو Social Blocker Pro است — یک بار خرید، بدون اشتراک و بدون تبلیغ.</string>
+    <string name="pro_needed_msg">این امکان جزو Social Blocker Pro است — یک بار خرید، بدون اشتراک. یا یک ویدئوی کوتاه ببین و ۲۴ ساعت رایگان امتحانش کن.</string>
     <string name="pro_see">دیدن Pro</string>
     <string name="row_pro_sub">باز کردن زمان آزاد هفتگی، مسدودسازی سایت و قانون‌های پیشرفته فایروال</string>
     <string name="row_ft_title">زمان آزاد روزهای هفته</string>
@@ -385,4 +385,13 @@
     <string name="site_remove">حذف</string>
     <string name="blocked_site_title">این سایت مسدود است</string>
     <string name="blocked_site_msg">%1$s در لیست مسدود توست. یک نفس عمیق — این تصمیم خودت بود.</string>
+    <string name="ad_watch">🎬 یک تبلیغ ببین — Pro را ۲۴ ساعت رایگان امتحان کن</string>
+    <string name="ad_watch_extend">🎬 یک تبلیغ ببین — آزمایش را ۲۴ ساعت تمدید کن</string>
+    <string name="ad_watch_short">🎬 امتحان ۲۴ ساعته</string>
+    <string name="ad_loading">در حال بارگذاری ویدئو…</string>
+    <string name="ad_failed">الان تبلیغی موجود نیست. بعداً دوباره امتحان کن.</string>
+    <string name="ad_no_consent">برای تبلیغ اول رضایتت لازم است. همچنان می‌توانی Pro را بخری.</string>
+    <string name="ad_trial_granted">⭐ Pro برای ۲۴ ساعت باز شد. لذت ببر!</string>
+    <string name="ad_privacy">تنظیمات حریم خصوصی تبلیغات</string>
+    <string name="pro_trial_left">آزمایش فعال — %1$s مانده</string>
 </resources>

@@ -22,7 +22,8 @@ Hol dir deine Zeit und Aufmerksamkeit zurück – ohne Konto, Werbung oder Track
 
 🔒 DATENSCHUTZ ZUERST
 • Alles wird auf deinem Gerät verarbeitet
-• Kein Konto, keine Werbung, keine Analyse, keine Drittanbieter-SDKs
+• Kein Konto, keine Analyse, keine Banner
+• Pro: einmaliger Kauf – oder ein freiwilliges Video ansehen und Pro 24 Stunden gratis testen
 • Open Source auf GitHub
 
 Nutzt die Bedienungshilfen-API (Accessibility Service), um die App im Vordergrund zu erkennen (für Sperren, Zeitlimits, Augenpausen und die Firewall-Regel „Nur bei Nutzung“) und – wenn du es einschaltest – die eigenen Einstellungen zu schützen. Es werden keine Daten erhoben oder weitergegeben.
