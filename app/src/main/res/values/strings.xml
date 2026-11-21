@@ -318,4 +318,21 @@
     <string name="guard_channel">Important alerts</string>
     <string name="guard_title">⚠️ Social Blocker+ was turned off</string>
     <string name="guard_text">Android turned the accessibility service off (e.g. after a restart). Blocking and eye care do not work until it is on again — tap to turn it on.</string>
+    <string name="disc_agree">Agree</string>
+    <string name="disc_decline">No thanks</string>
+    <string name="disc_acc_title">Accessibility permission</string>
+    <string name="disc_acc_msg">Social Blocker+ uses the Android Accessibility Service API to:\n\n• detect which app is currently on screen, so blocked apps can be closed and the daily time limit can be counted;\n• read the text of Settings and installer screens, only to recognise screens that would turn this app off or uninstall it while you have blocking on (\"Lock settings\");\n• show the eye-care break screen and the warm screen filter;\n• tell the firewall which app you are using (\"only while in use\" rule).\n\nThis data is processed only on your device. It is never stored, collected, sent to a server or shared with anyone. You can turn the service off at any time in Android Settings when blocking is off.</string>
+    <string name="disc_vpn_title">Local VPN (firewall)</string>
+    <string name="disc_vpn_msg">The firewall uses the Android VpnService to create a local VPN on your device. Traffic of the apps you choose is routed into this local VPN and refused, so those apps have no internet.\n\nNo traffic is sent to any server, nothing is inspected, logged, collected or shared. All other apps connect to the internet directly as usual.</string>
+    <string name="disc_notif_title">Notification access</string>
+    <string name="disc_notif_msg">For the notification digest, Social Blocker+ reads the notifications of other apps (app name, title, text and time), removes them from the notification shade and shows them together in one summary notification.\n\nThis data stays only on your device, is deleted automatically every day and is never sent to a server or shared. Calls, alarms and media notifications are not touched.</string>
+    <string name="disc_admin_title">Uninstall protection</string>
+    <string name="disc_admin_msg">Activating device admin only prevents this app from being uninstalled while it is active. It is your own choice and helps you keep your commitment.\n\nThe app uses no device-admin policies (it cannot lock, wipe or change your phone) and collects no data. You can deactivate it in Settings › Device admin apps when blocking is off.</string>
+    <string name="menu_about">About &amp; privacy</string>
+    <string name="about_version">Version %1$s</string>
+    <string name="about_privacy_header">PRIVACY</string>
+    <string name="about_privacy_text">• No account, no ads, no analytics, no trackers.\n• Everything (settings, blocked apps, usage time, collected notifications) is stored only on your device.\n• The firewall VPN is local; no traffic leaves your phone.\n• No personal data is collected, sent to a server or shared.</string>
+    <string name="about_privacy_full">Full privacy policy ›</string>
+    <string name="about_impressum_header">IMPRESSUM / LEGAL NOTICE</string>
+    <string name="about_source">Source code on GitHub ›</string>
 </resources>

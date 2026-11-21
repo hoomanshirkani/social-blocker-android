@@ -1,0 +1,28 @@
+Take back your time and your attention — without an account, ads or tracking.
+
+🚫 SOCIAL MEDIA BLOCKER
+• Block Instagram, TikTok, YouTube, X and any other app with one tap
+• Daily allowance: e.g. 30 minutes a day, then the app closes
+• A calm screen with a short poem instead of a sudden jump to the home screen
+• Optional password and "Lock settings" so you keep your own commitment
+
+🌐 FIREWALL WITHOUT ROOT
+• Per-app internet rules: Free, Always blocked, Only while in use, Periodic, Screen on/off burst
+• "Only while in use": the app you are using gets full internet, background apps are cut after a grace time you choose
+• Internet schedule: e.g. 10 seconds every minute while the screen is off
+• Works with a local VPN — no traffic ever leaves your phone through us
+
+👁 EYE PROTECTOR
+• Break reminders (20-20-20 style) with an optional strict break screen
+• Warm screen filter
+
+🔔 NOTIFICATION DIGEST
+• Collects notifications and shows them all in ONE summary notification every few hours
+• Calls, alarms and media are never touched; everything is cleared daily
+
+🔒 PRIVACY FIRST
+• Everything is processed on your device
+• No account, no ads, no analytics, no third-party SDKs
+• Open source on GitHub
+
+Uses the Accessibility Service API to detect the app on screen (for blocking, time limits, eye breaks and the "while in use" firewall rule) and to protect its own settings when you turn that on. No data is collected or shared.

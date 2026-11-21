@@ -26,6 +26,7 @@ public class BlockedActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_blocked);
+        SystemBars.apply(this);
         findViewById(R.id.homeBtn).setOnClickListener(v -> goHome());
         findViewById(R.id.nextQuote).setOnClickListener(v -> showQuote());
         findViewById(R.id.openAppBtn).setOnClickListener(v -> {

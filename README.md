@@ -76,6 +76,10 @@ Fork the repo, create a branch, and open a pull request. Translations are welcom
 <a id="فارسی"></a>
 <div dir="rtl">
 
+### Stay on after a restart / Google Play
+- Some phones turn accessibility services off after a restart. One-time, from a computer: `adb shell pm grant com.hooman.socialblocker android.permission.WRITE_SECURE_SETTINGS` — the app then turns its service back on by itself; otherwise it shows a notification.
+- Publishing on Google Play: see [docs/PLAY_RELEASE.md](docs/PLAY_RELEASE.md) and [PRIVACY.md](PRIVACY.md).
+
 ## فارسی
 
 یک اپ اندروید که اپ‌های سوشال مدیا را مسدود می‌کند و خودش با رمز قفل می‌شود، تا وقتی وسوسه شدید نتوانید راحت خاموشش کنید. فایروال بدون روت و زمان‌بندی اینترنت هم دارد (مثلاً اینترنت فقط ۱۰ ثانیه در هر دقیقه باز باشد).
@@ -134,3 +138,7 @@ adb install app/build/outputs/apk/debug/app-debug.apk
 مخزن را Fork کنید، یک branch بسازید و Pull Request بفرستید. ترجمه به زبان‌های دیگر هم خوشحال‌مان می‌کند: فایل `res/values-<زبان>/strings.xml` را اضافه کنید.
 
 </div>
+
+### روشن ماندن بعد از ری‌استارت / گوگل‌پلی
+- بعضی گوشی‌ها بعد از ری‌استارت سرویس دسترسی‌پذیری را خاموش می‌کنند. یک بار از کامپیوتر اجرا کن: `adb shell pm grant com.hooman.socialblocker android.permission.WRITE_SECURE_SETTINGS` — بعد از آن اپ خودش سرویس را دوباره روشن می‌کند؛ بدون آن یک نوتیفیکیشن هشدار می‌دهد.
+- انتشار در گوگل‌پلی: [docs/PLAY_RELEASE.md](docs/PLAY_RELEASE.md) و [PRIVACY.md](PRIVACY.md).

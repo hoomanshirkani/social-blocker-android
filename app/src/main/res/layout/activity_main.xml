@@ -9,5 +9,5 @@
     android:clipToPadding="false"
     android:divider="@color/divider"
     android:dividerHeight="1dp"
-    android:fitsSystemWindows="true"
+
     android:paddingBottom="24dp" />

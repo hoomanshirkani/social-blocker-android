@@ -56,10 +56,30 @@ jobs:
           echo "version=$VERSION" >> "$GITHUB_OUTPUT"
           cp app/build/outputs/apk/release/app-release.apk "SocialBlocker-v$VERSION.apk"
 
+      # نسخه گوگل‌پلی (AAB) فقط اگر کلید آپلود در Secrets تعریف شده باشد. راهنما: docs/PLAY_RELEASE.md
+      # Google Play bundle (AAB), only when the upload key is stored in repository secrets.
+      - name: Build Google Play bundle (AAB)
+        id: aab
+        env:
+          KEYSTORE_B64: ${{ secrets.UPLOAD_KEYSTORE_BASE64 }}
+          SB_UPLOAD_STORE_PASSWORD: ${{ secrets.UPLOAD_STORE_PASSWORD }}
+          SB_UPLOAD_KEY_ALIAS: ${{ secrets.UPLOAD_KEY_ALIAS }}
+          SB_UPLOAD_KEY_PASSWORD: ${{ secrets.UPLOAD_KEY_PASSWORD }}
+        run: |
+          if [ -z "$KEYSTORE_B64" ]; then echo "No upload key in secrets, skipping AAB"; exit 0; fi
+          echo "$KEYSTORE_B64" | base64 -d > "$RUNNER_TEMP/upload.jks"
+          export SB_UPLOAD_KEYSTORE="$RUNNER_TEMP/upload.jks"
+          ./gradlew --no-daemon bundleRelease
+          cp app/build/outputs/bundle/release/app-release.aab "SocialBlocker-v${{ steps.ver.outputs.version }}-play.aab"
+          rm -f "$RUNNER_TEMP/upload.jks"
+          echo "file=SocialBlocker-v${{ steps.ver.outputs.version }}-play.aab" >> "$GITHUB_OUTPUT"
+
       - name: Publish GitHub Release
         uses: softprops/action-gh-release@v2
         with:
           tag_name: v${{ steps.ver.outputs.version }}
           name: Social Blocker v${{ steps.ver.outputs.version }}
           generate_release_notes: true
-          files: SocialBlocker-v${{ steps.ver.outputs.version }}.apk
+          files: |
+            SocialBlocker-v${{ steps.ver.outputs.version }}.apk
+            ${{ steps.aab.outputs.file }}

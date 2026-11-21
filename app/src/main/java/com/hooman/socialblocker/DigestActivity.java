@@ -58,6 +58,7 @@ public class DigestActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_digest);
+        SystemBars.apply(this);
         setTitle(R.string.digest_title);
         if (getActionBar() != null) getActionBar().setDisplayHomeAsUpEnabled(true);
 
@@ -86,11 +87,12 @@ public class DigestActivity extends Activity {
         interval.setSelection(Prefs.getDigestIntervalIdx(this));
         clearHour.setSelection(Prefs.getDigestClearHour(this));
 
-        accessRow.setOnClickListener(v -> {
-            try {
-                startActivity(new Intent(Settings.ACTION_NOTIFICATION_LISTENER_SETTINGS));
-            } catch (Exception ignored) {}
-        });
+        accessRow.setOnClickListener(v -> Disclosure.show(this, Disclosure.NOTIFICATIONS,
+                R.string.disc_notif_title, R.string.disc_notif_msg, () -> {
+                    try {
+                        startActivity(new Intent(Settings.ACTION_NOTIFICATION_LISTENER_SETTINGS));
+                    } catch (Exception ignored) {}
+                }));
         exceptionsRow.setOnClickListener(v -> pickExceptions());
         findViewById(R.id.digestSave).setOnClickListener(v -> save());
         findViewById(R.id.digestClearAll).setOnClickListener(v -> {

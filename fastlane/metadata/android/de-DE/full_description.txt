@@ -1,0 +1,28 @@
+Hol dir deine Zeit und Aufmerksamkeit zurück – ohne Konto, Werbung oder Tracking.
+
+🚫 SOCIAL-MEDIA-BLOCKER
+• Instagram, TikTok, YouTube, X und jede andere App mit einem Tipp sperren
+• Tageskontingent: z. B. 30 Minuten pro Tag, danach wird die App geschlossen
+• Ein ruhiger Bildschirm mit einem kurzen Gedicht statt eines plötzlichen Sprungs zum Startbildschirm
+• Optionales Passwort und „Einstellungen sperren“, damit du dein eigenes Vorhaben durchhältst
+
+🌐 FIREWALL OHNE ROOT
+• Internet-Regeln pro App: Frei, Immer gesperrt, Nur bei Nutzung, Periodisch, Kurz bei Bildschirm an/aus
+• „Nur bei Nutzung“: Die App im Vordergrund hat volles Internet, Hintergrund-Apps werden nach einer wählbaren Karenzzeit getrennt
+• Internet-Zeitplan: z. B. 10 Sekunden pro Minute bei ausgeschaltetem Bildschirm
+• Funktioniert mit einem lokalen VPN – kein Datenverkehr verlässt dein Handy über uns
+
+👁 AUGENSCHUTZ
+• Pausenerinnerungen (20-20-20) mit optionalem strengem Pausenbildschirm
+• Warmer Bildschirmfilter
+
+🔔 BENACHRICHTIGUNGS-DIGEST
+• Sammelt Benachrichtigungen und zeigt alle alle paar Stunden in EINER Zusammenfassung
+• Anrufe, Wecker und Medien bleiben unberührt; täglich automatisch gelöscht
+
+🔒 DATENSCHUTZ ZUERST
+• Alles wird auf deinem Gerät verarbeitet
+• Kein Konto, keine Werbung, keine Analyse, keine Drittanbieter-SDKs
+• Open Source auf GitHub
+
+Nutzt die Bedienungshilfen-API (Accessibility Service), um die App im Vordergrund zu erkennen (für Sperren, Zeitlimits, Augenpausen und die Firewall-Regel „Nur bei Nutzung“) und – wenn du es einschaltest – die eigenen Einstellungen zu schützen. Es werden keine Daten erhoben oder weitergegeben.

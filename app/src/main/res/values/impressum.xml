@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Impressum (Pflichtangaben nach § 5 DDG für Anbieter in Deutschland).
+  ⚠️ Vor der Veröffentlichung im Play Store die Platzhalter durch die echten Angaben ersetzen.
+  ⚠️ قبل از انتشار در گوگل‌پلی، این جای‌خالی‌ها را با اطلاعات واقعی پر کنید.
+-->
+<resources>
+    <string name="impressum_name" translatable="false">⟨Vorname Nachname⟩</string>
+    <string name="impressum_address" translatable="false">⟨Straße Hausnummer⟩\n⟨PLZ Ort⟩\nDeutschland</string>
+    <string name="impressum_email" translatable="false">⟨E-Mail-Adresse⟩</string>
+    <string name="privacy_url" translatable="false">https://github.com/hoomanshirkani/social-blocker-android/blob/main/PRIVACY.md</string>
+    <string name="source_url" translatable="false">https://github.com/hoomanshirkani/social-blocker-android</string>
+</resources>

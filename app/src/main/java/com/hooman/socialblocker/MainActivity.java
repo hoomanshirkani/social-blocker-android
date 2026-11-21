@@ -58,6 +58,7 @@ public class MainActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        SystemBars.apply(this);
         Prefs.initDefaults(this);
 
         list = findViewById(R.id.appList);
@@ -110,7 +111,9 @@ public class MainActivity extends Activity {
 
         toggleBtn.setOnClickListener(v -> onToggle());
         pauseBtn.setOnClickListener(v -> onPauseClicked());
-        rowAcc.setOnClickListener(v -> startActivity(new Intent(Settings.ACTION_ACCESSIBILITY_SETTINGS)));
+        rowAcc.setOnClickListener(v -> Disclosure.show(this, Disclosure.ACCESSIBILITY,
+                R.string.disc_acc_title, R.string.disc_acc_msg,
+                () -> startActivity(new Intent(Settings.ACTION_ACCESSIBILITY_SETTINGS))));
         rowAdmin.setOnClickListener(v -> onAdmin());
         rowFw.setOnClickListener(v -> startActivity(new Intent(this, FirewallActivity.class)));
         rowEye.setOnClickListener(v -> startActivity(new Intent(this, EyeCareActivity.class)));
@@ -157,6 +160,9 @@ public class MainActivity extends Activity {
             PasswordDialog.lock();
             toast(R.string.toast_locked);
             refresh();
+            return true;
+        } else if (id == R.id.action_about) {
+            startActivity(new Intent(this, AboutActivity.class));
             return true;
         } else if (id == R.id.action_language) {
             showLanguageDialog();
@@ -304,10 +310,12 @@ public class MainActivity extends Activity {
             toast(R.string.toast_admin_while_on);
             return;
         }
-        Intent i = new Intent(DevicePolicyManager.ACTION_ADD_DEVICE_ADMIN);
-        i.putExtra(DevicePolicyManager.EXTRA_DEVICE_ADMIN, adminComponent());
-        i.putExtra(DevicePolicyManager.EXTRA_ADD_EXPLANATION, getString(R.string.admin_explanation));
-        startActivity(i);
+        Disclosure.show(this, Disclosure.DEVICE_ADMIN, R.string.disc_admin_title, R.string.disc_admin_msg, () -> {
+            Intent i = new Intent(DevicePolicyManager.ACTION_ADD_DEVICE_ADMIN);
+            i.putExtra(DevicePolicyManager.EXTRA_DEVICE_ADMIN, adminComponent());
+            i.putExtra(DevicePolicyManager.EXTRA_ADD_EXPLANATION, getString(R.string.admin_explanation));
+            startActivity(i);
+        });
     }
 
     private void limitPreset(int val, int unit) {

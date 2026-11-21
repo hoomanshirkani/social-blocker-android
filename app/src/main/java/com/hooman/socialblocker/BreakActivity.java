@@ -50,6 +50,7 @@ public class BreakActivity extends Activity {
         super.onCreate(savedInstanceState);
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         setContentView(R.layout.activity_break);
+        SystemBars.apply(this);
 
         total = Math.max(5, getIntent().getIntExtra(EXTRA_SECONDS, 20));
         strict = getIntent().getBooleanExtra(EXTRA_STRICT, false);

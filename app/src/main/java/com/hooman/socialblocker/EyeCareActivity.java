@@ -43,6 +43,7 @@ public class EyeCareActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_eye_care);
+        SystemBars.apply(this);
         setTitle(R.string.eye_title);
         if (getActionBar() != null) getActionBar().setDisplayHomeAsUpEnabled(true);
 

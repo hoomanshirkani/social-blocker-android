@@ -89,7 +89,7 @@ public final class Prefs {
         sp(c).edit().putBoolean(K_BLOCKING, on).putLong(K_PAUSE, 0).apply();
     }
 
-    static boolean isProtect(Context c) { return sp(c).getBoolean(K_PROTECT, true); }
+    static boolean isProtect(Context c) { return sp(c).getBoolean(K_PROTECT, false); }
 
     static void setProtect(Context c, boolean on) { sp(c).edit().putBoolean(K_PROTECT, on).apply(); }
 

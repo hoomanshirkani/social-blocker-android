@@ -69,6 +69,7 @@ public class FirewallActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_firewall);
+        SystemBars.apply(this);
         setTitle(R.string.fw_title);
         if (getActionBar() != null) getActionBar().setDisplayHomeAsUpEnabled(true);
 
@@ -195,9 +196,11 @@ public class FirewallActivity extends Activity {
     private void onFirewallClicked() {
         if (fwSwitch.isChecked()) {
             fwSwitch.setChecked(false);
-            Intent consent = VpnService.prepare(this);
-            if (consent != null) startActivityForResult(consent, REQ_VPN);
-            else enableFirewall();
+            Disclosure.show(this, Disclosure.VPN, R.string.disc_vpn_title, R.string.disc_vpn_msg, () -> {
+                Intent consent = VpnService.prepare(this);
+                if (consent != null) startActivityForResult(consent, REQ_VPN);
+                else enableFirewall();
+            });
         } else {
             fwSwitch.setChecked(true);
             PasswordDialog.ask(this, () -> {

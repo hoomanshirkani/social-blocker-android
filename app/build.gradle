@@ -27,12 +27,12 @@ def gitVersionName = {
 
 android {
     namespace 'com.hooman.socialblocker'
-    compileSdk 35
+    compileSdk 36
 
     defaultConfig {
         applicationId "com.hooman.socialblocker"
         minSdk 26
-        targetSdk 35
+        targetSdk 36
         versionCode gitCount
         versionName gitVersionName
     }
@@ -47,6 +47,16 @@ android {
             keyAlias 'androiddebugkey'
             keyPassword 'android'
         }
+        // کلید آپلود گوگل‌پلی: فقط وقتی متغیرهای محیطی (از GitHub Secrets) موجود باشند.
+        // Google Play upload key — only when the environment variables (GitHub Secrets) are set.
+        if (System.getenv('SB_UPLOAD_KEYSTORE')) {
+            upload {
+                storeFile file(System.getenv('SB_UPLOAD_KEYSTORE'))
+                storePassword System.getenv('SB_UPLOAD_STORE_PASSWORD')
+                keyAlias System.getenv('SB_UPLOAD_KEY_ALIAS')
+                keyPassword System.getenv('SB_UPLOAD_KEY_PASSWORD')
+            }
+        }
     }
 
     buildTypes {
@@ -55,7 +65,7 @@ android {
         }
         release {
             minifyEnabled false
-            signingConfig signingConfigs.debug
+            signingConfig System.getenv('SB_UPLOAD_KEYSTORE') ? signingConfigs.upload : signingConfigs.debug
         }
     }
 
