@@ -35,6 +35,8 @@ android {
         targetSdk 36
         versionCode gitCount
         versionName gitVersionName
+        // نسخه گوگل‌پلی (با کلید آپلود) امکانات Pro را قفل می‌کند؛ نسخه GitHub همه چیز را رایگان دارد
+        buildConfigField "boolean", "PRO_GATED", System.getenv('SB_UPLOAD_KEYSTORE') ? "true" : "false"
     }
 
     // یک کلید امضای ثابت داخل مخزن، تا APKهای ساخته‌شده روی هر کامپیوتر و روی GitHub
@@ -69,6 +71,10 @@ android {
         }
     }
 
+    buildFeatures {
+        buildConfig true
+    }
+
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_17
         targetCompatibility JavaVersion.VERSION_17
@@ -83,4 +89,8 @@ android {
 // برای GitHub Actions: ./gradlew -q printVersion
 tasks.register('printVersion') {
     doLast { println gitVersionName }
+}
+
+dependencies {
+    implementation "com.android.billingclient:billing:8.0.0"
 }

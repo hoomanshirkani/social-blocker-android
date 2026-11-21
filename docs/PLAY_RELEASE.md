@@ -138,3 +138,28 @@ APK گیت‌هاب با همان کلید قبلی امضا می‌شود تا 
 - [ ] Content rating, target audience 18+, no ads
 - [ ] Decide **paid vs free** before the first release (free → paid is impossible)
 - [ ] Closed test with ≥12 testers for 14 days → apply for production
+
+---
+
+## ۸. مدل درآمد: رایگان + Pro (یک بار خرید)
+
+اپ در گوگل‌پلی **Free** منتشر می‌شود. امکانات Pro با خرید درون‌برنامه‌ای (Google Play Billing 8) باز می‌شوند:
+- زمان آزاد روزهای هفته
+- مسدودسازی سایت در مرورگرها
+- قانون‌های پیشرفته فایروال (دوره‌ای، فقط هنگام استفاده، لحظه روشن/خاموش، «همه اپ‌ها»)
+
+نسخه GitHub (بدون کلید آپلود) همه چیز را رایگان دارد. قفل Pro فقط در AAB گوگل‌پلی فعال است (`BuildConfig.PRO_GATED`).
+
+**در Play Console:**
+1. Settings → Payments profile بساز (حساب بانکی آلمان، اطلاعات مالیاتی).
+2. یک AAB آپلود کن (Internal testing). بدون این، بخش محصولات باز نمی‌شود.
+3. Monetize → Products → **In-app products** → Create:
+   - Product ID: **`pro_unlock`** (دقیقاً همین)
+   - Name: `Social Blocker Pro`
+   - قیمت پیشنهادی: ۲٫۹۹ تا ۴٫۹۹ یورو
+   - Activate
+4. برای تست خرید بدون پرداخت واقعی: Settings → **License testing** → ایمیل خودت را اضافه کن.
+
+**Data safety:** خرید را گوگل پردازش می‌کند و اپ چیزی به سرور نمی‌فرستد، پس همچنان «No data collected».
+
+**چرا تبلیغ نه:** SDK تبلیغات (AdMob) شناسه تبلیغاتی و داده دستگاه جمع می‌کند. یعنی باید فرم رضایت GDPR بگذاری و Data safety عوض شود. این با شعار «بدون ردیاب» و با خود اپ ضد حواس‌پرتی تناقض دارد.

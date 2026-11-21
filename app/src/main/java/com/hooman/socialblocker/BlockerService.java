@@ -35,6 +35,7 @@ public class BlockerService extends AccessibilityService {
     static final int REASON_SETTINGS = 1;
     static final int REASON_LIMIT = 2;
     static final int REASON_UNINSTALL = 3;
+    static final int REASON_SITE = 4;
 
     private static final Set<String> GUARDED = new HashSet<>(Arrays.asList(
             "com.android.settings",
@@ -67,6 +68,7 @@ public class BlockerService extends AccessibilityService {
     /** آخرین صفحه‌ی نصب‌کننده (Install… یا Uninstall…) برای تشخیص آپدیت از حذف */
     private String installerScreen = null;
     private long lastBlock = 0;
+    private long lastSiteCheck = 0;
     private String lastFwToastPkg = null;
     private long lastFwToast = 0;
 
@@ -165,6 +167,12 @@ public class BlockerService extends AccessibilityService {
             return;
         }
 
+        // ۰) «زمان آزاد» روزهای هفته (Pro): همه چیز آزاد، زمانی هم شمرده نمی‌شود
+        if (FreeTime.isNow(this)) {
+            endSession();
+            return;
+        }
+
         // ۱) اپ مسدود
         if (Prefs.isBlocked(this, pkg)) {
             long allowance = Prefs.getAllowanceMs(this);
@@ -193,6 +201,20 @@ public class BlockerService extends AccessibilityService {
         if (windowChanged) {
             endSession();
             if (!isGuarded(pkg)) maybeFirewallNotice(pkg);
+        }
+
+        // ۲.۵) سایت مسدود در مرورگر (Pro)
+        if (SiteBlock.isBrowser(pkg) && SiteBlock.isEnabled(this) && Pro.isPro(this)) {
+            long now = SystemClock.uptimeMillis();
+            if (windowChanged || now - lastSiteCheck > 300) {
+                lastSiteCheck = now;
+                String host = SiteBlock.readHost(getRootInActiveWindow(), pkg);
+                if (host != null && SiteBlock.isBlockedHost(this, host)) {
+                    performGlobalAction(GLOBAL_ACTION_BACK); // از صفحه سایت خارج شو
+                    block(pkg, REASON_SITE, host);
+                }
+            }
+            return;
         }
 
         // ۳) محافظت از تنظیمات
@@ -326,6 +348,10 @@ public class BlockerService extends AccessibilityService {
     }
 
     private void block(String pkg, int reason) {
+        block(pkg, reason, null);
+    }
+
+    private void block(String pkg, int reason, String host) {
         // صفحه توضیح مستقیم روی همان صفحه باز می‌شود (بدون پریدن ناگهانی به Home)
         long now = SystemClock.uptimeMillis();
         if (now - lastBlock < 800) return; // صفحه را پشت‌سرهم باز نکن
@@ -335,6 +361,7 @@ public class BlockerService extends AccessibilityService {
         i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         i.putExtra(BlockedActivity.EXTRA_PKG, pkg);
         i.putExtra(BlockedActivity.EXTRA_REASON, reason);
+        if (host != null) i.putExtra(BlockedActivity.EXTRA_HOST, host);
         try {
             startActivity(i);
         } catch (Exception ignoredEx) {

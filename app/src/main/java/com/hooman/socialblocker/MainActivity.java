@@ -33,7 +33,7 @@ public class MainActivity extends Activity {
 
     private static final long PAUSE_MS = 15 * 60 * 1000L;
 
-    private View statusCard, rowAcc, rowAdmin, rowFw, rowEye, rowDigest, rowRestore;
+    private View statusCard, rowAcc, rowAdmin, rowFw, rowEye, rowDigest, rowRestore, rowFree, rowSites, rowPro;
     private TextView statusIcon, statusTitle, statusSub, accWarning, appsHeader;
     private Button toggleBtn, pauseBtn;
     private Switch protectSwitch, limitSwitch;
@@ -78,6 +78,13 @@ public class MainActivity extends Activity {
         rowEye = h.findViewById(R.id.rowEye);
         rowDigest = h.findViewById(R.id.rowDigest);
         rowRestore = h.findViewById(R.id.rowRestore);
+        rowFree = h.findViewById(R.id.rowFree);
+        rowSites = h.findViewById(R.id.rowSites);
+        rowPro = h.findViewById(R.id.rowPro);
+        rowFree.setOnClickListener(v -> startActivity(new Intent(this, FreeTimeActivity.class)));
+        rowSites.setOnClickListener(v -> startActivity(new Intent(this, SitesActivity.class)));
+        rowPro.setOnClickListener(v -> startActivity(new Intent(this, ProActivity.class)));
+        Pro.refresh(this);
         rowRestore.setOnClickListener(v -> showRestoreDialog());
         protectSwitch = h.findViewById(R.id.protectSwitch);
         appsHeader = h.findViewById(R.id.appsHeader);
@@ -221,6 +228,19 @@ public class MainActivity extends Activity {
         int fwSub = !fw ? R.string.row_fw_off
                 : Prefs.isSchedEnabled(this) ? R.string.row_fw_sched : R.string.row_fw_on;
         setRow(rowFw, "🌐", R.string.row_fw_title, getString(fwSub), fw);
+        boolean pro = Pro.isPro(this);
+        String star = pro ? "" : "  ⭐";
+        boolean ft = FreeTime.isEnabled(this) && pro;
+        setRow(rowFree, "🗓", R.string.row_ft_title, (ft
+                ? getString(FreeTime.isNow(this) ? R.string.ft_status_now : R.string.row_ft_on,
+                        FreeTime.fmt(FreeTime.getStartMin(this)), FreeTime.fmt(FreeTime.getEndMin(this)))
+                : getString(R.string.row_ft_off)) + star, ft);
+        boolean sites = SiteBlock.isEnabled(this) && pro;
+        setRow(rowSites, "🌍", R.string.row_site_title, (sites
+                ? getString(R.string.row_site_on, SiteBlock.getDomains(this).size())
+                : getString(R.string.row_site_off)) + star, sites);
+        rowPro.setVisibility(Pro.gated() ? View.VISIBLE : View.GONE);
+        setRow(rowPro, "⭐", R.string.pro_title, getString(pro ? R.string.pro_owned_sub : R.string.row_pro_sub), pro);
         boolean restore = ServiceGuard.canSelfEnable(this);
         setRow(rowRestore, "↻", R.string.row_restore_title,
                 getString(restore ? R.string.row_restore_on : R.string.row_restore_todo), restore);

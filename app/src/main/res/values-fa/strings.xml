@@ -313,11 +313,11 @@
     <string name="copied">کپی شد ✓</string>
     <string name="guard_channel">هشدارهای مهم</string>
     <string name="guard_title">⚠️ Social Blocker+ خاموش شد</string>
-    <string name="guard_text">اندروید سرویس دسترسی‌پذیری را خاموش کرد (مثلاً بعد از ری‌استارت). مسدودسازی و مراقبت از چشم تا روشن شدن دوباره کار نمی‌کنند — برای روشن کردن بزن.</string>
+    <string name="guard_text">اندروید سرویس دسترسی‌پذیری را خاموش کرد (مثلاً بعد از ری‌استارت، یا چون Advanced Protection روشن است). مسدودسازی و مراقبت از چشم تا روشن شدن دوباره کار نمی‌کنند — برای روشن کردن بزن.</string>
     <string name="disc_agree">موافقم</string>
     <string name="disc_decline">نه، ممنون</string>
     <string name="disc_acc_title">مجوز دسترسی‌پذیری</string>
-    <string name="disc_acc_msg">Social Blocker+ از API سرویس دسترسی‌پذیری اندروید برای این کارها استفاده می‌کند:\n\n• تشخیص اپی که الان روی صفحه است، تا اپ‌های مسدود بسته شوند و سهمیه روزانه شمرده شود؛\n• خواندن متن صفحه‌های تنظیمات و نصب‌کننده، فقط برای تشخیص صفحه‌هایی که وقتی مسدودسازی روشن است این اپ را خاموش یا حذف می‌کنند («قفل تنظیمات»)؛\n• نمایش صفحه استراحت چشم و فیلتر گرم؛\n• اطلاع دادن اپ در حال استفاده به فایروال (قانون «فقط هنگام استفاده»).\n\nاین داده‌ها فقط روی گوشی خودت پردازش می‌شوند و هرگز ذخیره، جمع‌آوری، به سرور فرستاده یا با کسی به اشتراک گذاشته نمی‌شوند. وقتی مسدودسازی خاموش است، هر زمان بخواهی می‌توانی سرویس را از تنظیمات خاموش کنی.</string>
+    <string name="disc_acc_msg">Social Blocker+ از API سرویس دسترسی‌پذیری اندروید برای این کارها استفاده می‌کند:\n\n• تشخیص اپی که الان روی صفحه است، تا اپ‌های مسدود بسته شوند و سهمیه روزانه شمرده شود؛\n• خواندن نوار آدرس مرورگرهای پشتیبانی‌شده، فقط برای تشخیص سایت‌هایی که خودت در لیست مسدود گذاشتی؛\n• خواندن متن صفحه‌های تنظیمات و نصب‌کننده، فقط برای تشخیص صفحه‌هایی که وقتی مسدودسازی روشن است این اپ را خاموش یا حذف می‌کنند («قفل تنظیمات»)؛\n• نمایش صفحه استراحت چشم و فیلتر گرم؛\n• اطلاع دادن اپ در حال استفاده به فایروال (قانون «فقط هنگام استفاده»).\n\nاین داده‌ها فقط روی گوشی خودت پردازش می‌شوند و هرگز ذخیره، جمع‌آوری، به سرور فرستاده یا با کسی به اشتراک گذاشته نمی‌شوند. وقتی مسدودسازی خاموش است، هر زمان بخواهی می‌توانی سرویس را از تنظیمات خاموش کنی.</string>
     <string name="disc_vpn_title">VPN محلی (فایروال)</string>
     <string name="disc_vpn_msg">فایروال با VpnService اندروید یک VPN محلی روی گوشی می‌سازد. ترافیک اپ‌هایی که انتخاب می‌کنی وارد این VPN محلی می‌شود و رد می‌شود، پس آن اپ‌ها اینترنت ندارند.\n\nهیچ ترافیکی به هیچ سروری فرستاده نمی‌شود و چیزی بررسی، ثبت، جمع‌آوری یا به اشتراک گذاشته نمی‌شود. بقیه اپ‌ها مثل همیشه مستقیم به اینترنت وصل‌اند.</string>
     <string name="disc_notif_title">دسترسی به نوتیفیکیشن‌ها</string>
@@ -331,4 +331,58 @@
     <string name="about_privacy_full">سیاست کامل حریم خصوصی ›</string>
     <string name="about_impressum_header">IMPRESSUM / اطلاعات ناشر</string>
     <string name="about_source">کد منبع در GitHub ›</string>
+    <string name="pro_title">Social Blocker Pro</string>
+    <string name="pro_sub">یک بار خرید · بدون اشتراک · بدون تبلیغ</string>
+    <string name="pro_owned_title">Pro فعال است ⭐</string>
+    <string name="pro_owned_sub">ممنون از حمایتت!</string>
+    <string name="pro_open_source">نسخه متن‌باز: همه امکانات Pro رایگان است</string>
+    <string name="pro_features_header">امکانات PRO</string>
+    <string name="pro_features">🗓  زمان آزاد بر اساس روزهای هفته — مثلاً آخر هفته ۱۰ تا ۲۲ همه چیز آزاد
+🌍  مسدودسازی سایت در مرورگرها (Chrome، Firefox، Samsung، Edge، Brave…)
+📱  فایروال: اینترنت فقط هنگام استفاده از اپ
+⏱  فایروال: اینترنت دوره‌ای (مثلاً ۱۰ ثانیه در هر دقیقه)
+⚡  فایروال: اینترنت کوتاه هنگام روشن/خاموش شدن صفحه
+🌐  سیاست‌های «همه اپ‌ها» در فایروال</string>
+    <string name="pro_free_header">همیشه رایگان</string>
+    <string name="pro_free_list">مسدودسازی اپ، سهمیه روزانه، رمز و قفل، فایروال (آزاد / همیشه مسدود)، مراقبت از چشم، فیلتر گرم، خلاصه نوتیفیکیشن.</string>
+    <string name="pro_buy">خرید Pro</string>
+    <string name="pro_buy_price">خرید Pro — %1$s</string>
+    <string name="pro_restore">بازیابی خرید</string>
+    <string name="pro_restoring">در حال بررسی خریدها…</string>
+    <string name="pro_note">یک بار از طریق Google Play پرداخت می‌شود و روی همه گوشی‌هایت با همان حساب گوگل کار می‌کند.</string>
+    <string name="pro_unavailable">الان به Google Play دسترسی نیست. کمی بعد دوباره امتحان کن.</string>
+    <string name="pro_needed_title">⭐ امکان Pro</string>
+    <string name="pro_needed_msg">این امکان جزو Social Blocker Pro است — یک بار خرید، بدون اشتراک و بدون تبلیغ.</string>
+    <string name="pro_see">دیدن Pro</string>
+    <string name="row_pro_sub">باز کردن زمان آزاد هفتگی، مسدودسازی سایت و قانون‌های پیشرفته فایروال</string>
+    <string name="row_ft_title">زمان آزاد روزهای هفته</string>
+    <string name="row_ft_on">روشن · %1$s تا %2$s در روزهای انتخابی</string>
+    <string name="row_ft_off">خاموش — مثلاً آخر هفته آزاد</string>
+    <string name="row_site_title">مسدودسازی سایت</string>
+    <string name="row_site_on">روشن · %1$d سایت در مرورگرها مسدود</string>
+    <string name="row_site_off">خاموش — مسدود کردن سایت در Chrome، Firefox…</string>
+    <string name="ft_title">زمان آزاد روزهای هفته</string>
+    <string name="ft_switch">زمان آزاد</string>
+    <string name="ft_desc">در روزهای انتخابی و در ساعت‌های زیر، اپ‌ها و سایت‌های مسدود آزادند و زمانی شمرده نمی‌شود.</string>
+    <string name="ft_days">روزها</string>
+    <string name="ft_hours">ساعت‌ها</string>
+    <string name="ft_from">از</string>
+    <string name="ft_to">تا</string>
+    <string name="ft_hint">شروع و پایان یکسان = تمام روز. اگر پایان قبل از شروع باشد، تا بعد از نیمه‌شب ادامه دارد.</string>
+    <string name="ft_status_now">🎉 الان زمان آزاد است (%1$s تا %2$s)</string>
+    <string name="ft_status_on">🗓 زمان آزاد تنظیم شده</string>
+    <string name="ft_status_off">زمان آزاد خاموش است</string>
+    <string name="ft_pick_day">حداقل یک روز انتخاب کن</string>
+    <string name="site_title">مسدودسازی سایت</string>
+    <string name="site_switch">مسدود کردن سایت در مرورگرها</string>
+    <string name="site_desc">در Chrome، Firefox، Samsung Internet، Edge، Brave، Opera، DuckDuckGo و چند مرورگر دیگر کار می‌کند. زیردامنه‌ها هم مسدود می‌شوند (m.youtube.com). وقتی مسدودسازی روشن است کار می‌کند.</string>
+    <string name="site_hint">مثلاً instagram.com</string>
+    <string name="site_add">افزودن</string>
+    <string name="site_add_suggested">+ افزودن سایت‌های شبکه‌های اجتماعی</string>
+    <string name="site_list_header">سایت‌های مسدود (%1$d) · برای حذف بزن</string>
+    <string name="site_invalid">یک دامنه مثل instagram.com وارد کن</string>
+    <string name="site_remove_q">%1$s از لیست حذف شود؟</string>
+    <string name="site_remove">حذف</string>
+    <string name="blocked_site_title">این سایت مسدود است</string>
+    <string name="blocked_site_msg">%1$s در لیست مسدود توست. یک نفس عمیق — این تصمیم خودت بود.</string>
 </resources>

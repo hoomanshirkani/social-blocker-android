@@ -13,6 +13,7 @@ import java.util.Random;
 public class BlockedActivity extends Activity {
     static final String EXTRA_PKG = "pkg";
     static final String EXTRA_REASON = "reason";
+    static final String EXTRA_HOST = "host";
 
     private final Random random = new Random();
     private int lastQuote = -1;
@@ -57,6 +58,9 @@ public class BlockedActivity extends Activity {
         } else if (reason == BlockerService.REASON_UNINSTALL) {
             title.setText(R.string.blocked_uninstall_title);
             msg.setText(R.string.blocked_uninstall);
+        } else if (reason == BlockerService.REASON_SITE) {
+            title.setText(R.string.blocked_site_title);
+            msg.setText(getString(R.string.blocked_site_msg, intent.getStringExtra(EXTRA_HOST)));
         } else if (reason == BlockerService.REASON_LIMIT) {
             title.setText(R.string.limit_up_title);
             msg.setText(getString(R.string.limit_up_msg, MainActivity.fmt(Prefs.getLimitMs(this))));

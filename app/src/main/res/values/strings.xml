@@ -317,11 +317,11 @@
     <string name="copied">Copied ✓</string>
     <string name="guard_channel">Important alerts</string>
     <string name="guard_title">⚠️ Social Blocker+ was turned off</string>
-    <string name="guard_text">Android turned the accessibility service off (e.g. after a restart). Blocking and eye care do not work until it is on again — tap to turn it on.</string>
+    <string name="guard_text">Android turned the accessibility service off (e.g. after a restart, or because Advanced Protection is on). Blocking and eye care do not work until it is on again — tap to turn it on.</string>
     <string name="disc_agree">Agree</string>
     <string name="disc_decline">No thanks</string>
     <string name="disc_acc_title">Accessibility permission</string>
-    <string name="disc_acc_msg">Social Blocker+ uses the Android Accessibility Service API to:\n\n• detect which app is currently on screen, so blocked apps can be closed and the daily time limit can be counted;\n• read the text of Settings and installer screens, only to recognise screens that would turn this app off or uninstall it while you have blocking on (\"Lock settings\");\n• show the eye-care break screen and the warm screen filter;\n• tell the firewall which app you are using (\"only while in use\" rule).\n\nThis data is processed only on your device. It is never stored, collected, sent to a server or shared with anyone. You can turn the service off at any time in Android Settings when blocking is off.</string>
+    <string name="disc_acc_msg">Social Blocker+ uses the Android Accessibility Service API to:\n\n• detect which app is currently on screen, so blocked apps can be closed and the daily time limit can be counted;\n• read the address bar of supported browsers, only to recognise websites you put on your block list;\n• read the text of Settings and installer screens, only to recognise screens that would turn this app off or uninstall it while you have blocking on (\"Lock settings\");\n• show the eye-care break screen and the warm screen filter;\n• tell the firewall which app you are using (\"only while in use\" rule).\n\nThis data is processed only on your device. It is never stored, collected, sent to a server or shared with anyone. You can turn the service off at any time in Android Settings when blocking is off.</string>
     <string name="disc_vpn_title">Local VPN (firewall)</string>
     <string name="disc_vpn_msg">The firewall uses the Android VpnService to create a local VPN on your device. Traffic of the apps you choose is routed into this local VPN and refused, so those apps have no internet.\n\nNo traffic is sent to any server, nothing is inspected, logged, collected or shared. All other apps connect to the internet directly as usual.</string>
     <string name="disc_notif_title">Notification access</string>
@@ -335,4 +335,58 @@
     <string name="about_privacy_full">Full privacy policy ›</string>
     <string name="about_impressum_header">IMPRESSUM / LEGAL NOTICE</string>
     <string name="about_source">Source code on GitHub ›</string>
+    <string name="pro_title">Social Blocker Pro</string>
+    <string name="pro_sub">One-time purchase · no subscription · no ads</string>
+    <string name="pro_owned_title">Pro is active ⭐</string>
+    <string name="pro_owned_sub">Thank you for your support!</string>
+    <string name="pro_open_source">Open-source version: all Pro features are free</string>
+    <string name="pro_features_header">PRO FEATURES</string>
+    <string name="pro_features">🗓  Free time by weekday — e.g. weekends 10:00–22:00 everything is allowed
+🌍  Website blocking in browsers (Chrome, Firefox, Samsung, Edge, Brave…)
+📱  Firewall: internet only while an app is in use
+⏱  Firewall: periodic internet (e.g. 10 s every minute)
+⚡  Firewall: short burst when the screen turns on/off
+🌐  “All apps” firewall policies</string>
+    <string name="pro_free_header">ALWAYS FREE</string>
+    <string name="pro_free_list">App blocking, daily allowance, password &amp; lock, firewall (free / always blocked), eye care, warm filter, notification digest.</string>
+    <string name="pro_buy">Get Pro</string>
+    <string name="pro_buy_price">Get Pro — %1$s</string>
+    <string name="pro_restore">Restore purchase</string>
+    <string name="pro_restoring">Checking your purchases…</string>
+    <string name="pro_note">Paid once through Google Play. Works on all your devices with the same Google account.</string>
+    <string name="pro_unavailable">Google Play is not reachable right now. Try again in a moment.</string>
+    <string name="pro_needed_title">⭐ Pro feature</string>
+    <string name="pro_needed_msg">This feature is part of Social Blocker Pro — a one-time purchase, no subscription and no ads.</string>
+    <string name="pro_see">See Pro</string>
+    <string name="row_pro_sub">Unlock weekday free time, website blocking and advanced firewall rules</string>
+    <string name="row_ft_title">Free time by weekday</string>
+    <string name="row_ft_on">On · %1$s–%2$s on chosen days</string>
+    <string name="row_ft_off">Off — e.g. weekends free</string>
+    <string name="row_site_title">Website blocking</string>
+    <string name="row_site_on">On · %1$d sites blocked in browsers</string>
+    <string name="row_site_off">Off — block sites in Chrome, Firefox…</string>
+    <string name="ft_title">Free time by weekday</string>
+    <string name="ft_switch">Free time</string>
+    <string name="ft_desc">On the chosen days, within the hours below, blocked apps and websites are allowed and no time is counted.</string>
+    <string name="ft_days">DAYS</string>
+    <string name="ft_hours">HOURS</string>
+    <string name="ft_from">From</string>
+    <string name="ft_to">to</string>
+    <string name="ft_hint">Same start and end = the whole day. An end before the start runs past midnight.</string>
+    <string name="ft_status_now">🎉 Free time now (%1$s–%2$s)</string>
+    <string name="ft_status_on">🗓 Free time is set</string>
+    <string name="ft_status_off">Free time is off</string>
+    <string name="ft_pick_day">Choose at least one day</string>
+    <string name="site_title">Website blocking</string>
+    <string name="site_switch">Block websites in browsers</string>
+    <string name="site_desc">Works in Chrome, Firefox, Samsung Internet, Edge, Brave, Opera, DuckDuckGo and more. Subdomains are blocked too (m.youtube.com). Works while blocking is on.</string>
+    <string name="site_hint">e.g. instagram.com</string>
+    <string name="site_add">Add</string>
+    <string name="site_add_suggested">+ Add social media sites</string>
+    <string name="site_list_header">BLOCKED SITES (%1$d) · tap to remove</string>
+    <string name="site_invalid">Enter a domain like instagram.com</string>
+    <string name="site_remove_q">Remove %1$s from the list?</string>
+    <string name="site_remove">Remove</string>
+    <string name="blocked_site_title">This website is blocked</string>
+    <string name="blocked_site_msg">%1$s is on your blocked list. Take a breath — you chose this for yourself.</string>
 </resources>

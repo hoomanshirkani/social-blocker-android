@@ -173,11 +173,13 @@ public class FirewallVpnService extends VpnService {
         long now = System.currentTimeMillis();
         nextCandidate = 0;
         Set<String> always = Prefs.getFwBlocked(this);
-        Set<String> burst = Prefs.getFwBurst(this);
-        Set<String> periodic = Prefs.getFwPeriodic(this);
-        Set<String> inUseSet = Prefs.getFwInUse(this);
-        boolean inUseAll = Prefs.isInUseAll(this);
-        boolean periodicAll = !inUseAll && Prefs.isSchedEnabled(this);
+        // قانون‌های ⏱ 📱 ⚡ و «همه اپ‌ها» جزو Pro هستند؛ بدون Pro نادیده گرفته می‌شوند (= آزاد)
+        boolean pro = Pro.isPro(this);
+        Set<String> burst = pro ? Prefs.getFwBurst(this) : new TreeSet<>();
+        Set<String> periodic = pro ? Prefs.getFwPeriodic(this) : new TreeSet<>();
+        Set<String> inUseSet = pro ? Prefs.getFwInUse(this) : new TreeSet<>();
+        boolean inUseAll = pro && Prefs.isInUseAll(this);
+        boolean periodicAll = pro && !inUseAll && Prefs.isSchedEnabled(this);
         Set<String> ruled = new TreeSet<>(always);
         ruled.addAll(burst);
         ruled.addAll(periodic);

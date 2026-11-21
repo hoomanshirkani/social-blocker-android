@@ -55,6 +55,19 @@
             android:name=".AboutActivity"
             android:exported="false" />
 
+        <activity
+            android:name=".ProActivity"
+            android:exported="false" />
+
+        <activity
+            android:name=".FreeTimeActivity"
+            android:exported="false" />
+
+        <activity
+            android:name=".SitesActivity"
+            android:windowSoftInputMode="adjustResize"
+            android:exported="false" />
+
         <service
             android:name=".DigestListener"
             android:exported="true"

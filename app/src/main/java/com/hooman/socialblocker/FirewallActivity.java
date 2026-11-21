@@ -251,6 +251,11 @@ public class FirewallActivity extends Activity {
     private void onSaveInUse() {
         int sec = Prefs.GRACE_OPTIONS[Math.max(0, inUseGrace.getSelectedItemPosition())];
         boolean all = inUseAllSwitch.isChecked();
+        if (all && !Pro.isPro(this)) {
+            inUseAllSwitch.setChecked(false);
+            Pro.require(this, () -> {});
+            return;
+        }
         Runnable save = () -> {
             boolean hadPeriodicAll = Prefs.isSchedEnabled(this);
             Prefs.setInUse(this, sec, all);
@@ -284,6 +289,11 @@ public class FirewallActivity extends Activity {
         long onMs = on * Prefs.UNIT_MS[onU];
         long periodMs = every * Prefs.UNIT_MS[evU];
         boolean all = schedSwitch.isChecked();
+        if (all && !Pro.isPro(this)) {
+            schedSwitch.setChecked(false);
+            Pro.require(this, () -> {});
+            return;
+        }
         int mode = Math.max(0, screenOnMode.getSelectedItemPosition());
         int graceSec = Prefs.GRACE_OPTIONS[Math.max(0, graceSpin.getSelectedItemPosition())];
 
@@ -307,10 +317,7 @@ public class FirewallActivity extends Activity {
 
     private void pickRule(AppLoader.AppItem item) {
         int current = Prefs.getFwRule(this, item.pkg);
-        CharSequence[] names = new CharSequence[RULE_LABELS.length];
-        for (int i = 0; i < names.length; i++) {
-            names[i] = getString(RULE_LABELS[i]) + "\n" + getString(RULE_DESCS[i]);
-        }
+        CharSequence[] names = ruleNames();
         new AlertDialog.Builder(this)
                 .setTitle(item.label)
                 .setSingleChoiceItems(names, current, (d, which) -> {
@@ -319,6 +326,17 @@ public class FirewallActivity extends Activity {
                 })
                 .setNegativeButton(R.string.cancel, null)
                 .show();
+    }
+
+    /** نام قانون‌ها؛ قانون‌های Pro اگر خریده نشده باشند ⭐ می‌گیرند */
+    private CharSequence[] ruleNames() {
+        boolean pro = Pro.isPro(this);
+        CharSequence[] names = new CharSequence[RULE_LABELS.length];
+        for (int i = 0; i < names.length; i++) {
+            boolean paid = i == Prefs.FW_PERIODIC || i == Prefs.FW_IN_USE || i == Prefs.FW_BURST;
+            names[i] = getString(RULE_LABELS[i]) + (paid && !pro ? "  ⭐ Pro" : "") + "\n" + getString(RULE_DESCS[i]);
+        }
+        return names;
     }
 
     // ------------------------------------------------------------------ bulk selection
@@ -339,10 +357,7 @@ public class FirewallActivity extends Activity {
             toast(R.string.fw_select_first);
             return;
         }
-        CharSequence[] names = new CharSequence[RULE_LABELS.length];
-        for (int i = 0; i < names.length; i++) {
-            names[i] = getString(RULE_LABELS[i]) + "\n" + getString(RULE_DESCS[i]);
-        }
+        CharSequence[] names = ruleNames();
         new AlertDialog.Builder(this)
                 .setTitle(getString(R.string.fw_bulk_title, selected.size()))
                 .setItems(names, (d, which) -> {
@@ -357,6 +372,14 @@ public class FirewallActivity extends Activity {
 
     /** تغییر قانون؛ اگر برای هر کدام از اپ‌ها شل‌تر شود و فایروال روشن باشد، رمز می‌خواهد. */
     private void setRule(Collection<String> pkgs, int rule) {
+        if (rule == Prefs.FW_PERIODIC || rule == Prefs.FW_IN_USE || rule == Prefs.FW_BURST) {
+            Pro.require(this, () -> applyRule(pkgs, rule));
+        } else {
+            applyRule(pkgs, rule);
+        }
+    }
+
+    private void applyRule(Collection<String> pkgs, int rule) {
         boolean loosens = false;
         for (String p : pkgs) if (Prefs.getFwRule(this, p) > rule) { loosens = true; break; }
         List<String> copy = new ArrayList<>(pkgs);
