@@ -33,7 +33,7 @@ public class MainActivity extends Activity {
 
     private static final long PAUSE_MS = 15 * 60 * 1000L;
 
-    private View statusCard, rowAcc, rowAdmin, rowFw, rowEye, rowDigest;
+    private View statusCard, rowAcc, rowAdmin, rowFw, rowEye, rowDigest, rowRestore;
     private TextView statusIcon, statusTitle, statusSub, accWarning, appsHeader;
     private Button toggleBtn, pauseBtn;
     private Switch protectSwitch, limitSwitch;
@@ -76,6 +76,8 @@ public class MainActivity extends Activity {
         rowFw = h.findViewById(R.id.rowFw);
         rowEye = h.findViewById(R.id.rowEye);
         rowDigest = h.findViewById(R.id.rowDigest);
+        rowRestore = h.findViewById(R.id.rowRestore);
+        rowRestore.setOnClickListener(v -> showRestoreDialog());
         protectSwitch = h.findViewById(R.id.protectSwitch);
         appsHeader = h.findViewById(R.id.appsHeader);
         EditText search = h.findViewById(R.id.search);
@@ -128,7 +130,12 @@ public class MainActivity extends Activity {
         AppLoader.load(this, Prefs.getBlocked(this), adapter::setItems);
     }
 
-    @Override protected void onResume() { super.onResume(); handler.post(ticker); }
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if (ServiceGuard.canSelfEnable(this)) ServiceGuard.check(this);
+        handler.post(ticker);
+    }
 
     @Override protected void onPause() { super.onPause(); handler.removeCallbacks(ticker); }
 
@@ -208,6 +215,9 @@ public class MainActivity extends Activity {
         int fwSub = !fw ? R.string.row_fw_off
                 : Prefs.isSchedEnabled(this) ? R.string.row_fw_sched : R.string.row_fw_on;
         setRow(rowFw, "🌐", R.string.row_fw_title, getString(fwSub), fw);
+        boolean restore = ServiceGuard.canSelfEnable(this);
+        setRow(rowRestore, "↻", R.string.row_restore_title,
+                getString(restore ? R.string.row_restore_on : R.string.row_restore_todo), restore);
 
         boolean eye = Prefs.isEyeEnabled(this), filter = Prefs.isFilterEnabled(this);
         String eyeSub;
@@ -443,6 +453,23 @@ public class MainActivity extends Activity {
                     if (!codes[which].equals(Prefs.getLanguage(this))) {
                         Prefs.setLanguage(this, codes[which]);
                         recreate();
+                    }
+                })
+                .setNegativeButton(R.string.cancel, null)
+                .show();
+    }
+
+    /** راهنمای یک‌باره ADB برای روشن ماندن سرویس بعد از ری‌استارت */
+    private void showRestoreDialog() {
+        new AlertDialog.Builder(this)
+                .setTitle(R.string.row_restore_title)
+                .setMessage(getString(R.string.restore_dialog, ServiceGuard.ADB_COMMAND))
+                .setPositiveButton(R.string.copy_command, (d, w) -> {
+                    android.content.ClipboardManager cm =
+                            (android.content.ClipboardManager) getSystemService(CLIPBOARD_SERVICE);
+                    if (cm != null) {
+                        cm.setPrimaryClip(android.content.ClipData.newPlainText("adb", ServiceGuard.ADB_COMMAND));
+                        toast(R.string.copied);
                     }
                 })
                 .setNegativeButton(R.string.cancel, null)

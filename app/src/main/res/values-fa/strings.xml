@@ -305,4 +305,13 @@
     </string-array>
     <string name="digest_more">+%1$d مورد دیگر</string>
     <string name="digest_action_clear">🗑 پاک کردن</string>
+    <string name="row_restore_title">روشن ماندن بعد از ری‌استارت</string>
+    <string name="row_restore_on">فعال ✓ — خودش خودکار دوباره روشن می‌شود</string>
+    <string name="row_restore_todo">پیشنهادی — یک بار تنظیم از کامپیوتر (بزن)</string>
+    <string name="restore_dialog">بعضی گوشی‌ها بعد از ری‌استارت سرویس‌های دسترسی‌پذیری را خاموش می‌کنند. با این مجوز یک‌باره، اپ سرویسش را خودش دوباره روشن می‌کند.\n\n۱. USB debugging را روشن کن و گوشی را به کامپیوتر وصل کن.\n۲. این دستور را یک بار اجرا کن:\n\n%1$s\n\nبدون آن، بعد از ری‌استارت یک نوتیفیکیشن می‌گیری و با یک ضربه دوباره روشنش می‌کنی.</string>
+    <string name="copy_command">کپی دستور</string>
+    <string name="copied">کپی شد ✓</string>
+    <string name="guard_channel">هشدارهای مهم</string>
+    <string name="guard_title">⚠️ Social Blocker+ خاموش شد</string>
+    <string name="guard_text">اندروید سرویس دسترسی‌پذیری را خاموش کرد (مثلاً بعد از ری‌استارت). مسدودسازی و مراقبت از چشم تا روشن شدن دوباره کار نمی‌کنند — برای روشن کردن بزن.</string>
 </resources>

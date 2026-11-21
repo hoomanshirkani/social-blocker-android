@@ -122,6 +122,7 @@ public class FirewallVpnService extends VpnService {
     public void onCreate() {
         super.onCreate();
         instance = this;
+        ServiceGuard.check(this); // این سرویس بعد از ری‌استارت (Always-on) زود اجرا می‌شود
         IntentFilter f = new IntentFilter();
         f.addAction(Intent.ACTION_SCREEN_ON);
         f.addAction(Intent.ACTION_SCREEN_OFF);
@@ -157,6 +158,14 @@ public class FirewallVpnService extends VpnService {
 
     /** محاسبه حالت فعلی، ساختن تونل فقط در صورت تغییر، و زمان‌بندی تغییر بعدی. */
     private void apply() {
+        try {
+            applyNow();
+        } catch (Throwable t) {
+            android.util.Log.e("SocialBlocker", "firewall apply failed", t);
+        }
+    }
+
+    private void applyNow() {
         handler.removeCallbacks(tick);
         if (!Prefs.isFwEnabled(this)) { shutdown(); stopSelf(); return; }
 

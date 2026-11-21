@@ -309,4 +309,13 @@
     </string-array>
     <string name="digest_more">+%1$d more</string>
     <string name="digest_action_clear">🗑 Clear</string>
+    <string name="row_restore_title">Stay on after restart</string>
+    <string name="row_restore_on">Active ✓ — turns itself back on automatically</string>
+    <string name="row_restore_todo">Recommended — one-time setup from a computer (tap)</string>
+    <string name="restore_dialog">Some phones turn accessibility services off after a restart. With this one-time permission the app turns its service back on by itself.\n\n1. Enable USB debugging and connect the phone to a computer.\n2. Run this command once:\n\n%1$s\n\nWithout it, you get a notification after a restart and can turn it back on with one tap.</string>
+    <string name="copy_command">Copy command</string>
+    <string name="copied">Copied ✓</string>
+    <string name="guard_channel">Important alerts</string>
+    <string name="guard_title">⚠️ Social Blocker+ was turned off</string>
+    <string name="guard_text">Android turned the accessibility service off (e.g. after a restart). Blocking and eye care do not work until it is on again — tap to turn it on.</string>
 </resources>

@@ -31,6 +31,7 @@ public class DigestListener extends NotificationListenerService {
     public void onListenerConnected() {
         super.onListenerConnected();
         DigestScheduler.schedule(this);
+        ServiceGuard.check(this);
         // نوتیفیکیشن‌هایی که از قبل در نوار اعلان هستند
         if (!Prefs.isDigestEnabled(this)) return;
         try {

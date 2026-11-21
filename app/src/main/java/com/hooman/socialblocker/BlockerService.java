@@ -96,6 +96,15 @@ public class BlockerService extends AccessibilityService {
     @Override
     protected void onServiceConnected() {
         super.onServiceConnected();
+        try {
+            connect();
+        } catch (Throwable t) {
+            android.util.Log.e("SocialBlocker", "service connect failed", t);
+        }
+        ServiceGuard.cancelWarning(this);
+    }
+
+    private void connect() {
         InputMethodManager imm = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
         if (imm != null) {
             for (InputMethodInfo info : imm.getEnabledInputMethodList()) ignored.add(info.getPackageName());
@@ -116,6 +125,15 @@ public class BlockerService extends AccessibilityService {
 
     @Override
     public void onAccessibilityEvent(AccessibilityEvent event) {
+        // هر خطای غیرمنتظره گرفته می‌شود: کرش سرویس باعث می‌شود اندروید آن را خاموش کند
+        try {
+            onEvent(event);
+        } catch (Throwable t) {
+            android.util.Log.e("SocialBlocker", "accessibility event failed", t);
+        }
+    }
+
+    private void onEvent(AccessibilityEvent event) {
         if (event == null || event.getPackageName() == null) return;
         boolean windowChanged = event.getEventType() == AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED;
         String pkg = event.getPackageName().toString();

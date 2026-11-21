@@ -258,6 +258,16 @@
         <include
             android:id="@+id/rowFw"
             layout="@layout/row_setup" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_marginStart="70dp"
+            android:background="@color/divider" />
+
+        <include
+            android:id="@+id/rowRestore"
+            layout="@layout/row_setup" />
     </LinearLayout>
 
     <!-- مراقبت از چشم -->
