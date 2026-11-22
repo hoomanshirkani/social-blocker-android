@@ -15,6 +15,20 @@ import java.util.Set;
  */
 public class DigestListener extends NotificationListenerService {
 
+    static volatile DigestListener instance;
+
+    /** بعد از تغییر فیلتر فرستنده */
+    static void filterChanged() {
+        DigestListener l = instance;
+        if (l != null) NotifFilter.applyToActive(l);
+    }
+
+    @Override
+    public void onListenerDisconnected() {
+        instance = null;
+        super.onListenerDisconnected();
+    }
+
     private static final Set<String> KEEP_CATEGORIES = new HashSet<>(Arrays.asList(
             Notification.CATEGORY_CALL,
             Notification.CATEGORY_ALARM,
@@ -32,6 +46,8 @@ public class DigestListener extends NotificationListenerService {
         super.onListenerConnected();
         DigestScheduler.schedule(this);
         ServiceGuard.check(this);
+        instance = this;
+        NotifFilter.applyToActive(this);
         // نوتیفیکیشن‌هایی که از قبل در نوار اعلان هستند
         if (!Prefs.isDigestEnabled(this)) return;
         try {
@@ -42,6 +58,9 @@ public class DigestListener extends NotificationListenerService {
 
     @Override
     public void onNotificationPosted(StatusBarNotification sbn) {
+        try {
+            if (NotifFilter.handle(this, sbn)) return; // فیلتر فرستنده (Pro)
+        } catch (Throwable ignored) {}
         if (Prefs.isDigestEnabled(this)) collect(sbn);
     }
 
@@ -49,6 +68,7 @@ public class DigestListener extends NotificationListenerService {
         if (sbn == null) return;
         String pkg = sbn.getPackageName();
         if (pkg.equals(getPackageName())) return;
+        if (NotifFilter.covers(this, pkg)) return; // این اپ را فیلتر فرستنده مدیریت می‌کند
         if (pkg.equals("android") || pkg.equals("com.android.systemui")) return;
         if (!sbn.isClearable() || sbn.isOngoing()) return;
         Notification n = sbn.getNotification();

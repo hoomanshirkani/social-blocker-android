@@ -343,6 +343,7 @@
     <string name="pro_features_header">PRO FEATURES</string>
     <string name="pro_features">🗓  Free time by weekday — e.g. weekends 10:00–22:00 everything is allowed
 🌍  Website blocking in browsers (Chrome, Firefox, Samsung, Edge, Brave…)
+👤  Notifications only from chosen people (Telegram, WhatsApp…)
 📱  Firewall: internet only while an app is in use
 ⏱  Firewall: periodic internet (e.g. 10 s every minute)
 ⚡  Firewall: short burst when the screen turns on/off
@@ -398,4 +399,21 @@
     <string name="ad_trial_granted">⭐ Pro is unlocked for 24 hours. Enjoy!</string>
     <string name="ad_privacy">Ad privacy settings</string>
     <string name="pro_trial_left">Trial active — %1$s left</string>
+    <string name="row_nf_title">Notifications only from…</string>
+    <string name="row_nf_on">On · %1$d apps filtered by sender</string>
+    <string name="row_nf_off">Off — e.g. Telegram only from one person</string>
+    <string name="nf_title">Notifications only from…</string>
+    <string name="nf_switch">Sender filter</string>
+    <string name="nf_desc">For the apps below, only notifications from the people or groups you choose are shown. All others are removed from the notification shade (or go to the notification digest if it is on). Calls are never touched.</string>
+    <string name="nf_add_app">+ Add app (Telegram, WhatsApp…)</string>
+    <string name="nf_rules_header">APPS · tap to edit</string>
+    <string name="nf_pick_app">Choose an app</string>
+    <string name="nf_edit_title">%1$s — show only</string>
+    <string name="nf_type_name">Type a name</string>
+    <string name="nf_name_hint">e.g. Sara</string>
+    <string name="nf_name_help">Write the name exactly as it appears in the notification (the contact or group name). Part of the name is enough.</string>
+    <string name="nf_no_recent">No recent senders yet. Type a name, or wait for a message from that person and open this again — their name will appear here.</string>
+    <string name="nf_remove_app">Remove app</string>
+    <string name="nf_none_allowed">Hide all notifications</string>
+    <string name="nf_only">Only: %1$s</string>
 </resources>

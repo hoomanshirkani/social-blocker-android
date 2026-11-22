@@ -339,6 +339,7 @@
     <string name="pro_features_header">امکانات PRO</string>
     <string name="pro_features">🗓  زمان آزاد بر اساس روزهای هفته — مثلاً آخر هفته ۱۰ تا ۲۲ همه چیز آزاد
 🌍  مسدودسازی سایت در مرورگرها (Chrome، Firefox، Samsung، Edge، Brave…)
+👤  نوتیفیکیشن فقط از افراد انتخابی (تلگرام، واتساپ…)
 📱  فایروال: اینترنت فقط هنگام استفاده از اپ
 ⏱  فایروال: اینترنت دوره‌ای (مثلاً ۱۰ ثانیه در هر دقیقه)
 ⚡  فایروال: اینترنت کوتاه هنگام روشن/خاموش شدن صفحه
@@ -394,4 +395,21 @@
     <string name="ad_trial_granted">⭐ Pro برای ۲۴ ساعت باز شد. لذت ببر!</string>
     <string name="ad_privacy">تنظیمات حریم خصوصی تبلیغات</string>
     <string name="pro_trial_left">آزمایش فعال — %1$s مانده</string>
+    <string name="row_nf_title">نوتیفیکیشن فقط از…</string>
+    <string name="row_nf_on">روشن · %1$d اپ با فیلتر فرستنده</string>
+    <string name="row_nf_off">خاموش — مثلاً تلگرام فقط از یک نفر</string>
+    <string name="nf_title">نوتیفیکیشن فقط از…</string>
+    <string name="nf_switch">فیلتر فرستنده</string>
+    <string name="nf_desc">برای اپ‌های زیر فقط نوتیفیکیشن افراد یا گروه‌هایی که انتخاب می‌کنی نمایش داده می‌شود. بقیه از نوار اعلان حذف می‌شوند (یا اگر خلاصه نوتیفیکیشن روشن باشد، به خلاصه می‌روند). تماس‌ها دست نمی‌خورند.</string>
+    <string name="nf_add_app">+ افزودن اپ (تلگرام، واتساپ…)</string>
+    <string name="nf_rules_header">اپ‌ها · برای ویرایش بزن</string>
+    <string name="nf_pick_app">یک اپ انتخاب کن</string>
+    <string name="nf_edit_title">%1$s — فقط نمایش از</string>
+    <string name="nf_type_name">نوشتن نام</string>
+    <string name="nf_name_hint">مثلاً سارا</string>
+    <string name="nf_name_help">نام را همان‌طور بنویس که در نوتیفیکیشن دیده می‌شود (نام مخاطب یا گروه). بخشی از نام هم کافی است.</string>
+    <string name="nf_no_recent">هنوز فرستنده‌ای ثبت نشده. نام را بنویس، یا صبر کن از آن شخص پیامی بیاید و دوباره این را باز کن — نامش اینجا ظاهر می‌شود.</string>
+    <string name="nf_remove_app">حذف اپ</string>
+    <string name="nf_none_allowed">همه نوتیفیکیشن‌ها مخفی</string>
+    <string name="nf_only">فقط: %1$s</string>
 </resources>

@@ -68,6 +68,10 @@
             android:exported="false" />
 
         <activity
+            android:name=".NotifFilterActivity"
+            android:exported="false" />
+
+        <activity
             android:name=".FreeTimeActivity"
             android:exported="false" />
 

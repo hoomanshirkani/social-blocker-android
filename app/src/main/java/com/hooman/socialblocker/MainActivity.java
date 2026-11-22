@@ -33,7 +33,7 @@ public class MainActivity extends Activity {
 
     private static final long PAUSE_MS = 15 * 60 * 1000L;
 
-    private View statusCard, rowAcc, rowAdmin, rowFw, rowEye, rowDigest, rowRestore, rowFree, rowSites, rowPro;
+    private View statusCard, rowAcc, rowAdmin, rowFw, rowEye, rowDigest, rowRestore, rowFree, rowSites, rowPro, rowNf;
     private TextView statusIcon, statusTitle, statusSub, accWarning, appsHeader;
     private Button toggleBtn, pauseBtn;
     private Switch protectSwitch, limitSwitch;
@@ -81,6 +81,8 @@ public class MainActivity extends Activity {
         rowFree = h.findViewById(R.id.rowFree);
         rowSites = h.findViewById(R.id.rowSites);
         rowPro = h.findViewById(R.id.rowPro);
+        rowNf = h.findViewById(R.id.rowNf);
+        rowNf.setOnClickListener(v -> startActivity(new Intent(this, NotifFilterActivity.class)));
         rowFree.setOnClickListener(v -> startActivity(new Intent(this, FreeTimeActivity.class)));
         rowSites.setOnClickListener(v -> startActivity(new Intent(this, SitesActivity.class)));
         rowPro.setOnClickListener(v -> startActivity(new Intent(this, ProActivity.class)));
@@ -235,6 +237,10 @@ public class MainActivity extends Activity {
                 ? getString(FreeTime.isNow(this) ? R.string.ft_status_now : R.string.row_ft_on,
                         FreeTime.fmt(FreeTime.getStartMin(this)), FreeTime.fmt(FreeTime.getEndMin(this)))
                 : getString(R.string.row_ft_off)) + star, ft);
+        boolean nf = NotifFilter.isEnabled(this) && pro && !NotifFilter.getRules(this).isEmpty();
+        setRow(rowNf, "👤", R.string.row_nf_title, (nf
+                ? getString(R.string.row_nf_on, NotifFilter.getRules(this).size())
+                : getString(R.string.row_nf_off)) + star, nf);
         boolean sites = SiteBlock.isEnabled(this) && pro;
         setRow(rowSites, "🌍", R.string.row_site_title, (sites
                 ? getString(R.string.row_site_on, SiteBlock.getDomains(this).size())
