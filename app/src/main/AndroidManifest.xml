@@ -3,6 +3,7 @@
 
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
+    <uses-permission android:name="android.permission.VIBRATE" />
     <!-- اختیاری؛ فقط با ADB داده می‌شود تا اپ بعد از ری‌استارت سرویسش را خودش روشن کند -->
     <uses-permission android:name="android.permission.WRITE_SECURE_SETTINGS" />
 

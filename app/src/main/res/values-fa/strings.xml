@@ -412,4 +412,10 @@
     <string name="nf_remove_app">حذف اپ</string>
     <string name="nf_none_allowed">همه نوتیفیکیشن‌ها مخفی</string>
     <string name="nf_only">فقط: %1$s</string>
+    <string name="nf_sound">🔔 صدا فقط برای افراد مجاز</string>
+    <string name="nf_sound_desc">اندروید اجازه نمی‌دهد اپ دیگری صدای تلگرام را قطع کند، برای همین گاهی برای پیام‌های مخفی هم صدا می‌آید. این را روشن کن و صدای خود اپ را خاموش کن: آن وقت فقط پیام افراد بالا صدا دارد (حالت بی‌صدا/ویبره و «مزاحم نشوید» رعایت می‌شود).</string>
+    <string name="nf_mute_app">🔕 بی‌صدا کردن خود اپ</string>
+    <string name="nf_mute_help">در صفحه بعد برای %1$s: هر دسته پیام (مثلاً Private chats، Groups، Channels) را باز کن و «Silent / بی‌صدا» را انتخاب کن — نوتیفیکیشن روشن بماند، فقط صدا خاموش. در خود تلگرام هم می‌شود Settings › Notifications › Sound را روی «None» گذاشت.</string>
+    <string name="nf_open_settings">باز کردن تنظیمات</string>
+    <string name="nf_add_app_first">اول یک اپ اضافه کن</string>
 </resources>

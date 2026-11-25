@@ -43,6 +43,39 @@
             android:textSize="14sp" />
     </LinearLayout>
 
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="12dp"
+        android:background="@drawable/bg_card"
+        android:orientation="vertical"
+        android:padding="16dp">
+
+        <Switch
+            android:id="@+id/nfSound"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/nf_sound"
+            android:textColor="@color/text"
+            android:textSize="15sp" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="6dp"
+            android:text="@string/nf_sound_desc"
+            android:textColor="@color/text_muted"
+            android:textSize="13sp" />
+
+        <TextView
+            android:id="@+id/nfMuteApp"
+            style="@style/Chip"
+            android:layout_width="match_parent"
+            android:layout_marginTop="10dp"
+            android:layout_marginEnd="0dp"
+            android:text="@string/nf_mute_app" />
+    </LinearLayout>
+
     <TextView
         android:id="@+id/nfAdd"
         style="@style/Chip"

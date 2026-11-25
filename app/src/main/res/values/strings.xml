@@ -416,4 +416,10 @@
     <string name="nf_remove_app">Remove app</string>
     <string name="nf_none_allowed">Hide all notifications</string>
     <string name="nf_only">Only: %1$s</string>
+    <string name="nf_sound">🔔 Sound only for allowed people</string>
+    <string name="nf_sound_desc">Android does not let other apps silence Telegram, so sometimes you still hear it for hidden messages. Turn this on and make the app itself silent: then only messages from the people above make a sound (follows silent/vibrate mode and Do Not Disturb).</string>
+    <string name="nf_mute_app">🔕 Make the app itself silent</string>
+    <string name="nf_mute_help">In the next screen, for %1$s: open each message category (e.g. Private chats, Groups, Channels) and choose «Silent» — keep notifications ON, only the sound off. In Telegram you can also set Settings › Notifications › Sound to «None».</string>
+    <string name="nf_open_settings">Open settings</string>
+    <string name="nf_add_app_first">Add an app first</string>
 </resources>

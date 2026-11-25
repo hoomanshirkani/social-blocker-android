@@ -68,6 +68,59 @@ final class NotifFilter {
         sp(c).edit().putStringSet("rules", all).apply();
     }
 
+    // ------------------------------------------------------------------ own sound
+    // اندروید اجازه نمی‌دهد صدای نوتیفیکیشن اپ دیگری را قطع کنیم. راه‌حل: کاربر صدای خود
+    // تلگرام را خاموش می‌کند و این اپ فقط برای پیام افراد مجاز صدا/ویبره پخش می‌کند.
+
+    static boolean isSoundEnabled(Context c) { return sp(c).getBoolean("own_sound", false); }
+
+    static void setSoundEnabled(Context c, boolean on) { sp(c).edit().putBoolean("own_sound", on).apply(); }
+
+    private static final Map<String, String> lastAlerted = new HashMap<>();
+    private static long lastAlertAt = 0;
+
+    private static void alert(Context c, StatusBarNotification sbn, Notification n) {
+        // فقط برای پیام تازه، نه به‌روزرسانی همان نوتیفیکیشن
+        CharSequence text = n.extras != null ? n.extras.getCharSequence(Notification.EXTRA_TEXT) : null;
+        String sig = n.when + "|" + text;
+        synchronized (lastAlerted) {
+            if (sig.equals(lastAlerted.get(sbn.getKey()))) return;
+            lastAlerted.put(sbn.getKey(), sig);
+            if (lastAlerted.size() > 200) lastAlerted.clear();
+        }
+        if (System.currentTimeMillis() - sbn.getPostTime() > 15_000) return; // نوتیفیکیشن قدیمی
+        long now = android.os.SystemClock.elapsedRealtime();
+        if (now - lastAlertAt < 2500) return; // چند پیام پشت سر هم = یک صدا
+        lastAlertAt = now;
+
+        android.app.NotificationManager nm = (android.app.NotificationManager) c.getSystemService(Context.NOTIFICATION_SERVICE);
+        if (nm != null && nm.getCurrentInterruptionFilter() > android.app.NotificationManager.INTERRUPTION_FILTER_ALL) {
+            return; // حالت «مزاحم نشوید» روشن است
+        }
+        android.media.AudioManager am = (android.media.AudioManager) c.getSystemService(Context.AUDIO_SERVICE);
+        int mode = am != null ? am.getRingerMode() : android.media.AudioManager.RINGER_MODE_NORMAL;
+        if (mode == android.media.AudioManager.RINGER_MODE_SILENT) return;
+        if (mode == android.media.AudioManager.RINGER_MODE_NORMAL) {
+            try {
+                android.media.Ringtone r = android.media.RingtoneManager.getRingtone(c,
+                        android.media.RingtoneManager.getDefaultUri(android.media.RingtoneManager.TYPE_NOTIFICATION));
+                if (r != null) {
+                    r.setAudioAttributes(new android.media.AudioAttributes.Builder()
+                            .setUsage(android.media.AudioAttributes.USAGE_NOTIFICATION_COMMUNICATION_INSTANT)
+                            .setContentType(android.media.AudioAttributes.CONTENT_TYPE_SONIFICATION)
+                            .build());
+                    r.play();
+                }
+            } catch (Exception ignored) {}
+        }
+        try {
+            android.os.Vibrator v = (android.os.Vibrator) c.getSystemService(Context.VIBRATOR_SERVICE);
+            if (v != null && v.hasVibrator()) {
+                v.vibrate(android.os.VibrationEffect.createWaveform(new long[]{0, 180, 120, 180}, -1));
+            }
+        } catch (Exception ignored) {}
+    }
+
     static boolean covers(Context c, String pkg) {
         return isEnabled(c) && Pro.isPro(c) && getRules(c).containsKey(pkg);
     }
@@ -180,7 +233,10 @@ final class NotifFilter {
         List<String> names = names(n);
         CharSequence t = n.extras != null ? n.extras.getCharSequence(Notification.EXTRA_TITLE) : null;
         for (String nm : names) remember(s, pkg, nm); // دقیقاً همان نامی که تلگرام می‌فرستد
-        if (matches(names, allowed)) return true; // مجاز: نمایش بده (به خلاصه هم نرود)
+        if (matches(names, allowed)) { // مجاز: نمایش بده (به خلاصه هم نرود)
+            if (isSoundEnabled(s)) alert(s, sbn, n);
+            return true;
+        }
 
         // مخفی: اگر خلاصه نوتیفیکیشن روشن است آنجا ذخیره شود
         if (Prefs.isDigestEnabled(s)) {

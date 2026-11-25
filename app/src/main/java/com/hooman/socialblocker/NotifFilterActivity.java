@@ -72,6 +72,13 @@ public class NotifFilterActivity extends Activity {
                         startActivity(new Intent(Settings.ACTION_NOTIFICATION_LISTENER_SETTINGS));
                     } catch (Exception ignored) {}
                 }));
+        Switch sound = findViewById(R.id.nfSound);
+        sound.setChecked(NotifFilter.isSoundEnabled(this));
+        sound.setOnCheckedChangeListener((b, on) -> {
+            NotifFilter.setSoundEnabled(this, on);
+            if (on) muteAppSettings();
+        });
+        findViewById(R.id.nfMuteApp).setOnClickListener(v -> muteAppSettings());
         findViewById(R.id.nfAdd).setOnClickListener(v -> Pro.require(this, this::pickApp));
         list.setOnItemClickListener((p, v, pos, id) -> editNames(pkgs.get(pos)));
     }
@@ -147,6 +154,42 @@ public class NotifFilterActivity extends Activity {
             b.setMessage(R.string.nf_no_recent);
         }
         b.show();
+    }
+
+    /** تنظیمات نوتیفیکیشن خود اپ (مثلاً تلگرام) را باز می‌کند تا صدایش را خاموش کنی */
+    private void muteAppSettings() {
+        List<String> apps = new ArrayList<>(NotifFilter.getRules(this).keySet());
+        if (apps.isEmpty()) {
+            android.widget.Toast.makeText(this, R.string.nf_add_app_first, android.widget.Toast.LENGTH_SHORT).show();
+            return;
+        }
+        if (apps.size() == 1) {
+            openAppNotif(apps.get(0));
+            return;
+        }
+        CharSequence[] names = new CharSequence[apps.size()];
+        for (int i = 0; i < names.length; i++) names[i] = label(apps.get(i));
+        new AlertDialog.Builder(this)
+                .setTitle(R.string.nf_mute_app)
+                .setItems(names, (d, w) -> openAppNotif(apps.get(w)))
+                .show();
+    }
+
+    private void openAppNotif(String pkg) {
+        new AlertDialog.Builder(this)
+                .setTitle(R.string.nf_mute_app)
+                .setMessage(getString(R.string.nf_mute_help, label(pkg)))
+                .setPositiveButton(R.string.nf_open_settings, (d, w) -> {
+                    try {
+                        startActivity(new Intent(Settings.ACTION_APP_NOTIFICATION_SETTINGS)
+                                .putExtra(Settings.EXTRA_APP_PACKAGE, pkg));
+                    } catch (Exception e) {
+                        startActivity(new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS,
+                                android.net.Uri.parse("package:" + pkg)));
+                    }
+                })
+                .setNegativeButton(R.string.cancel, null)
+                .show();
     }
 
     private void typeName(String pkg, Set<String> chosen) {
