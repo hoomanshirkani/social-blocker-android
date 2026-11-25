@@ -116,10 +116,46 @@ final class NotifFilter {
 
     private static boolean matches(List<String> names, Set<String> allowed) {
         for (String a : allowed) {
-            String al = a.toLowerCase(Locale.ROOT);
-            for (String n : names) if (n.toLowerCase(Locale.ROOT).contains(al)) return true;
+            String al = norm(a);
+            if (al.isEmpty()) continue;
+            for (String n : names) if (norm(n).contains(al)) return true;
         }
         return false;
+    }
+
+    /**
+     * یکسان‌سازی برای مقایسه: ي/ی و ك/ک عربی و فارسی، نیم‌فاصله و کاراکترهای نامرئی،
+     * اعراب، فاصله‌های اضافه و حروف بزرگ/کوچک.
+     */
+    static String norm(String s) {
+        if (s == null) return "";
+        StringBuilder b = new StringBuilder(s.length());
+        boolean space = false;
+        for (int i = 0; i < s.length(); i++) {
+            char ch = s.charAt(i);
+            switch (ch) {
+                case '\u064A': case '\u0649': case '\u06CC': ch = '\u06CC'; break; // ی
+                case '\u0643': ch = '\u06A9'; break;                                 // ک
+                case '\u0629': ch = '\u0647'; break;                                 // ه
+                case '\u0623': case '\u0625': case '\u0622': ch = '\u0627'; break; // ا
+                case '\u06F0': case '\u0660': ch = '0'; break;
+                default: break;
+            }
+            if (ch >= '\u06F1' && ch <= '\u06F9') ch = (char) ('1' + (ch - '\u06F1'));
+            if (ch >= '\u0661' && ch <= '\u0669') ch = (char) ('1' + (ch - '\u0661'));
+            int type = Character.getType(ch);
+            // نیم‌فاصله، کاراکترهای جهت متن، اعراب و ایموجی‌ها حذف می‌شوند
+            if (type == Character.FORMAT || type == Character.NON_SPACING_MARK
+                    || type == Character.SURROGATE || type == Character.OTHER_SYMBOL) continue;
+            if (Character.isWhitespace(ch) || ch == '\u00A0') {
+                space = b.length() > 0;
+                continue;
+            }
+            if (space) b.append(' ');
+            space = false;
+            b.append(Character.toLowerCase(ch));
+        }
+        return b.toString();
     }
 
     /**
@@ -135,16 +171,15 @@ final class NotifFilter {
         if (!sbn.isClearable() || sbn.isOngoing()) return true;
         if (Notification.CATEGORY_CALL.equals(n.category) || n.fullScreenIntent != null) return true; // تماس‌ها
 
-        boolean summary = (n.flags & Notification.FLAG_GROUP_SUMMARY) != 0;
-        if (summary) {
-            // خلاصه گروه فقط وقتی بماند که پیام مجازی زیرش باشد
-            if (!hasAllowedChild(s, pkg, sbn.getGroupKey(), allowed)) cancel(s, sbn);
-            return true;
-        }
+        // خلاصه گروه (Group summary) هرگز حذف نمی‌شود:
+        // تلگرام خلاصه را «قبل» از پیام جدید می‌فرستد و حذف آن همه نوتیفیکیشن‌های گروه
+        // (از جمله پیام مجاز) را پاک می‌کند و تلگرام آن را «پاک کردن همه» حساب می‌کند.
+        // اندروید خلاصه‌ای را که هیچ زیرمجموعه‌ای ندارد خودش نشان نمی‌دهد.
+        if ((n.flags & Notification.FLAG_GROUP_SUMMARY) != 0) return true;
 
         List<String> names = names(n);
         CharSequence t = n.extras != null ? n.extras.getCharSequence(Notification.EXTRA_TITLE) : null;
-        if (t != null) remember(s, pkg, t.toString());
+        for (String nm : names) remember(s, pkg, nm); // دقیقاً همان نامی که تلگرام می‌فرستد
         if (matches(names, allowed)) return true; // مجاز: نمایش بده (به خلاصه هم نرود)
 
         // مخفی: اگر خلاصه نوتیفیکیشن روشن است آنجا ذخیره شود
@@ -159,36 +194,7 @@ final class NotifFilter {
             if (!it.title.isEmpty() || !it.text.isEmpty()) DigestStore.add(s, it);
         }
         cancel(s, sbn);
-        cleanupSummaries(s, pkg, allowed);
         return true;
-    }
-
-    private static boolean hasAllowedChild(NotificationListenerService s, String pkg, String group, Set<String> allowed) {
-        try {
-            StatusBarNotification[] act = s.getActiveNotifications();
-            if (act == null) return false;
-            for (StatusBarNotification o : act) {
-                if (!pkg.equals(o.getPackageName())) continue;
-                Notification on = o.getNotification();
-                if (on == null || (on.flags & Notification.FLAG_GROUP_SUMMARY) != 0) continue;
-                if (group != null && !group.equals(o.getGroupKey())) continue;
-                if (matches(names(on), allowed)) return true;
-            }
-        } catch (Exception ignored) {}
-        return false;
-    }
-
-    private static void cleanupSummaries(NotificationListenerService s, String pkg, Set<String> allowed) {
-        try {
-            StatusBarNotification[] act = s.getActiveNotifications();
-            if (act == null) return;
-            for (StatusBarNotification o : act) {
-                if (!pkg.equals(o.getPackageName())) continue;
-                Notification on = o.getNotification();
-                if (on == null || (on.flags & Notification.FLAG_GROUP_SUMMARY) == 0) continue;
-                if (!hasAllowedChild(s, pkg, o.getGroupKey(), allowed)) cancel(s, o);
-            }
-        } catch (Exception ignored) {}
     }
 
     private static void cancel(NotificationListenerService s, StatusBarNotification sbn) {
@@ -202,12 +208,7 @@ final class NotifFilter {
         try {
             StatusBarNotification[] act = s.getActiveNotifications();
             if (act == null) return;
-            for (StatusBarNotification o : act) {
-                if ((o.getNotification().flags & Notification.FLAG_GROUP_SUMMARY) == 0) handle(s, o);
-            }
-            for (StatusBarNotification o : act) {
-                if ((o.getNotification().flags & Notification.FLAG_GROUP_SUMMARY) != 0) handle(s, o);
-            }
+            for (StatusBarNotification o : act) handle(s, o);
         } catch (Exception ignored) {}
     }
 }
