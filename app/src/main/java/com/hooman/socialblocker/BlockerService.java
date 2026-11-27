@@ -139,7 +139,14 @@ public class BlockerService extends AccessibilityService {
         if (event == null || event.getPackageName() == null) return;
         boolean windowChanged = event.getEventType() == AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED;
         String pkg = event.getPackageName().toString();
-        if (windowChanged && !ignored.contains(pkg)) FirewallVpnService.foregroundChanged(pkg);
+        if (event.getEventType() == AccessibilityEvent.TYPE_VIEW_TEXT_CHANGED) {
+            SmartPause.onTyping(); // فقط زمان؛ متن خوانده نمی‌شود
+            return;
+        }
+        if (windowChanged && !ignored.contains(pkg)) {
+            SmartPause.onForeground(pkg);
+            FirewallVpnService.foregroundChanged(pkg);
+        }
         if (EyeCare.isBreakLocked()) {
             enforceBreak(pkg, event.getClassName(), windowChanged);
             return;
@@ -236,6 +243,11 @@ public class BlockerService extends AccessibilityService {
     private void enforceBreak(String pkg, CharSequence cls, boolean windowChanged) {
         if (!windowChanged) return;
         if (inCall()) return; // تماس تلفنی همیشه آزاد است
+        // مسیریابی / ماشین: استراحت همان لحظه تمام می‌شود (ایمنی رانندگی)
+        if (Prefs.isEyeSmart(this) && (SmartPause.NAV_APPS.contains(pkg) || SmartPause.driving(this))) {
+            EyeCare.unlockBreak();
+            return;
+        }
         if (pkg.equals(getPackageName()) && cls != null && cls.toString().endsWith("BreakActivity")) return;
         if (pkg.equals("com.android.systemui")) { // نوار اعلان / Recents
             performGlobalAction(GLOBAL_ACTION_BACK);

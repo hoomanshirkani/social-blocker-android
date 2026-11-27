@@ -64,6 +64,9 @@ public class EyeCareActivity extends Activity {
         // --- استراحت ---
         eyeSwitch.setChecked(Prefs.isEyeEnabled(this));
         strictSwitch.setChecked(Prefs.isEyeStrict(this));
+        Switch smart = findViewById(R.id.smartSwitch);
+        smart.setChecked(Prefs.isEyeSmart(this));
+        smart.setOnCheckedChangeListener((b, on) -> Prefs.setEyeSmart(this, on));
         interval.setText(String.valueOf(Prefs.getEyeIntervalMin(this)));
         breakLen.setText(String.valueOf(Prefs.getEyeBreakSec(this)));
         findViewById(R.id.eyeSave).setOnClickListener(v -> saveBreaks());

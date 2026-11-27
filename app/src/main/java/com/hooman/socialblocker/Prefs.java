@@ -301,6 +301,12 @@ public final class Prefs {
     static int getEyeIntervalMin(Context c) { return sp(c).getInt("eye_interval_min", 20); }
     static int getEyeBreakSec(Context c) { return sp(c).getInt("eye_break_sec", 20); }
     static boolean isEyeStrict(Context c) { return sp(c).getBoolean("eye_strict", true); }
+    /** استراحت چشم هنگام رانندگی، تماس و تایپ نمی‌آید */
+    static boolean isEyeSmart(Context c) { return sp(c).getBoolean("eye_smart", true); }
+    static void setEyeSmart(Context c, boolean on) { sp(c).edit().putBoolean("eye_smart", on).apply(); }
+    /** فایروال هنگام تماس و مسیریابی قانون‌های قطع‌کننده را اعمال نمی‌کند */
+    static boolean isFwSmart(Context c) { return sp(c).getBoolean("fw_smart", true); }
+    static void setFwSmart(Context c, boolean on) { sp(c).edit().putBoolean("fw_smart", on).apply(); }
 
     static void setEye(Context c, boolean enabled, int intervalMin, int breakSec, boolean strict) {
         sp(c).edit()

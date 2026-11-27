@@ -82,6 +82,21 @@ public class FirewallVpnService extends VpnService {
     private final Map<String, Long> leftAt = new HashMap<>(); // اپ → زمان بیرون آمدن از آن
 
     /** BlockerService هر بار که اپ جلوی صفحه عوض شود صدا می‌زند. */
+    static volatile boolean relaxed = false;
+
+    /** هر ۱۰ ثانیه: آیا تماس/مسیریابی شروع یا تمام شد؟ */
+    private final Runnable relaxWatch = new Runnable() {
+        @Override
+        public void run() {
+            try {
+                boolean now = Prefs.isFwSmart(FirewallVpnService.this)
+                        && SmartPause.reason(FirewallVpnService.this, false) != SmartPause.NONE;
+                if (running && now != relaxed) apply();
+            } catch (Throwable ignored) {}
+            handler.postDelayed(this, 10_000);
+        }
+    };
+
     static void foregroundChanged(String pkg) {
         FirewallVpnService s = instance;
         if (s != null) s.handler.post(() -> s.onForeground(pkg));
@@ -123,6 +138,7 @@ public class FirewallVpnService extends VpnService {
         super.onCreate();
         instance = this;
         ServiceGuard.check(this); // این سرویس بعد از ری‌استارت (Always-on) زود اجرا می‌شود
+        handler.postDelayed(relaxWatch, 10_000);
         IntentFilter f = new IntentFilter();
         f.addAction(Intent.ACTION_SCREEN_ON);
         f.addAction(Intent.ACTION_SCREEN_OFF);
@@ -174,7 +190,9 @@ public class FirewallVpnService extends VpnService {
         nextCandidate = 0;
         Set<String> always = Prefs.getFwBlocked(this);
         // قانون‌های ⏱ 📱 ⚡ و «همه اپ‌ها» جزو Pro هستند؛ بدون Pro نادیده گرفته می‌شوند (= آزاد)
-        boolean pro = Pro.isPro(this);
+        // هنگام تماس یا مسیریابی: قانون‌های ⏱ 📱 ⚡ و «همه اپ‌ها» موقتاً اعمال نمی‌شوند
+        relaxed = Prefs.isFwSmart(this) && SmartPause.reason(this, false) != SmartPause.NONE;
+        boolean pro = Pro.isPro(this) && !relaxed;
         Set<String> burst = pro ? Prefs.getFwBurst(this) : new TreeSet<>();
         Set<String> periodic = pro ? Prefs.getFwPeriodic(this) : new TreeSet<>();
         Set<String> inUseSet = pro ? Prefs.getFwInUse(this) : new TreeSet<>();
@@ -378,6 +396,7 @@ public class FirewallVpnService extends VpnService {
 
     @Override
     public void onDestroy() {
+        handler.removeCallbacks(relaxWatch);
         instance = null;
         try { unregisterReceiver(screenReceiver); } catch (Exception ignored) {}
         shutdown();

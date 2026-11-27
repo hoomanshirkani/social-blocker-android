@@ -97,19 +97,32 @@ final class EyeCare {
         nextBreakAt = System.currentTimeMillis() + delay;
     }
 
+    private boolean postponed = false;
+
     private void warnBreak() {
+        if (Prefs.isEyeSmart(svc) && SmartPause.reason(svc, false) != SmartPause.NONE) return;
         Context lc = LocaleHelper.wrap(svc);
         Toast.makeText(svc, lc.getString(R.string.eye_warn), Toast.LENGTH_LONG).show();
     }
 
     private void fireBreak() {
         if (!Prefs.isEyeEnabled(svc) || activeSince == 0) return;
-        AudioManager am = (AudioManager) svc.getSystemService(Context.AUDIO_SERVICE);
-        if (am != null && (am.getMode() == AudioManager.MODE_IN_CALL
-                || am.getMode() == AudioManager.MODE_IN_COMMUNICATION)) {
-            // وسط تماس مزاحم نشو؛ یک دقیقه بعد دوباره امتحان کن
-            h.postDelayed(fire, 60_000);
-            nextBreakAt = System.currentTimeMillis() + 60_000;
+        // وسط تماس، رانندگی/مسیریابی یا تایپ پیام مزاحم نشو؛ کمی بعد دوباره امتحان کن
+        int why = Prefs.isEyeSmart(svc) ? SmartPause.reason(svc, true)
+                : (SmartPause.inCall(svc) ? SmartPause.CALL : SmartPause.NONE);
+        if (why != SmartPause.NONE) {
+            long retry = why == SmartPause.TYPING ? 15_000 : 30_000;
+            h.removeCallbacks(fire);
+            h.postDelayed(fire, retry);
+            nextBreakAt = System.currentTimeMillis() + retry;
+            postponed = true;
+            return;
+        }
+        if (postponed) { // تازه آزاد شد: یک فرصت کوتاه قبل از استراحت
+            postponed = false;
+            warnBreak();
+            h.postDelayed(fire, 10_000);
+            nextBreakAt = System.currentTimeMillis() + 10_000;
             return;
         }
         if (Prefs.isEyeStrict(svc)) lockUntil = SystemClock.elapsedRealtime() + breakMs() + 1000;

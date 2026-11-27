@@ -88,6 +88,12 @@ public class FirewallActivity extends Activity {
         graceRow = h.findViewById(R.id.graceRow);
         inUseGrace = h.findViewById(R.id.inUseGrace);
         inUseAllSwitch = h.findViewById(R.id.inUseAllSwitch);
+        Switch fwSmart = h.findViewById(R.id.fwSmartSwitch);
+        fwSmart.setChecked(Prefs.isFwSmart(this));
+        fwSmart.setOnCheckedChangeListener((b, on) -> {
+            Prefs.setFwSmart(this, on);
+            FirewallVpnService.refresh(this);
+        });
         onVal = h.findViewById(R.id.onVal);
         everyVal = h.findViewById(R.id.everyVal);
         onUnit = h.findViewById(R.id.onUnit);

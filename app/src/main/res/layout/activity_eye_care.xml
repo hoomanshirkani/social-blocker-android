@@ -209,6 +209,23 @@
                     android:layout_marginStart="12dp" />
             </LinearLayout>
 
+            <Switch
+                android:id="@+id/smartSwitch"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="14dp"
+                android:text="@string/eye_smart"
+                android:textColor="@color/text"
+                android:textSize="15sp" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="2dp"
+                android:text="@string/eye_smart_sub"
+                android:textColor="@color/text_muted"
+                android:textSize="13sp" />
+
             <HorizontalScrollView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
