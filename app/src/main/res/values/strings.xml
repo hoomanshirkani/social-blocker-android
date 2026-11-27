@@ -426,4 +426,12 @@
     <string name="eye_smart_sub">No break while Google Maps, Waze or another navigation app is in use (also in the background), in Android Auto / car mode, during a call, or while you are typing a message. The break comes a little later; opening a navigation app ends a running break immediately.</string>
     <string name="fw_smart">🚗 Relax during calls and navigation</string>
     <string name="fw_smart_sub">During a phone or internet call and while navigating, the periodic / in-use / burst rules and the all-apps policies pause so calls and maps keep working. Always-blocked apps stay blocked.</string>
+    <string name="rot_title">Auto-rotate per app</string>
+    <string name="rot_switch">Auto-rotate only in these apps</string>
+    <string name="rot_desc">Keep auto-rotate off everywhere else. When you open one of the apps below (e.g. Google Maps, Waze) it turns on, and when you leave it turns off again and the screen goes back to portrait. If you turned auto-rotate on yourself, it is left alone.</string>
+    <string name="rot_perm">⚠️ Allow «Modify system settings» for this app (tap)</string>
+    <string name="rot_pick">Choose apps</string>
+    <string name="rot_header">APPS (%1$d)</string>
+    <string name="row_rot_on">On — only in chosen apps (Maps, Waze…)</string>
+    <string name="row_rot_off">Off — e.g. rotate only in Maps and Waze</string>
 </resources>

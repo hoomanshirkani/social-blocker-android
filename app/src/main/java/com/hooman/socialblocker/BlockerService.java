@@ -145,6 +145,7 @@ public class BlockerService extends AccessibilityService {
         }
         if (windowChanged && !ignored.contains(pkg)) {
             SmartPause.onForeground(pkg);
+            AutoRotate.onForeground(this, pkg);
             FirewallVpnService.foregroundChanged(pkg);
         }
         if (EyeCare.isBreakLocked()) {

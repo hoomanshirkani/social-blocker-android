@@ -33,7 +33,7 @@ public class MainActivity extends Activity {
 
     private static final long PAUSE_MS = 15 * 60 * 1000L;
 
-    private View statusCard, rowAcc, rowAdmin, rowFw, rowEye, rowDigest, rowRestore, rowFree, rowSites, rowPro, rowNf;
+    private View statusCard, rowAcc, rowAdmin, rowFw, rowEye, rowDigest, rowRestore, rowFree, rowSites, rowPro, rowNf, rowRot;
     private TextView statusIcon, statusTitle, statusSub, accWarning, appsHeader;
     private Button toggleBtn, pauseBtn;
     private Switch protectSwitch, limitSwitch;
@@ -82,6 +82,8 @@ public class MainActivity extends Activity {
         rowSites = h.findViewById(R.id.rowSites);
         rowPro = h.findViewById(R.id.rowPro);
         rowNf = h.findViewById(R.id.rowNf);
+        rowRot = h.findViewById(R.id.rowRot);
+        rowRot.setOnClickListener(v -> startActivity(new Intent(this, RotateActivity.class)));
         rowNf.setOnClickListener(v -> startActivity(new Intent(this, NotifFilterActivity.class)));
         rowFree.setOnClickListener(v -> startActivity(new Intent(this, FreeTimeActivity.class)));
         rowSites.setOnClickListener(v -> startActivity(new Intent(this, SitesActivity.class)));
@@ -241,6 +243,8 @@ public class MainActivity extends Activity {
         setRow(rowNf, "👤", R.string.row_nf_title, (nf
                 ? getString(R.string.row_nf_on, NotifFilter.getRules(this).size())
                 : getString(R.string.row_nf_off)) + star, nf);
+        boolean rot = AutoRotate.isEnabled(this) && AutoRotate.canWrite(this);
+        setRow(rowRot, "🔄", R.string.rot_title, getString(rot ? R.string.row_rot_on : R.string.row_rot_off), rot);
         boolean sites = SiteBlock.isEnabled(this) && pro;
         setRow(rowSites, "🌍", R.string.row_site_title, (sites
                 ? getString(R.string.row_site_on, SiteBlock.getDomains(this).size())
